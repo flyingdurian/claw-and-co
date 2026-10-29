@@ -6,6 +6,8 @@ const BASE := "res://art/r5/mechanics/"
 const GANTRY := BASE + "gantry/"
 const CLAW := BASE + "claw/"
 
+var fixed_left_rail: Sprite2D
+var fixed_right_rail: Sprite2D
 var bridge_root: Node2D
 var bridge_sprite: Sprite2D
 var trolley_root: Node2D
@@ -45,6 +47,16 @@ func _pivot(parent: Node2D, label: String, p: Vector2) -> Node2D:
     return n
 
 func _ready() -> void:
+    # Rail guides mount to the cabinet, NOT beneath the moving DepthBridge.
+    # These are original high-fidelity gantry textures, not substitute primitives.
+    fixed_left_rail = _sprite(self, "FixedDepthRailLeft", GANTRY + "depth_rail_a.png",
+        Vector2(386, 407), Vector2(0.145, 0.095))
+    fixed_right_rail = _sprite(self, "FixedDepthRailRight", GANTRY + "depth_rail_b.png",
+        Vector2(555, 410), Vector2(0.133, 0.092))
+    if fixed_left_rail != null:
+        fixed_left_rail.rotation_degrees = -16.0
+    if fixed_right_rail != null:
+        fixed_right_rail.rotation_degrees = -16.0
     bridge_root = _pivot(self, "DepthBridge", Vector2.ZERO)
     bridge_sprite = _sprite(bridge_root, "BridgeChrome", GANTRY + "cross_bridge.png")
     trolley_root = _pivot(bridge_root, "LateralTrolley", Vector2.ZERO)
@@ -66,7 +78,7 @@ func _ready() -> void:
     _sprite(right_finger, "RightGrippingTip", CLAW + "right_gripper.png", Vector2(-42, -43), Vector2.ONE, false)
     rear_finger = _pivot(claw_root, "RearFingerPivot", Vector2(0, 472))
     _sprite(rear_finger, "ForeshortenedThirdProng", CLAW + "rear_gripper.png", Vector2(-58, -31), Vector2.ONE, false)
-    assets_loaded = bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null
+    assets_loaded = fixed_left_rail != null and fixed_right_rail != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null
     if assets_loaded:
         set_pose(0.50, 0.42, 0.0, 0.0)
 
@@ -77,36 +89,58 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     var y := clampf(depth, 0.08, 0.92)
     var z := clampf(drop_fraction, 0.0, 1.0)
     var g := clampf(grip_fraction, 0.0, 1.0)
-    # Far and near endpoints are calibrated to the original perspective. The fixed
-    # guide rail imagery was projected into the same exact source coordinate space.
-    var left := Vector2(400, 350).lerp(Vector2(315, 403), y)
-    var right := Vector2(711, 350).lerp(Vector2(867, 403), y)
-    var span := right.x - left.x
-    bridge_root.position = Vector2((left.x + right.x) * 0.5, (left.y + right.y) * 0.5)
-    bridge_sprite.scale = Vector2(span / 1480.0, lerpf(0.095, 0.135, y))
-    trolley_root.position = Vector2(lerpf(-span * 0.5, span * 0.5, x), 15)
-    var drop_max := lerpf(156.0, 198.0, y)
-    var claw_height := 92.0 + drop_max * z
-    claw_root.position = Vector2(0, claw_height)
-    # Cable and connector share the trolley local x-coordinate with the claw hub.
-    # Only cable length changes. The winch casing and chrome connector do not stretch.
-    var cable_top := 54.0
-    var cable_bottom := claw_height - 23.0
-    cable_sprite.position = Vector2(0, (cable_top + cable_bottom) * 0.5)
-    cable_sprite.scale = Vector2(0.24, maxf(0.01, (cable_bottom - cable_top) / 325.0))
-    connector_sprite.position = Vector2(0, claw_height - 5.0)
+
+    # M01 front display opening is x=272..652, y=400..865 in the
+    # authoritative cabinet PNG. The claw silhouette has a sizeable radius.
+    # Constrain the *entire claw* to the front chamber, never the side window
+    # at x=731..936 or the central metal divider at x=653..730.
+    # The y axis changes bridge depth along fixed rails, not the rails themselves.
+    var bridge_y := lerpf(409.0, 439.0, y)
+    bridge_root.position = Vector2(459.0 + 7.0 * y, bridge_y)
+    bridge_sprite.scale = Vector2(352.0 / float(bridge_sprite.texture.get_width()),
+        lerpf(0.105, 0.14, y))
+    var projected_x := lerpf(365.0, 551.0, x)
+    trolley_root.position = Vector2(projected_x - bridge_root.position.x, 14.0)
+    # The hoist's moving head, cable, and claw all share this trolley root.
+    # Maximum 180px descent keeps the finger tips above the front opening lip.
+    var drop_max := lerpf(170.0, 180.0, y)
+    var claw_height := 79.0 + drop_max * z
+    claw_root.position = Vector2(0.0, claw_height)
+
+    # Physical suspension anchors are calculated from the same claw mount.
+    # Cable starts at the bottom of the fixed-size winch. Its *length alone*
+    # changes. The connector's bottom slightly overlaps the motor-hub socket.
+    var connector_height := float(connector_sprite.texture.get_height()) * connector_sprite.scale.y
+    var hub_mount_y := claw_height - 1.5
+    var connector_bottom_y := hub_mount_y + 5.0
+    var connector_center_y := connector_bottom_y - connector_height * 0.5
+    connector_sprite.position = Vector2(0, connector_center_y)
+    var connector_top_y := connector_center_y - connector_height * 0.5
+    var cable_top_y := 52.0
+    var cable_bottom_y := connector_top_y + 2.0
+    var cable_length := maxf(2.0, cable_bottom_y - cable_top_y)
+    cable_sprite.position = Vector2(0, cable_top_y + cable_length * 0.5)
+    cable_sprite.scale = Vector2(0.24, cable_length / float(cable_sprite.texture.get_height()))
+
     left_upper.rotation_degrees = lerpf(0.0, -25.0, g)
     right_upper.rotation_degrees = lerpf(0.0, 25.0, g)
     left_finger.rotation_degrees = lerpf(0.0, -17.0, g)
     right_finger.rotation_degrees = lerpf(0.0, 17.0, g)
     rear_finger.rotation_degrees = lerpf(0.0, 10.0, g)
-    # The third prong's independent upper linkage is not supplied; its hinge remains
-    # provisional. The visual gate cannot be accepted until this is reviewed.
-    last_pose = {"lateral": x, "depth": y, "drop": z, "grip": g,
-        "bridge_x": bridge_root.position.x, "bridge_y": bridge_root.position.y,
-        "trolley_screen_x": bridge_root.position.x + trolley_root.position.x,
-        "claw_top_screen_y": bridge_root.position.y + trolley_root.position.y + claw_height,
-        "cable_length": maxf(0.0, cable_bottom - cable_top)}
+    # The third upper linkage is still provisional; do not claim gripping physics.
+    var claw_screen_y := bridge_y + trolley_root.position.y + claw_height
+    last_pose = {
+        "lateral": x, "depth": y, "drop": z, "grip": g,
+        "bridge_x": bridge_root.position.x, "bridge_y": bridge_y,
+        "trolley_screen_x": projected_x, "claw_top_screen_y": claw_screen_y,
+        "cable_length": cable_length,
+        "cable_to_connector_error": absf(cable_bottom_y - connector_top_y),
+        "connector_to_hub_overlap": connector_bottom_y - hub_mount_y,
+        "fixed_left_x": fixed_left_rail.position.x,
+        "fixed_left_y": fixed_left_rail.position.y,
+        "fixed_right_x": fixed_right_rail.position.x,
+        "fixed_right_y": fixed_right_rail.position.y
+    }
 
 func set_demo_tick(tick: int) -> void:
     last_tick = maxi(0, tick)
