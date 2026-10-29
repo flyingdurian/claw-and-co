@@ -18,8 +18,8 @@ var roof_mounts: Node2D
 var fixed_rails: Node2D
 var mount_markers: Dictionary = {}
 var bracket_sprites: Dictionary = {}
-var fixed_left_rail: Sprite2D
-var fixed_right_rail: Sprite2D
+var fixed_left_rail: Polygon2D
+var fixed_right_rail: Polygon2D
 var left_roller_anchor: Marker2D
 var right_roller_anchor: Marker2D
 var bridge_root: Node2D
@@ -61,29 +61,50 @@ func _pivot(parent: Node2D, label: String, p: Vector2) -> Node2D:
     return n
 
 func _mount(label: String, at: Vector2, texture: String) -> void:
-    # Crop a genuine chrome ceiling bracket from the existing rail artwork.
-    # No debug geometry or flat vector placeholder is used for the mounted scene.
+    # Original Astra polished-chrome bracket art; parent is always cabinet-root.
+    # Do not include any moving hardware in this fixed mounting component.
     var marker := Marker2D.new()
     marker.name = label
     marker.position = at
     roof_mounts.add_child(marker)
     mount_markers[label] = marker
     var bracket := _sprite(marker, "BoltedRoofBracket",
-        GANTRY + texture, Vector2.ZERO, Vector2(0.18, 0.18))
+        GANTRY + texture, Vector2(0.0, -8.0), Vector2(0.29, 0.27))
     if bracket != null:
         bracket.region_enabled = true
-        bracket.region_rect = Rect2(90.0, 0.0, 180.0, 108.0)
+        bracket.region_rect = Rect2(101.0, 0.0, 160.0, 113.0)
     bracket_sprites[label] = bracket
 
 func _mount_rail(label: String, source: String, far: Vector2,
-        near: Vector2) -> Sprite2D:
-    var middle := (far + near) * 0.5
-    var ray := near - far
-    var rail := _sprite(fixed_rails, label, GANTRY + source, middle)
-    if rail != null:
-        rail.rotation = ray.angle()
-        rail.scale = Vector2(ray.length() / float(rail.texture.get_width()), 0.106)
-    return rail
+        near: Vector2) -> Polygon2D:
+    # Unlike squeezing the entire raster into a thin strip, UV-map the
+    # illustrated chrome load-bearing surface onto a perspective-width rail.
+    # The SAME far/near points drive the bridge roller engagement geometry.
+    var tex := load(GANTRY + source) as Texture2D
+    if tex == null:
+        push_error("R5.1-M4 missing premium chrome rail texture: " + source)
+        return null
+    var guide := Polygon2D.new()
+    guide.name = label
+    guide.texture = tex
+    guide.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    var normal := Vector2(-(near - far).y, (near - far).x).normalized()
+    var back_half := 9.0
+    var front_half := 12.0
+    guide.polygon = PackedVector2Array([
+        far - normal * back_half,
+        near - normal * front_half,
+        near + normal * front_half,
+        far + normal * back_half
+    ])
+    # Samples the metallic beam with existing bolts and specular pink edge.
+    # These are texture-space UVs, NOT a flat-color polygon placeholder.
+    guide.uv = PackedVector2Array([
+        Vector2(340.0, 111.0), Vector2(1180.0, 149.0),
+        Vector2(1180.0, 222.0), Vector2(340.0, 193.0)
+    ])
+    fixed_rails.add_child(guide)
+    return guide
 
 func _ready() -> void:
     roof_mounts = _pivot(self, "FixedRoofMounts", Vector2.ZERO)
@@ -156,7 +177,7 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     var projected_x := clampf(proposed_x, 365.0, 551.0)
     trolley_root.position = Vector2(projected_x - bridge_middle.x, 14.0)
     # The hoist's moving head, cable, and claw all share this trolley root.
-    # Maximum 180px descent keeps the finger tips above the front opening lip.
+    # The bounded descent keeps the fingers above the front opening lip.
     var drop_max := lerpf(153.0, 163.0, y)
     var claw_height := 79.0 + drop_max * z
     claw_root.position = Vector2(0.0, claw_height)
