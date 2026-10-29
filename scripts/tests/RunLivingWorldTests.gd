@@ -65,7 +65,14 @@ func run_living_tests() -> void:
     for t in range(1,165): sim.advance()
     main.bridge.publish()
     check(p0.position.distance_to(point_start) > 8.0,"background patron actually walks between stations")
-    check(p0.body.texture != texture_start,"animated character uses different image frames")
+    # A single sample at tick 164 can alias the tick-0 texture in the 4-frame loop.
+    # Sample enough consecutive presentation ticks to establish actual frame diversity.
+    var saw_new_frame: bool = p0.body.texture != texture_start
+    for offset in range(1, 30):
+        p0.render_at(164 + offset, p0.position, "WALK")
+        if p0.body.texture != texture_start:
+            saw_new_frame = true
+    check(saw_new_frame,"animated character uses different image frames")
     check(crowd.actors["V01"].visible,"first customer physically arrives")
     check(crowd.actors["V01"].pose in ["ARRIVE","REQUEST","QUEUE"],"customer first arrival triggers authored pose")
     var sprite: LiveActor = crowd.actors["V01"]
