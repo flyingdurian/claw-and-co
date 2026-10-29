@@ -59,6 +59,12 @@ func run_all() -> void:
         "both camera-matched guides have four physical corner points")
     check(rails_left.uv.size() == 4 and rails_right.uv.size() == 4,
         "both roof rails have UV-mapped premium chrome material")
+    check(rails_left.polygon[1].distance_to(rails_left.polygon[2]) >= 37.9 and
+          rails_right.polygon[1].distance_to(rails_right.polygon[2]) >= 37.9,
+          "near end of both illustrated guides has full structural width")
+    check(rails_left.polygon[0].distance_to(rails_left.polygon[3]) >= 29.9 and
+          rails_right.polygon[0].distance_to(rails_right.polygon[3]) >= 29.9,
+          "far end of both illustrated guides has visible structural thickness")
     var left_edge := (rails_left.polygon[1] + rails_left.polygon[2]) * 0.5
     var right_edge := (rails_right.polygon[1] + rails_right.polygon[2]) * 0.5
     check(left_edge.distance_to(Vector2(300.0,415.0)) < 0.1,
@@ -79,8 +85,9 @@ func run_all() -> void:
     check(((cradle_front.polygon[0] + cradle_front.polygon[1] +
         cradle_front.polygon[2] + cradle_front.polygon[3]) * 0.25).distance_to(
         expected_front_mid) < 0.1, "front load beam connects front structural mounts")
-    check(cradle_rear.modulate.a < 0.75 and cradle_front.modulate.a < 0.55,
-        "roof crossmembers visually subordinate to existing painted cabinet fascia")
+    check(cradle_rear.modulate.a > 0.25 and cradle_rear.modulate.a < 0.50 and
+          is_zero_approx(cradle_front.modulate.a),
+          "static painted cabinet roof serves as front beam without doubled metalwork")
     var rear_initial := cradle_rear.global_transform
     var front_initial := cradle_front.global_transform
     var original_mounts: Dictionary = {}
