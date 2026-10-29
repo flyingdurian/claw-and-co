@@ -29,6 +29,9 @@ func run_all() -> void:
     check(bool(rig.get("assets_loaded")), "rig component loading")
     var structural_nodes := [
         "FixedDepthRails/LeftGuide", "FixedDepthRails/RightGuide",
+        "FixedRoofCradle/RearLoadBeam", "FixedRoofCradle/FrontLoadBeam",
+        "DepthBridge/LeftRollerEngagement/LeftBearingBogie",
+        "DepthBridge/RightRollerEngagement/RightBearingBogie",
         "FixedRoofMounts/LeftRear/BoltedRoofBracket",
         "FixedRoofMounts/LeftFront/BoltedRoofBracket",
         "FixedRoofMounts/RightRear/BoltedRoofBracket",
@@ -62,6 +65,22 @@ func run_all() -> void:
         "left metal guide front endpoint coincides with roof mount")
     check(right_edge.distance_to(Vector2(645.0,414.0)) < 0.1,
         "right metal guide front endpoint coincides with roof mount")
+    var cradle_rear := rig.get_node("FixedRoofCradle/RearLoadBeam") as Polygon2D
+    var cradle_front := rig.get_node("FixedRoofCradle/FrontLoadBeam") as Polygon2D
+    check(cradle_rear.texture != null and cradle_front.texture != null,
+        "fixed structural cradle uses high-fidelity original metal textures")
+    check(cradle_rear.polygon.size() == 4 and cradle_front.polygon.size() == 4,
+        "load-bearing roof crossmembers are correctly textured physical strips")
+    var expected_rear_mid := (Vector2(383.0,371.0) + Vector2(562.0,371.0)) * 0.5
+    var expected_front_mid := (Vector2(300.0,415.0) + Vector2(645.0,414.0)) * 0.5
+    check(((cradle_rear.polygon[0] + cradle_rear.polygon[1] +
+        cradle_rear.polygon[2] + cradle_rear.polygon[3]) * 0.25).distance_to(
+        expected_rear_mid) < 0.1, "rear load beam connects rear structural mounts")
+    check(((cradle_front.polygon[0] + cradle_front.polygon[1] +
+        cradle_front.polygon[2] + cradle_front.polygon[3]) * 0.25).distance_to(
+        expected_front_mid) < 0.1, "front load beam connects front structural mounts")
+    var rear_initial := cradle_rear.global_transform
+    var front_initial := cradle_front.global_transform
     var original_mounts: Dictionary = {}
     for name in ["LeftRear", "LeftFront", "RightRear", "RightFront"]:
         var roof_anchor := rig.get_node("FixedRoofMounts/" + name) as Marker2D
@@ -75,6 +94,11 @@ func run_all() -> void:
               "roof bolt cap visibly meets fixed cabinet fascia: " + name)
     var left_wheel := rig.get_node("DepthBridge/LeftRollerEngagement") as Marker2D
     var right_wheel := rig.get_node("DepthBridge/RightRollerEngagement") as Marker2D
+    var left_bogie := rig.get_node("DepthBridge/LeftRollerEngagement/LeftBearingBogie") as Sprite2D
+    var right_bogie := rig.get_node("DepthBridge/RightRollerEngagement/RightBearingBogie") as Sprite2D
+    check(left_bogie.texture != null and right_bogie.texture != null and
+        left_bogie.region_enabled and right_bogie.region_enabled,
+        "both bridge bogies use distinct illustrated roller-bearing regions")
     var first: Array[String] = []
     for tick in range(0, 721, 9):
         rig.call("set_demo_tick", tick)
@@ -120,6 +144,10 @@ func run_all() -> void:
     check(first == second, "same timeline produces same mechanical states")
     check(rails_left.global_transform == left_initial, "left depth guide never follows moving bridge")
     check(rails_right.global_transform == right_initial, "right depth guide never follows moving bridge")
+    check(cradle_rear.global_transform == rear_initial,
+        "rear roof cradle remains fixed throughout the entire cycle")
+    check(cradle_front.global_transform == front_initial,
+        "front roof cradle remains fixed throughout the entire cycle")
     for name in original_mounts.keys():
         check((rig.get_node("FixedRoofMounts/" + str(name)) as Marker2D).global_transform ==
             original_mounts[name], "cabinet roof mount is immobile: " + str(name))
