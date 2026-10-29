@@ -64,29 +64,35 @@ func _pivot(parent: Node2D, label: String, p: Vector2) -> Node2D:
     return n
 
 func _mount(label: String, at: Vector2, texture: String) -> void:
-    # Original Astra polished-chrome bracket art; parent is always cabinet-root.
-    # Do not include any moving hardware in this fixed mounting component.
+    # The original M01 cabinet PNG ALREADY paints a structural roof fascia.
+    # Rear brackets tuck behind that fascia; adding four extra roof caps over
+    # the same painted steel created the R4 stacked/collage effect.
     var marker := Marker2D.new()
     marker.name = label
     marker.position = at
     roof_mounts.add_child(marker)
     mount_markers[label] = marker
+
+    var front_contact := label.ends_with("Front")
+    var bracket_scale := Vector2(0.47, 0.48) if front_contact else Vector2(0.37, 0.39)
     var bracket := _sprite(marker, "BoltedRoofBracket",
-        GANTRY + texture, Vector2(0.0, -9.0), Vector2(0.40, 0.43))
+        GANTRY + texture, Vector2(0.0, -10.0), bracket_scale)
     if bracket != null:
         bracket.region_enabled = true
         bracket.region_rect = Rect2(101.0, 0.0, 160.0, 113.0)
     bracket_sprites[label] = bracket
-    # A small bolted roof CONTACT plate must remain visible where the hidden
-    # mounting column enters the actual cabinet fascia. This uses a different
-    # region of the same illustrated hardware, not a duplicated roof image.
-    var roof_plate := _sprite(marker, "RoofAttachmentPlate",
-        GANTRY + texture, Vector2(0.0, -25.0), Vector2(0.38, 0.33))
-    if roof_plate != null:
-        roof_plate.region_enabled = true
-        roof_plate.region_rect = Rect2(97.0, 2.0, 174.0, 72.0)
-        roof_plate.z_index = 1
-    bracket_sprites[label + "_plate"] = roof_plate
+
+    # Use distinct foreground fastening plates only for the NEAR pair. Rear
+    # plates are naturally hidden by the cabinet's existing roof trim. This
+    # removes four superposed regions and preserves real source illustration.
+    if front_contact:
+        var roof_plate := _sprite(marker, "RoofAttachmentPlate",
+            GANTRY + texture, Vector2(0.0, -29.0), Vector2(0.39, 0.31))
+        if roof_plate != null:
+            roof_plate.region_enabled = true
+            roof_plate.region_rect = Rect2(97.0, 2.0, 174.0, 72.0)
+            roof_plate.z_index = 1
+        bracket_sprites[label + "_plate"] = roof_plate
 
 func _mount_rail(label: String, source: String, far: Vector2,
         near: Vector2) -> Polygon2D:
@@ -154,6 +160,14 @@ func _ready() -> void:
         "depth_rail_a.png", LEFT_REAR, RIGHT_REAR, 11.0)
     roof_front_crossmember = _roof_crossmember("FrontLoadBeam",
         "depth_rail_b.png", LEFT_FRONT, RIGHT_FRONT, 13.5)
+    # De-emphasize structural duplicates behind the existing painted roof
+    # fascia. Fixed guides and moving bridge remain fully opaque and separate.
+    # The permanent crossmembers read as an under-roof reinforcement, not
+    # another foreground gantry frame layered over the original cabinet art.
+    if roof_rear_crossmember != null:
+        roof_rear_crossmember.modulate.a = 0.64
+    if roof_front_crossmember != null:
+        roof_front_crossmember.modulate.a = 0.48
     _mount("LeftRear", LEFT_REAR, "depth_rail_a.png")
     _mount("LeftFront", LEFT_FRONT, "depth_rail_a.png")
     _mount("RightRear", RIGHT_REAR, "depth_rail_b.png")
