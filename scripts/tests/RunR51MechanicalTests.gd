@@ -28,7 +28,13 @@ func run_all() -> void:
         quit(1); return
     check(bool(rig.get("assets_loaded")), "rig component loading")
     var structural_nodes := [
-        "FixedDepthRailLeft", "FixedDepthRailRight",
+        "FixedDepthRails/LeftGuide", "FixedDepthRails/RightGuide",
+        "FixedRoofMounts/LeftRear/BoltedRoofBracket",
+        "FixedRoofMounts/LeftFront/BoltedRoofBracket",
+        "FixedRoofMounts/RightRear/BoltedRoofBracket",
+        "FixedRoofMounts/RightFront/BoltedRoofBracket",
+        "DepthBridge/LeftRollerEngagement",
+        "DepthBridge/RightRollerEngagement",
         "DepthBridge/BridgeChrome", "DepthBridge/LateralTrolley/RollerTrolley",
         "DepthBridge/LateralTrolley/HoistWinch", "DepthBridge/LateralTrolley/HoistCable",
         "DepthBridge/LateralTrolley/CableToClawConnector",
@@ -39,10 +45,16 @@ func run_all() -> void:
     ]
     for path in structural_nodes:
         check(rig.has_node(path), "separate part: " + path)
-    var rails_left := rig.get_node("FixedDepthRailLeft") as Sprite2D
-    var rails_right := rig.get_node("FixedDepthRailRight") as Sprite2D
+    var rails_left := rig.get_node("FixedDepthRails/LeftGuide") as Sprite2D
+    var rails_right := rig.get_node("FixedDepthRails/RightGuide") as Sprite2D
     var left_initial := rails_left.global_transform
     var right_initial := rails_right.global_transform
+    var original_mounts: Dictionary = {}
+    for name in ["LeftRear", "LeftFront", "RightRear", "RightFront"]:
+        var roof_anchor := rig.get_node("FixedRoofMounts/" + name) as Marker2D
+        original_mounts[name] = roof_anchor.global_transform
+    var left_wheel := rig.get_node("DepthBridge/LeftRollerEngagement") as Marker2D
+    var right_wheel := rig.get_node("DepthBridge/RightRollerEngagement") as Marker2D
     var first: Array[String] = []
     for tick in range(0, 721, 9):
         rig.call("set_demo_tick", tick)
@@ -60,11 +72,22 @@ func run_all() -> void:
               "cable lower tip must reach connector @" + str(tick))
         check(float(state.get("connector_to_hub_overlap", -1)) >= 3.0,
               "connector must reach claw hub @" + str(tick))
-        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 346.0) and
-              is_equal_approx(float(state.get("fixed_left_y", -1)), 405.0) and
-              is_equal_approx(float(state.get("fixed_right_x", -1)), 563.0) and
-              is_equal_approx(float(state.get("fixed_right_y", -1)), 405.0),
+        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 341.5) and
+              is_equal_approx(float(state.get("fixed_left_y", -1)), 393.0) and
+              is_equal_approx(float(state.get("fixed_right_x", -1)), 603.5) and
+              is_equal_approx(float(state.get("fixed_right_y", -1)), 392.5),
               "guide rails anchored to cabinet across all demo ticks @" + str(tick))
+        check(float(state.get("left_roller_error", 1000)) <= 0.75 and
+              float(state.get("right_roller_error", 1000)) <= 0.75,
+              "moving bridge roller contact with BOTH fixed tracks @" + str(tick))
+        var bridge_l := Vector2(float(state.get("bridge_left_x",0)),
+            float(state.get("bridge_left_y",0)))
+        var bridge_r := Vector2(float(state.get("bridge_right_x",0)),
+            float(state.get("bridge_right_y",0)))
+        var depth_fraction: float = float(state.get("depth", 0))
+        check(bridge_l.distance_to(Vector2(383,371).lerp(Vector2(300,415), depth_fraction)) < 0.1 and
+              bridge_r.distance_to(Vector2(562,371).lerp(Vector2(645,414), depth_fraction)) < 0.1,
+              "both bridge ends interpolate same roof-mounted depth @" + str(tick))
         check(float(state.get("trolley_screen_x", -1)) >= 300 and float(state.get("trolley_screen_x", 1200)) <= 875, "trolley travel envelope @" + str(tick))
         check(float(state.get("claw_top_screen_y", -1)) >= 380 and
               float(state.get("claw_top_screen_y", 1500)) <= 700,
@@ -77,6 +100,13 @@ func run_all() -> void:
     check(first == second, "same timeline produces same mechanical states")
     check(rails_left.global_transform == left_initial, "left depth guide never follows moving bridge")
     check(rails_right.global_transform == right_initial, "right depth guide never follows moving bridge")
+    for name in original_mounts.keys():
+        check((rig.get_node("FixedRoofMounts/" + str(name)) as Marker2D).global_transform ==
+            original_mounts[name], "cabinet roof mount is immobile: " + str(name))
+    var mechanical_parent := rig.get_node("DepthBridge") as Node2D
+    check(rails_left.get_parent() != mechanical_parent and
+          rails_right.get_parent() != mechanical_parent,
+          "stationary rails cannot inherit moving bridge transform")
     rig.call("set_pose", 0.25, 0.10, 0.0, 0.0)
     var y_far: float = (rig.get_node("DepthBridge") as Node2D).position.y
     rig.call("set_pose", 0.25, 0.90, 0.0, 0.0)
