@@ -43,8 +43,12 @@ func set_stock_demo(kind: String) -> void:
     if not art_ready:
         return
     match kind:
-        "plush": a.visible = true; b.visible = true
-        "empty": a.visible = false; b.visible = false
+        "plush":
+            a.visible = true
+            b.visible = true
+        "empty":
+            a.visible = false
+            b.visible = false
         _:
             push_error("R5.1 invalid proof inventory state: " + kind)
 
