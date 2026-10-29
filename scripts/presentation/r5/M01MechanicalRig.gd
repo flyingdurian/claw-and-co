@@ -22,6 +22,9 @@ var fixed_left_rail: Polygon2D
 var fixed_right_rail: Polygon2D
 var left_roller_anchor: Marker2D
 var right_roller_anchor: Marker2D
+var roof_rear_crossmember: Polygon2D
+var roof_front_crossmember: Polygon2D
+var fixed_structure: Node2D
 var bridge_root: Node2D
 var bridge_sprite: Sprite2D
 var trolley_root: Node2D
@@ -69,7 +72,7 @@ func _mount(label: String, at: Vector2, texture: String) -> void:
     roof_mounts.add_child(marker)
     mount_markers[label] = marker
     var bracket := _sprite(marker, "BoltedRoofBracket",
-        GANTRY + texture, Vector2(0.0, -8.0), Vector2(0.29, 0.27))
+        GANTRY + texture, Vector2(0.0, -9.0), Vector2(0.40, 0.43))
     if bracket != null:
         bracket.region_enabled = true
         bracket.region_rect = Rect2(101.0, 0.0, 160.0, 113.0)
@@ -78,7 +81,7 @@ func _mount(label: String, at: Vector2, texture: String) -> void:
     # mounting column enters the actual cabinet fascia. This uses a different
     # region of the same illustrated hardware, not a duplicated roof image.
     var roof_plate := _sprite(marker, "RoofAttachmentPlate",
-        GANTRY + texture, Vector2(0.0, -22.0), Vector2(0.28, 0.23))
+        GANTRY + texture, Vector2(0.0, -25.0), Vector2(0.38, 0.33))
     if roof_plate != null:
         roof_plate.region_enabled = true
         roof_plate.region_rect = Rect2(97.0, 2.0, 174.0, 72.0)
@@ -116,9 +119,41 @@ func _mount_rail(label: String, source: String, far: Vector2,
     fixed_rails.add_child(guide)
     return guide
 
+func _roof_crossmember(label: String, source: String, left: Vector2,
+        right: Vector2, half_width: float) -> Polygon2D:
+    # A structurally continuous fixed roof cradle is required; four detached
+    # bracket sprites do not make a believable overhead frame.
+    # Reuse the premium original chrome strip UVs instead of a flat primitive.
+    var tex := load(GANTRY + source) as Texture2D
+    if tex == null:
+        push_error("R5.1-M4 R4 missing structural steel texture: " + source)
+        return null
+    var beam := Polygon2D.new()
+    beam.name = label
+    beam.texture = tex
+    beam.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    var normal := Vector2(-(right - left).y, (right - left).x).normalized()
+    beam.polygon = PackedVector2Array([
+        left - normal * half_width,
+        right - normal * half_width,
+        right + normal * half_width,
+        left + normal * half_width
+    ])
+    beam.uv = PackedVector2Array([
+        Vector2(235.0, 102.0), Vector2(1270.0, 111.0),
+        Vector2(1270.0, 215.0), Vector2(235.0, 213.0)
+    ])
+    fixed_structure.add_child(beam)
+    return beam
+
 func _ready() -> void:
     roof_mounts = _pivot(self, "FixedRoofMounts", Vector2.ZERO)
     fixed_rails = _pivot(self, "FixedDepthRails", Vector2.ZERO)
+    fixed_structure = _pivot(self, "FixedRoofCradle", Vector2.ZERO)
+    roof_rear_crossmember = _roof_crossmember("RearLoadBeam",
+        "depth_rail_a.png", LEFT_REAR, RIGHT_REAR, 11.0)
+    roof_front_crossmember = _roof_crossmember("FrontLoadBeam",
+        "depth_rail_b.png", LEFT_FRONT, RIGHT_FRONT, 13.5)
     _mount("LeftRear", LEFT_REAR, "depth_rail_a.png")
     _mount("LeftFront", LEFT_FRONT, "depth_rail_a.png")
     _mount("RightRear", RIGHT_REAR, "depth_rail_b.png")
@@ -134,9 +169,21 @@ func _ready() -> void:
     left_roller_anchor = Marker2D.new()
     left_roller_anchor.name = "LeftRollerEngagement"
     bridge_root.add_child(left_roller_anchor)
+    var left_bogie := _sprite(left_roller_anchor, "LeftBearingBogie",
+        GANTRY + "trolley.png", Vector2(0.0, -4.0), Vector2(0.22, 0.22))
+    if left_bogie != null:
+        left_bogie.region_enabled = true
+        left_bogie.region_rect = Rect2(0.0, 1.0, 122.0, 125.0)
+        left_bogie.z_index = 1
     right_roller_anchor = Marker2D.new()
     right_roller_anchor.name = "RightRollerEngagement"
     bridge_root.add_child(right_roller_anchor)
+    var right_bogie := _sprite(right_roller_anchor, "RightBearingBogie",
+        GANTRY + "trolley.png", Vector2(0.0, -4.0), Vector2(0.22, 0.22))
+    if right_bogie != null:
+        right_bogie.region_enabled = true
+        right_bogie.region_rect = Rect2(308.0, 1.0, 121.0, 125.0)
+        right_bogie.z_index = 1
     trolley_root = _pivot(bridge_root, "LateralTrolley", Vector2.ZERO)
     trolley_sprite = _sprite(trolley_root, "RollerTrolley", GANTRY + "trolley.png", Vector2(0, 8), Vector2(0.17, 0.17))
     winch_sprite = _sprite(trolley_root, "HoistWinch", GANTRY + "winch.png", Vector2(0, 30), Vector2(0.135, 0.135))
@@ -156,7 +203,7 @@ func _ready() -> void:
     _sprite(right_finger, "RightGrippingTip", CLAW + "right_gripper.png", Vector2(-42, -43), Vector2.ONE, false)
     rear_finger = _pivot(claw_root, "RearFingerPivot", Vector2(0, 472))
     _sprite(rear_finger, "ForeshortenedThirdProng", CLAW + "rear_gripper.png", Vector2(-58, -31), Vector2.ONE, false)
-    assets_loaded = fixed_left_rail != null and fixed_right_rail != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null
+    assets_loaded = fixed_left_rail != null and fixed_right_rail != null and roof_rear_crossmember != null and roof_front_crossmember != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null and left_bogie != null and right_bogie != null
     for bracket in bracket_sprites.values():
         assets_loaded = assets_loaded and bracket != null
     if assets_loaded:
@@ -232,7 +279,9 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
         "bridge_left_x": bridge_left.x, "bridge_left_y": bridge_left.y,
         "bridge_right_x": bridge_right.x, "bridge_right_y": bridge_right.y,
         "left_roller_error": left_engagement_error,
-        "right_roller_error": right_engagement_error
+        "right_roller_error": right_engagement_error,
+        "rear_beam_center": (LEFT_REAR + RIGHT_REAR) * 0.5,
+        "front_beam_center": (LEFT_FRONT + RIGHT_FRONT) * 0.5
     }
 
 func set_demo_tick(tick: int) -> void:
