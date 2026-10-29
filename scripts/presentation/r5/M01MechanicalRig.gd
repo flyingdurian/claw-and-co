@@ -50,13 +50,13 @@ func _ready() -> void:
     # Rail guides mount to the cabinet, NOT beneath the moving DepthBridge.
     # These are original high-fidelity gantry textures, not substitute primitives.
     fixed_left_rail = _sprite(self, "FixedDepthRailLeft", GANTRY + "depth_rail_a.png",
-        Vector2(386, 407), Vector2(0.145, 0.095))
+        Vector2(346, 405), Vector2(0.098, 0.075))
     fixed_right_rail = _sprite(self, "FixedDepthRailRight", GANTRY + "depth_rail_b.png",
-        Vector2(555, 410), Vector2(0.133, 0.092))
+        Vector2(563, 405), Vector2(0.098, 0.075))
     if fixed_left_rail != null:
-        fixed_left_rail.rotation_degrees = -16.0
+        fixed_left_rail.rotation_degrees = -12.0
     if fixed_right_rail != null:
-        fixed_right_rail.rotation_degrees = -16.0
+        fixed_right_rail.rotation_degrees = -12.0
     bridge_root = _pivot(self, "DepthBridge", Vector2.ZERO)
     bridge_sprite = _sprite(bridge_root, "BridgeChrome", GANTRY + "cross_bridge.png")
     trolley_root = _pivot(bridge_root, "LateralTrolley", Vector2.ZERO)
@@ -103,7 +103,7 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     trolley_root.position = Vector2(projected_x - bridge_root.position.x, 14.0)
     # The hoist's moving head, cable, and claw all share this trolley root.
     # Maximum 180px descent keeps the finger tips above the front opening lip.
-    var drop_max := lerpf(170.0, 180.0, y)
+    var drop_max := lerpf(153.0, 163.0, y)
     var claw_height := 79.0 + drop_max * z
     claw_root.position = Vector2(0.0, claw_height)
 
