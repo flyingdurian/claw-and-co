@@ -6,8 +6,22 @@ const BASE := "res://art/r5/mechanics/"
 const GANTRY := BASE + "gantry/"
 const CLAW := BASE + "claw/"
 
+# Cabinet-local anchor survey. These four points are on the underside of M01's roof.
+# Front is nearer the player; far/rear positions converge toward the back.
+const LEFT_REAR := Vector2(383.0, 371.0)
+const RIGHT_REAR := Vector2(562.0, 371.0)
+const LEFT_FRONT := Vector2(300.0, 415.0)
+const RIGHT_FRONT := Vector2(645.0, 414.0)
+const TRACK_EPSILON := 0.75
+
+var roof_mounts: Node2D
+var fixed_rails: Node2D
+var mount_markers: Dictionary = {}
+var bracket_sprites: Dictionary = {}
 var fixed_left_rail: Sprite2D
 var fixed_right_rail: Sprite2D
+var left_roller_anchor: Marker2D
+var right_roller_anchor: Marker2D
 var bridge_root: Node2D
 var bridge_sprite: Sprite2D
 var trolley_root: Node2D
@@ -46,19 +60,52 @@ func _pivot(parent: Node2D, label: String, p: Vector2) -> Node2D:
     parent.add_child(n)
     return n
 
+func _mount(label: String, at: Vector2, texture: String) -> void:
+    # Crop a genuine chrome ceiling bracket from the existing rail artwork.
+    # No debug geometry or flat vector placeholder is used for the mounted scene.
+    var marker := Marker2D.new()
+    marker.name = label
+    marker.position = at
+    roof_mounts.add_child(marker)
+    mount_markers[label] = marker
+    var bracket := _sprite(marker, "BoltedRoofBracket",
+        GANTRY + texture, Vector2.ZERO, Vector2(0.18, 0.18))
+    if bracket != null:
+        bracket.region_enabled = true
+        bracket.region_rect = Rect2(90.0, 0.0, 180.0, 108.0)
+    bracket_sprites[label] = bracket
+
+func _mount_rail(label: String, source: String, far: Vector2,
+        near: Vector2) -> Sprite2D:
+    var middle := (far + near) * 0.5
+    var ray := near - far
+    var rail := _sprite(fixed_rails, label, GANTRY + source, middle)
+    if rail != null:
+        rail.rotation = ray.angle()
+        rail.scale = Vector2(ray.length() / float(rail.texture.get_width()), 0.106)
+    return rail
+
 func _ready() -> void:
-    # Rail guides mount to the cabinet, NOT beneath the moving DepthBridge.
-    # These are original high-fidelity gantry textures, not substitute primitives.
-    fixed_left_rail = _sprite(self, "FixedDepthRailLeft", GANTRY + "depth_rail_a.png",
-        Vector2(346, 405), Vector2(0.098, 0.075))
-    fixed_right_rail = _sprite(self, "FixedDepthRailRight", GANTRY + "depth_rail_b.png",
-        Vector2(563, 405), Vector2(0.098, 0.075))
-    if fixed_left_rail != null:
-        fixed_left_rail.rotation_degrees = -12.0
-    if fixed_right_rail != null:
-        fixed_right_rail.rotation_degrees = -12.0
+    roof_mounts = _pivot(self, "FixedRoofMounts", Vector2.ZERO)
+    fixed_rails = _pivot(self, "FixedDepthRails", Vector2.ZERO)
+    _mount("LeftRear", LEFT_REAR, "depth_rail_a.png")
+    _mount("LeftFront", LEFT_FRONT, "depth_rail_a.png")
+    _mount("RightRear", RIGHT_REAR, "depth_rail_b.png")
+    _mount("RightFront", RIGHT_FRONT, "depth_rail_b.png")
+    fixed_left_rail = _mount_rail("LeftGuide", "depth_rail_a.png",
+        LEFT_REAR, LEFT_FRONT)
+    fixed_right_rail = _mount_rail("RightGuide", "depth_rail_b.png",
+        RIGHT_REAR, RIGHT_FRONT)
+    # Stationary mounts and rails are direct children of M01MechanicalRig,
+    # never descendants of the moving bridge.
     bridge_root = _pivot(self, "DepthBridge", Vector2.ZERO)
     bridge_sprite = _sprite(bridge_root, "BridgeChrome", GANTRY + "cross_bridge.png")
+    left_roller_anchor = Marker2D.new()
+    left_roller_anchor.name = "LeftRollerEngagement"
+    bridge_root.add_child(left_roller_anchor)
+    right_roller_anchor = Marker2D.new()
+    right_roller_anchor.name = "RightRollerEngagement"
+    bridge_root.add_child(right_roller_anchor)
     trolley_root = _pivot(bridge_root, "LateralTrolley", Vector2.ZERO)
     trolley_sprite = _sprite(trolley_root, "RollerTrolley", GANTRY + "trolley.png", Vector2(0, 8), Vector2(0.17, 0.17))
     winch_sprite = _sprite(trolley_root, "HoistWinch", GANTRY + "winch.png", Vector2(0, 30), Vector2(0.135, 0.135))
@@ -79,6 +126,8 @@ func _ready() -> void:
     rear_finger = _pivot(claw_root, "RearFingerPivot", Vector2(0, 472))
     _sprite(rear_finger, "ForeshortenedThirdProng", CLAW + "rear_gripper.png", Vector2(-58, -31), Vector2.ONE, false)
     assets_loaded = fixed_left_rail != null and fixed_right_rail != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null
+    for bracket in bracket_sprites.values():
+        assets_loaded = assets_loaded and bracket != null
     if assets_loaded:
         set_pose(0.50, 0.42, 0.0, 0.0)
 
@@ -90,17 +139,22 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     var z := clampf(drop_fraction, 0.0, 1.0)
     var g := clampf(grip_fraction, 0.0, 1.0)
 
-    # M01 front display opening is x=272..652, y=400..865 in the
-    # authoritative cabinet PNG. The claw silhouette has a sizeable radius.
-    # Constrain the *entire claw* to the front chamber, never the side window
-    # at x=731..936 or the central metal divider at x=653..730.
-    # The y axis changes bridge depth along fixed rails, not the rails themselves.
-    var bridge_y := lerpf(409.0, 439.0, y)
-    bridge_root.position = Vector2(459.0 + 7.0 * y, bridge_y)
-    bridge_sprite.scale = Vector2(352.0 / float(bridge_sprite.texture.get_width()),
-        lerpf(0.105, 0.14, y))
-    var projected_x := lerpf(365.0, 551.0, x)
-    trolley_root.position = Vector2(projected_x - bridge_root.position.x, 14.0)
+    # One source of truth: moving roller positions come from the very same
+    # endpoints that mount both fixed roof rails. No independent bridge track.
+    var bridge_left := LEFT_REAR.lerp(LEFT_FRONT, y)
+    var bridge_right := RIGHT_REAR.lerp(RIGHT_FRONT, y)
+    var bridge_middle := (bridge_left + bridge_right) * 0.5
+    var span := bridge_right.x - bridge_left.x
+    bridge_root.position = bridge_middle
+    bridge_sprite.scale = Vector2(
+        span / float(bridge_sprite.texture.get_width()),
+        lerpf(0.105, 0.135, y))
+    left_roller_anchor.position = bridge_left - bridge_middle
+    right_roller_anchor.position = bridge_right - bridge_middle
+    # Clamp center so the ENTIRE open claw stays inside the front window.
+    var proposed_x := lerpf(bridge_left.x, bridge_right.x, x)
+    var projected_x := clampf(proposed_x, 365.0, 551.0)
+    trolley_root.position = Vector2(projected_x - bridge_middle.x, 14.0)
     # The hoist's moving head, cable, and claw all share this trolley root.
     # Maximum 180px descent keeps the finger tips above the front opening lip.
     var drop_max := lerpf(153.0, 163.0, y)
@@ -128,10 +182,14 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     right_finger.rotation_degrees = lerpf(0.0, 17.0, g)
     rear_finger.rotation_degrees = lerpf(0.0, 10.0, g)
     # The third upper linkage is still provisional; do not claim gripping physics.
-    var claw_screen_y := bridge_y + trolley_root.position.y + claw_height
+    var claw_screen_y := bridge_middle.y + trolley_root.position.y + claw_height
+    var left_engagement_error := left_roller_anchor.global_position.distance_to(
+        to_global(bridge_left))
+    var right_engagement_error := right_roller_anchor.global_position.distance_to(
+        to_global(bridge_right))
     last_pose = {
         "lateral": x, "depth": y, "drop": z, "grip": g,
-        "bridge_x": bridge_root.position.x, "bridge_y": bridge_y,
+        "bridge_x": bridge_middle.x, "bridge_y": bridge_middle.y,
         "trolley_screen_x": projected_x, "claw_top_screen_y": claw_screen_y,
         "cable_length": cable_length,
         "cable_to_connector_error": absf(cable_bottom_y - connector_top_y),
@@ -139,7 +197,11 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
         "fixed_left_x": fixed_left_rail.position.x,
         "fixed_left_y": fixed_left_rail.position.y,
         "fixed_right_x": fixed_right_rail.position.x,
-        "fixed_right_y": fixed_right_rail.position.y
+        "fixed_right_y": fixed_right_rail.position.y,
+        "bridge_left_x": bridge_left.x, "bridge_left_y": bridge_left.y,
+        "bridge_right_x": bridge_right.x, "bridge_right_y": bridge_right.y,
+        "left_roller_error": left_engagement_error,
+        "right_roller_error": right_engagement_error
     }
 
 func set_demo_tick(tick: int) -> void:
