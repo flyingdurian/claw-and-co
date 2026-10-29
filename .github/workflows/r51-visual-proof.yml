@@ -1,0 +1,40 @@
+name: Claw & Co. | R5.1 Visual Proof (strict)
+on:
+  push:
+    branches: [ 'r5/**' ]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install renderer and Python image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers python3-pil
+      - name: Check independent original R5.1 layers
+        id: art
+        run: python3 ci/r51_review.py | tee r51_art_review.log
+      - name: Download verified Godot 4.7.2
+        if: steps.art.outcome == 'success'
+        run: python3 ci/fetch_godot.py
+      - name: Capture genuine isolated 1280x720 Godot frames
+        if: steps.art.outcome == 'success'
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          GALLIUM_DRIVER: llvmpipe
+        run: bash ci/run_r51_capture.sh
+      - name: Upload evidence and blockers even when unsuccessful
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r51-art-evidence-${{ github.run_number }}
+          path: |
+            r51_art_review.log
+            ci/output/r51/
+            ci/output/logs/r51_*
+          if-no-files-found: warn
+          retention-days: 14
