@@ -108,8 +108,8 @@ func _mount_rail(label: String, source: String, far: Vector2,
     guide.texture = tex
     guide.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     var normal := Vector2(-(near - far).y, (near - far).x).normalized()
-    var back_half := 9.0
-    var front_half := 12.0
+    var back_half := 15.0
+    var front_half := 19.0
     guide.polygon = PackedVector2Array([
         far - normal * back_half,
         near - normal * front_half,
@@ -160,14 +160,19 @@ func _ready() -> void:
         "depth_rail_a.png", LEFT_REAR, RIGHT_REAR, 11.0)
     roof_front_crossmember = _roof_crossmember("FrontLoadBeam",
         "depth_rail_b.png", LEFT_FRONT, RIGHT_FRONT, 13.5)
+    # The front load beam is already physically represented by the original
+    # cabinet's detailed painted ceiling/fascia. It remains an exact structural
+    # anchor in this rig but is not drawn twice: an obvious R4/R5 visual fault.
+    # Broad textured LEFT/RIGHT depth guides carry the bridge between four roof
+    # mounts, with substantial front and rear chrome attachment brackets.
     # De-emphasize structural duplicates behind the existing painted roof
     # fascia. Fixed guides and moving bridge remain fully opaque and separate.
     # The permanent crossmembers read as an under-roof reinforcement, not
     # another foreground gantry frame layered over the original cabinet art.
     if roof_rear_crossmember != null:
-        roof_rear_crossmember.modulate.a = 0.64
+        roof_rear_crossmember.modulate.a = 0.40
     if roof_front_crossmember != null:
-        roof_front_crossmember.modulate.a = 0.48
+        roof_front_crossmember.modulate.a = 0.0
     _mount("LeftRear", LEFT_REAR, "depth_rail_a.png")
     _mount("LeftFront", LEFT_FRONT, "depth_rail_a.png")
     _mount("RightRear", RIGHT_REAR, "depth_rail_b.png")
