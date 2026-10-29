@@ -1,0 +1,136 @@
+{
+  "source_atlas_claw": "Six-Part Chrome Claw Disassembly Atlas.png",
+  "source_atlas_gantry": "Exploded Chrome Gantry Hoist Atlas.png",
+  "components": {
+    "gantry/cross_bridge": {
+      "file": "art/r5/mechanics/gantry/cross_bridge.png",
+      "size": [
+        1480,
+        288
+      ]
+    },
+    "gantry/trolley": {
+      "file": "art/r5/mechanics/gantry/trolley.png",
+      "size": [
+        445,
+        332
+      ]
+    },
+    "gantry/suspension_cable": {
+      "file": "art/r5/mechanics/gantry/suspension_cable.png",
+      "size": [
+        45,
+        325
+      ]
+    },
+    "gantry/depth_rail_b": {
+      "file": "art/r5/mechanics/gantry/depth_rail_b.png",
+      "size": [
+        1481,
+        274
+      ]
+    },
+    "gantry/winch": {
+      "file": "art/r5/mechanics/gantry/winch.png",
+      "size": [
+        566,
+        285
+      ]
+    },
+    "gantry/depth_rail_a": {
+      "file": "art/r5/mechanics/gantry/depth_rail_a.png",
+      "size": [
+        1468,
+        285
+      ]
+    },
+    "gantry/claw_connector": {
+      "file": "art/r5/mechanics/gantry/claw_connector.png",
+      "size": [
+        153,
+        308
+      ]
+    },
+    "claw/left_upper_link": {
+      "file": "art/r5/mechanics/claw/left_upper_link.png",
+      "size": [
+        268,
+        291
+      ]
+    },
+    "claw/rear_gripper": {
+      "file": "art/r5/mechanics/claw/rear_gripper.png",
+      "size": [
+        153,
+        427
+      ]
+    },
+    "claw/right_upper_link": {
+      "file": "art/r5/mechanics/claw/right_upper_link.png",
+      "size": [
+        267,
+        290
+      ]
+    },
+    "claw/left_gripper": {
+      "file": "art/r5/mechanics/claw/left_gripper.png",
+      "size": [
+        274,
+        457
+      ]
+    },
+    "claw/motor_hub": {
+      "file": "art/r5/mechanics/claw/motor_hub.png",
+      "size": [
+        383,
+        518
+      ]
+    },
+    "claw/right_gripper": {
+      "file": "art/r5/mechanics/claw/right_gripper.png",
+      "size": [
+        275,
+        455
+      ]
+    }
+  },
+  "fixed_rails_projection": [
+    [
+      [
+        398,
+        348
+      ],
+      [
+        421,
+        347
+      ],
+      [
+        327,
+        399
+      ],
+      [
+        312,
+        400
+      ]
+    ],
+    [
+      [
+        705,
+        347
+      ],
+      [
+        722,
+        351
+      ],
+      [
+        883,
+        404
+      ],
+      [
+        862,
+        404
+      ]
+    ]
+  ],
+  "registration": "R5.1 experimental fit; not owner acceptance"
+}

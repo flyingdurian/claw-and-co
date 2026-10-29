@@ -1,0 +1,29 @@
+name: Claw & Co. | R5.1-M Mechanical Godot Proof
+on:
+  push:
+    branches: [ 'r5/**' ]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mechanical-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install renderer, image tools and encoding
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb ffmpeg libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers unzip python3-pil
+      - name: Download exact verified Godot 4.7.2
+        run: python3 ci/fetch_godot.py
+      - name: Run actual Godot articulation tests, screenshot and movie
+        run: bash ci/run_r51m.sh
+      - name: Retain mechanical proof and errors
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r51m-mechanical-proof-${{ github.run_number }}
+          path: ci/output/r51m/
+          if-no-files-found: warn
+          retention-days: 14
