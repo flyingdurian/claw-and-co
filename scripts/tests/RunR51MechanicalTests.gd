@@ -79,6 +79,8 @@ func run_all() -> void:
     check(((cradle_front.polygon[0] + cradle_front.polygon[1] +
         cradle_front.polygon[2] + cradle_front.polygon[3]) * 0.25).distance_to(
         expected_front_mid) < 0.1, "front load beam connects front structural mounts")
+    check(cradle_rear.modulate.a < 0.75 and cradle_front.modulate.a < 0.55,
+        "roof crossmembers visually subordinate to existing painted cabinet fascia")
     var rear_initial := cradle_rear.global_transform
     var front_initial := cradle_front.global_transform
     var original_mounts: Dictionary = {}
@@ -88,10 +90,14 @@ func run_all() -> void:
         var mount_hardware := roof_anchor.get_node("BoltedRoofBracket") as Sprite2D
         check(mount_hardware.texture != null and mount_hardware.region_enabled,
             "physical textured bracket fixed to cabinet: " + name)
-        var visible_roof_plate := roof_anchor.get_node("RoofAttachmentPlate") as Sprite2D
-        check(visible_roof_plate.texture != null and visible_roof_plate.region_enabled and
-              visible_roof_plate.z_index > 0,
-              "roof bolt cap visibly meets fixed cabinet fascia: " + name)
+        var has_roof_plate := roof_anchor.has_node("RoofAttachmentPlate")
+        check(has_roof_plate == str(name).ends_with("Front"),
+            "only two foreground roof cap sprites, no duplicate rear painted fascia: " + str(name))
+        if has_roof_plate:
+            var visible_roof_plate := roof_anchor.get_node("RoofAttachmentPlate") as Sprite2D
+            check(visible_roof_plate.texture != null and visible_roof_plate.region_enabled and
+                  visible_roof_plate.z_index > 0,
+                  "front roof contact uses original chrome illustration: " + str(name))
     var left_wheel := rig.get_node("DepthBridge/LeftRollerEngagement") as Marker2D
     var right_wheel := rig.get_node("DepthBridge/RightRollerEngagement") as Marker2D
     var left_bogie := rig.get_node("DepthBridge/LeftRollerEngagement/LeftBearingBogie") as Sprite2D
