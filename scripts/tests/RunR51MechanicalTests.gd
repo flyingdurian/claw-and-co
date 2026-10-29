@@ -28,6 +28,7 @@ func run_all() -> void:
         quit(1); return
     check(bool(rig.get("assets_loaded")), "rig component loading")
     var structural_nodes := [
+        "FixedDepthRailLeft", "FixedDepthRailRight",
         "DepthBridge/BridgeChrome", "DepthBridge/LateralTrolley/RollerTrolley",
         "DepthBridge/LateralTrolley/HoistWinch", "DepthBridge/LateralTrolley/HoistCable",
         "DepthBridge/LateralTrolley/CableToClawConnector",
@@ -38,6 +39,10 @@ func run_all() -> void:
     ]
     for path in structural_nodes:
         check(rig.has_node(path), "separate part: " + path)
+    var rails_left := rig.get_node("FixedDepthRailLeft") as Sprite2D
+    var rails_right := rig.get_node("FixedDepthRailRight") as Sprite2D
+    var left_initial := rails_left.global_transform
+    var right_initial := rails_right.global_transform
     var first: Array[String] = []
     for tick in range(0, 721, 9):
         rig.call("set_demo_tick", tick)
@@ -47,6 +52,19 @@ func run_all() -> void:
         check(float(state.get("drop", -1)) >= 0.0 and float(state.get("drop", 2)) <= 1.0, "Z limit @" + str(tick))
         check(float(state.get("grip", -1)) >= 0.0 and float(state.get("grip", 2)) <= 1.0, "grip limit @" + str(tick))
         check(float(state.get("cable_length", -1)) >= 0.0, "connected cable length @" + str(tick))
+        # These are visual geometry invariants the R5.1-M R1 tests missed.
+        check(float(state.get("trolley_screen_x", -1)) >= 365.0 and
+              float(state.get("trolley_screen_x", 800)) <= 551.0,
+              "claw must remain inside front glass, never central divider/side window @" + str(tick))
+        check(float(state.get("cable_to_connector_error", -1)) <= 3.0,
+              "cable lower tip must reach connector @" + str(tick))
+        check(float(state.get("connector_to_hub_overlap", -1)) >= 3.0,
+              "connector must reach claw hub @" + str(tick))
+        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 386.0) and
+              is_equal_approx(float(state.get("fixed_left_y", -1)), 407.0) and
+              is_equal_approx(float(state.get("fixed_right_x", -1)), 555.0) and
+              is_equal_approx(float(state.get("fixed_right_y", -1)), 410.0),
+              "guide rails anchored to cabinet across all demo ticks @" + str(tick))
         check(float(state.get("trolley_screen_x", -1)) >= 300 and float(state.get("trolley_screen_x", 1200)) <= 875, "trolley travel envelope @" + str(tick))
         check(float(state.get("claw_top_screen_y", -1)) >= 380 and float(state.get("claw_top_screen_y", 1500)) <= 780, "top claw travel envelope @" + str(tick))
         first.append(rig.call("pose_signature"))
@@ -55,6 +73,18 @@ func run_all() -> void:
         rig.call("set_demo_tick", tick)
         second.append(rig.call("pose_signature"))
     check(first == second, "same timeline produces same mechanical states")
+    check(rails_left.global_transform == left_initial, "left depth guide never follows moving bridge")
+    check(rails_right.global_transform == right_initial, "right depth guide never follows moving bridge")
+    rig.call("set_pose", 0.25, 0.10, 0.0, 0.0)
+    var y_far: float = (rig.get_node("DepthBridge") as Node2D).position.y
+    rig.call("set_pose", 0.25, 0.90, 0.0, 0.0)
+    var y_near: float = (rig.get_node("DepthBridge") as Node2D).position.y
+    check(y_near > y_far + 18.0, "Y depth projection changes bridge but not fixed rails")
+    rig.call("set_pose", 0.85, 0.50, 0.0, 0.0)
+    var cable_high: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
+    rig.call("set_pose", 0.85, 0.50, 1.0, 0.0)
+    var cable_low: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
+    check(cable_low > cable_high + 165.0, "Z descent increases real cable length without moving fixed guides")
     rig.call("set_pose", 0.0, 1.0, 1.0, 1.0)
     var extrema: Dictionary = rig.get("last_pose")
     check(is_equal_approx(float(extrema.get("lateral",0)),0.08), "min lateral clamp")
