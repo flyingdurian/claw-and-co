@@ -19,7 +19,6 @@ func _ready() -> void:
     cabinet.scale = Vector2(0.44, 0.44)
     add_child(cabinet)
     _layer("EmptyChamber", "res://art/r5/m01_interior_recovered.png")
-    _layer("CameraMatchedCeilingRails", "res://art/r5/m01_fixed_depth_rails.png")
     mechanic = load("res://scenes/r5/M01MechanicalRig.tscn").instantiate() as Node2D
     cabinet.add_child(mechanic)
     _layer("OriginalM01Exterior", "res://art/r5/m01_body.png")
