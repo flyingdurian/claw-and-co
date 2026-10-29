@@ -74,6 +74,16 @@ func _mount(label: String, at: Vector2, texture: String) -> void:
         bracket.region_enabled = true
         bracket.region_rect = Rect2(101.0, 0.0, 160.0, 113.0)
     bracket_sprites[label] = bracket
+    # A small bolted roof CONTACT plate must remain visible where the hidden
+    # mounting column enters the actual cabinet fascia. This uses a different
+    # region of the same illustrated hardware, not a duplicated roof image.
+    var roof_plate := _sprite(marker, "RoofAttachmentPlate",
+        GANTRY + texture, Vector2(0.0, -22.0), Vector2(0.28, 0.23))
+    if roof_plate != null:
+        roof_plate.region_enabled = true
+        roof_plate.region_rect = Rect2(97.0, 2.0, 174.0, 72.0)
+        roof_plate.z_index = 1
+    bracket_sprites[label + "_plate"] = roof_plate
 
 func _mount_rail(label: String, source: String, far: Vector2,
         near: Vector2) -> Polygon2D:
