@@ -17,7 +17,9 @@ jobs:
           sudo apt-get install -y xvfb libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers python3-pil
       - name: Check independent original R5.1 layers
         id: art
-        run: python3 ci/r51_review.py | tee r51_art_review.log
+        run: |
+          set -o pipefail
+          python3 ci/r51_review.py | tee r51_art_review.log
       - name: Download verified Godot 4.7.2
         if: steps.art.outcome == 'success'
         run: python3 ci/fetch_godot.py
