@@ -69,6 +69,10 @@ func run_all() -> void:
         var mount_hardware := roof_anchor.get_node("BoltedRoofBracket") as Sprite2D
         check(mount_hardware.texture != null and mount_hardware.region_enabled,
             "physical textured bracket fixed to cabinet: " + name)
+        var visible_roof_plate := roof_anchor.get_node("RoofAttachmentPlate") as Sprite2D
+        check(visible_roof_plate.texture != null and visible_roof_plate.region_enabled and
+              visible_roof_plate.z_index > 0,
+              "roof bolt cap visibly meets fixed cabinet fascia: " + name)
     var left_wheel := rig.get_node("DepthBridge/LeftRollerEngagement") as Marker2D
     var right_wheel := rig.get_node("DepthBridge/RightRollerEngagement") as Marker2D
     var first: Array[String] = []
