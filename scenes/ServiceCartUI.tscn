@@ -1,0 +1,427 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/ServiceCartUI.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/parity/cart/cart_shell.png" id="2"]
+[ext_resource type="Texture2D" path="res://art/parity/cart/empty_overlay.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/parity/cart/selected_overlay.png" id="4"]
+[ext_resource type="Texture2D" path="res://art/parity/cart/staff_key.png" id="5"]
+
+[node name="ServiceCartUI" type="Control"]
+size = Vector2(1280, 208)
+mouse_filter = 1
+script = ExtResource("1")
+
+[node name="TrolleyShell" type="Sprite2D" parent="."]
+position = Vector2(0, 0)
+centered = false
+texture = ExtResource("2")
+
+[node name="supply_0" type="Control" parent="."]
+position = Vector2(60, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="supply_0"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="supply_0"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="supply_0"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="supply_0"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "supply_0"
+[node name="supply_1" type="Control" parent="."]
+position = Vector2(149, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="supply_1"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="supply_1"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="supply_1"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="supply_1"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "supply_1"
+[node name="supply_2" type="Control" parent="."]
+position = Vector2(238, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="supply_2"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="supply_2"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="supply_2"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="supply_2"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "supply_2"
+[node name="supply_3" type="Control" parent="."]
+position = Vector2(327, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="supply_3"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="supply_3"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="supply_3"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="supply_3"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "supply_3"
+[node name="gift_0" type="Control" parent="."]
+position = Vector2(430, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="gift_0"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="gift_0"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="gift_0"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="gift_0"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "gift_0"
+[node name="gift_1" type="Control" parent="."]
+position = Vector2(519, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="gift_1"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="gift_1"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="gift_1"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="gift_1"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "gift_1"
+[node name="ribbon_0" type="Control" parent="."]
+position = Vector2(608, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="ribbon_0"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="ribbon_0"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="ribbon_0"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="ribbon_0"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "ribbon_0"
+[node name="ribbon_1" type="Control" parent="."]
+position = Vector2(697, 60)
+size = Vector2(80, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="ribbon_1"]
+position = Vector2(9, 13)
+size = Vector2(62, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="ribbon_1"]
+position = Vector2(0, 22)
+size = Vector2(80, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="ribbon_1"]
+position = Vector2(-8, -8)
+size = Vector2(96, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="ribbon_1"]
+size = Vector2(80, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "ribbon_1"
+[node name="prize_0" type="Control" parent="."]
+position = Vector2(804, 60)
+size = Vector2(90, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="prize_0"]
+position = Vector2(9, 13)
+size = Vector2(72, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="prize_0"]
+position = Vector2(0, 22)
+size = Vector2(90, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="prize_0"]
+position = Vector2(-8, -8)
+size = Vector2(106, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="prize_0"]
+size = Vector2(90, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "prize_0"
+[node name="prize_1" type="Control" parent="."]
+position = Vector2(903, 60)
+size = Vector2(90, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="prize_1"]
+position = Vector2(9, 13)
+size = Vector2(72, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="prize_1"]
+position = Vector2(0, 22)
+size = Vector2(90, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="prize_1"]
+position = Vector2(-8, -8)
+size = Vector2(106, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="prize_1"]
+size = Vector2(90, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "prize_1"
+[node name="bulk_0" type="Control" parent="."]
+position = Vector2(1009, 60)
+size = Vector2(123, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="bulk_0"]
+position = Vector2(9, 13)
+size = Vector2(105, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="bulk_0"]
+position = Vector2(0, 22)
+size = Vector2(123, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="bulk_0"]
+position = Vector2(-8, -8)
+size = Vector2(139, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="bulk_0"]
+size = Vector2(123, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "bulk_0"
+[node name="staff_key" type="Control" parent="."]
+position = Vector2(1150, 60)
+size = Vector2(89, 123)
+mouse_filter = 1
+
+[node name="ItemSprite" type="TextureRect" parent="staff_key"]
+position = Vector2(9, 13)
+size = Vector2(71, 71)
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+texture = ExtResource("5")
+
+[node name="Empty" type="Label" parent="staff_key"]
+position = Vector2(0, 22)
+size = Vector2(89, 40)
+text = "EMPTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.30, 0.43, 0.57, 0.77)
+mouse_filter = 2
+
+[node name="Selected" type="TextureRect" parent="staff_key"]
+position = Vector2(-8, -8)
+size = Vector2(105, 140)
+texture = ExtResource("4")
+visible = false
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="staff_key"]
+size = Vector2(89, 123)
+flat = true
+focus_mode = 0
+tooltip_text = "staff_key"

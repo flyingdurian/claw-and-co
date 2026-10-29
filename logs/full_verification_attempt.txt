@@ -1,0 +1,13 @@
+PASS: 3 JSON schemas, 11 SKUs, 3 machine types, 4 cabinets, 8 visits, 5 sessions, 19 uniquely owned item instances, 2 staff jobs, 4 production jobs
+PASS: JSON schema accepts valid items.stage1.json and rejects invalid mutation
+PASS: JSON schema accepts valid machine_types.stage1.json and rejects invalid mutation
+PASS: JSON schema accepts valid stage_01.json and rejects invalid mutation
+PASS: Input replay schedule sorted, unique command IDs, 7200-tick bounds
+PASS: Five admissions, six card sales, four production jobs, reset, restock, trade-up, wrap all authored
+PASS: No pre-arrival interaction; manifest-only projected revenue CAD 27.00
+NOTE: Godot 4.7.2 replay script is not executed by this Python preflight
+PASS: 13 GDScript files, 12 unique global classes, explicit 60Hz Forward+ project
+PASS: 4+2+1 cart locked; 7200 ticks; no RNG or asynchronous scene timers; no temporary scenes/sprites
+NOTE: Static source checks do not parse or execute GDScript
+NOT RUN: Godot executable not available. Install Godot 4.7.2 and set GODOT_BIN=/path/to/godot
+exit_code:127

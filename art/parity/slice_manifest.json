@@ -1,0 +1,165 @@
+{
+  "source": "Owner-supplied Gate E reference composite",
+  "reference_pixels": [
+    1536,
+    1024
+  ],
+  "game_crop": [
+    0,
+    0,
+    1160,
+    607
+  ],
+  "scale": [
+    1.103448275862069,
+    1.186161449752883
+  ],
+  "cabinet_regions": {
+    "M01": {
+      "position": [
+        191,
+        70
+      ],
+      "size": [
+        242,
+        445
+      ],
+      "mechanism_offset": [
+        87,
+        75
+      ],
+      "glass_offset": [
+        21,
+        111
+      ]
+    },
+    "M02": {
+      "position": [
+        447,
+        69
+      ],
+      "size": [
+        260,
+        447
+      ],
+      "mechanism_offset": [
+        96,
+        75
+      ],
+      "glass_offset": [
+        23,
+        111
+      ]
+    },
+    "M03": {
+      "position": [
+        710,
+        69
+      ],
+      "size": [
+        244,
+        447
+      ],
+      "mechanism_offset": [
+        88,
+        75
+      ],
+      "glass_offset": [
+        21,
+        111
+      ]
+    },
+    "M04": {
+      "position": [
+        960,
+        69
+      ],
+      "size": [
+        275,
+        447
+      ],
+      "mechanism_offset": [
+        103,
+        75
+      ],
+      "glass_offset": [
+        24,
+        111
+      ]
+    }
+  },
+  "cart_slots": [
+    {
+      "id": "supply_0",
+      "x": 60,
+      "width": 80,
+      "label": "IC CARD"
+    },
+    {
+      "id": "supply_1",
+      "x": 149,
+      "width": 80,
+      "label": "IC CARD"
+    },
+    {
+      "id": "supply_2",
+      "x": 238,
+      "width": 80,
+      "label": "IC CARD"
+    },
+    {
+      "id": "supply_3",
+      "x": 327,
+      "width": 80,
+      "label": "IC CARD"
+    },
+    {
+      "id": "gift_0",
+      "x": 430,
+      "width": 80,
+      "label": "GIFT BOX"
+    },
+    {
+      "id": "gift_1",
+      "x": 519,
+      "width": 80,
+      "label": "GIFT BOX"
+    },
+    {
+      "id": "ribbon_0",
+      "x": 608,
+      "width": 80,
+      "label": "RIBBON"
+    },
+    {
+      "id": "ribbon_1",
+      "x": 697,
+      "width": 80,
+      "label": "RIBBON"
+    },
+    {
+      "id": "prize_0",
+      "x": 804,
+      "width": 90,
+      "label": "PRIZE"
+    },
+    {
+      "id": "prize_1",
+      "x": 903,
+      "width": 90,
+      "label": "PRIZE"
+    },
+    {
+      "id": "bulk_0",
+      "x": 1009,
+      "width": 123,
+      "label": "CASSETTE"
+    },
+    {
+      "id": "staff_key",
+      "x": 1150,
+      "width": 89,
+      "label": "STAFF KEY"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+PASS: Input replay schedule sorted, unique command IDs, 7200-tick bounds
+PASS: Five admissions, six card sales, four production jobs, reset, restock, trade-up, wrap all authored
+PASS: No pre-arrival interaction; manifest-only projected revenue CAD 27.00
+NOTE: Godot 4.7.2 replay script is not executed by this Python preflight

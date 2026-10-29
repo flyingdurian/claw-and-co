@@ -1,0 +1,66 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/GamePresentation.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/core/SimulationDriver.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/presentation/PresentationBridge.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ArcadeAisle.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/BackstageWorkshop.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/TopBarHUD.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ServiceCartUI.tscn" id="7"]
+[sub_resource type="Environment" id="Environment_glow"]
+glow_enabled = true
+glow_intensity = 0.24
+
+[node name="Main" type="Control"]
+size = Vector2(1280, 720)
+script = ExtResource("1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_glow")
+
+[node name="SimulationDriver" type="Node" parent="."]
+script = ExtResource("2")
+process_priority = -20
+
+[node name="PresentationBridge" type="Node" parent="."]
+script = ExtResource("3")
+process_priority = 20
+
+[node name="ArcadeAisle" parent="." instance=ExtResource("4")]
+size = Vector2(1280, 720)
+
+[node name="BackstageWorkshop" parent="." instance=ExtResource("5")]
+size = Vector2(1280, 720)
+
+[node name="TopBarHUD" parent="." instance=ExtResource("6")]
+size = Vector2(1280, 70)
+
+[node name="ArcadeTab" type="Button" parent="."]
+position = Vector2(1043, 67)
+size = Vector2(107, 39)
+toggle_mode = true
+flat = true
+text = "ARCADE"
+
+[node name="WorkshopTab" type="Button" parent="."]
+position = Vector2(1156, 67)
+size = Vector2(121, 39)
+toggle_mode = true
+flat = true
+text = "WORKSHOP"
+
+[node name="Feedback" type="Label" parent="."]
+position = Vector2(355, 478)
+size = Vector2(560, 33)
+text = "Serve the arcade's opening rush!"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.95, 0.78, 1)
+theme_override_colors/font_shadow_color = Color(0.09, 0.04, 0.18, 1)
+theme_override_constants/shadow_offset_x = 2
+
+[node name="CartCanvas" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="ServiceCartUI" parent="CartCanvas" instance=ExtResource("7")]
+position = Vector2(0, 512)
+size = Vector2(1280, 208)

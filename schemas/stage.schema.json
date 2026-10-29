@@ -1,0 +1,786 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clawco.example/schemas/stage.schema.json",
+  "title": "Claw & Co. stage manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage_id",
+    "title",
+    "tick_hz",
+    "duration_ticks",
+    "currency_code",
+    "cart",
+    "economy",
+    "cabinet_instances",
+    "initial_inventory",
+    "customer_accounts",
+    "offers",
+    "waves",
+    "sessions",
+    "staff_jobs",
+    "tradeup_rules",
+    "production_jobs",
+    "scoring"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "clawco.stage/v1"
+    },
+    "stage_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tick_hz": {
+      "const": 60
+    },
+    "duration_ticks": {
+      "type": "integer",
+      "minimum": 60
+    },
+    "currency_code": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "cart": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supply_slots",
+        "prize_slots",
+        "bulk_cradle_slots"
+      ],
+      "properties": {
+        "supply_slots": {
+          "const": 4
+        },
+        "prize_slots": {
+          "const": 2
+        },
+        "bulk_cradle_slots": {
+          "const": 1
+        },
+        "gift_slots": {
+          "type": "integer",
+          "const": 2
+        },
+        "ribbon_slots": {
+          "type": "integer",
+          "const": 2
+        },
+        "tool_slots": {
+          "type": "integer",
+          "const": 1
+        }
+      }
+    },
+    "economy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "starting_revenue_minor",
+        "starting_cash_minor"
+      ],
+      "properties": {
+        "starting_revenue_minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "starting_cash_minor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "cabinet_instances": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/$defs/cabinet"
+      }
+    },
+    "initial_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workshop",
+        "machine_bay",
+        "trade_counter",
+        "customer_owned"
+      ],
+      "properties": {
+        "workshop": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stock_item"
+          }
+        },
+        "machine_bay": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cassette"
+          }
+        },
+        "trade_counter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stock_item"
+          }
+        },
+        "customer_owned": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "customer_id",
+              "items"
+            ],
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/stock_item"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "customer_accounts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "customer_id",
+          "initial_credits",
+          "card_instance_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "initial_credits": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "card_instance_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "offers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "offer_id",
+          "kind",
+          "card_item_id",
+          "price_minor",
+          "credit_units"
+        ],
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "starter_card",
+              "top_up"
+            ]
+          },
+          "card_item_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "price_minor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "credit_units": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "waves": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/wave"
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/session"
+      }
+    },
+    "staff_jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/staff_job"
+      }
+    },
+    "tradeup_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tradeup"
+      }
+    },
+    "production_jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/production_job"
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "on_time_step",
+        "late_step",
+        "perfect_wrap_bonus",
+        "correct_tradeup_bonus",
+        "thresholds"
+      ],
+      "properties": {
+        "on_time_step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "late_step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "perfect_wrap_bonus": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "correct_tradeup_bonus": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "thresholds": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "stars",
+              "minimum_score"
+            ],
+            "properties": {
+              "stars": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3
+              },
+              "minimum_score": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stock_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instance_id",
+        "item_id"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "cassette": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cassette_instance_id",
+        "cassette_item_id",
+        "contents"
+      ],
+      "properties": {
+        "cassette_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cassette_item_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stock_item"
+          }
+        }
+      }
+    },
+    "cabinet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "machine_id",
+        "machine_type_id",
+        "bank_id",
+        "slot_index",
+        "access_policy",
+        "queue_limit",
+        "loaded_cassette"
+      ],
+      "properties": {
+        "machine_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "machine_type_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bank_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slot_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "access_policy": {
+          "enum": [
+            "walk_up",
+            "reserved_choice"
+          ]
+        },
+        "queue_limit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "loaded_cassette": {
+          "$ref": "#/$defs/cassette"
+        }
+      }
+    },
+    "step": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "offer_id"
+          ],
+          "properties": {
+            "action": {
+              "const": "purchase_card"
+            },
+            "offer_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "intended_session_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "session_id"
+          ],
+          "properties": {
+            "action": {
+              "const": "admit_session"
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "rule_id",
+            "duration_ticks"
+          ],
+          "properties": {
+            "action": {
+              "const": "trade_up"
+            },
+            "rule_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "duration_ticks": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "prize_instance_id",
+            "gift_box_id",
+            "ribbon_id",
+            "duration_ticks"
+          ],
+          "properties": {
+            "action": {
+              "const": "gift_wrap"
+            },
+            "prize_instance_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "gift_box_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ribbon_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "duration_ticks": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "machine_id"
+          ],
+          "properties": {
+            "action": {
+              "const": "request_staff_reset"
+            },
+            "machine_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "visit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "visit_id",
+        "customer_id",
+        "arrival_tick",
+        "deadline_tick",
+        "steps"
+      ],
+      "properties": {
+        "visit_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "customer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arrival_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deadline_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        }
+      }
+    },
+    "wave": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wave_id",
+        "start_tick",
+        "visits",
+        "spectator_count"
+      ],
+      "properties": {
+        "wave_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "start_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "visits": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/visit"
+          }
+        },
+        "spectator_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt_index",
+        "duration_ticks",
+        "result"
+      ],
+      "properties": {
+        "attempt_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duration_ticks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "result": {
+          "enum": [
+            "miss",
+            "win",
+            "stuck"
+          ]
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "customer_id",
+        "machine_id",
+        "requested_prize_instance_id",
+        "attempts",
+        "output_policy",
+        "collection_delay_ticks"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "customer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "machine_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_prize_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attempts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/attempt"
+          }
+        },
+        "output_policy": {
+          "enum": [
+            "self_collect",
+            "attendant_collect"
+          ]
+        },
+        "collection_delay_ticks": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "staff_job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "kind",
+        "available_tick",
+        "deadline_tick",
+        "machine_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "restock",
+            "position_reset"
+          ]
+        },
+        "available_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deadline_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "machine_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cassette_instance_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "restock"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "cassette_instance_id"
+            ]
+          }
+        }
+      ]
+    },
+    "tradeup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "input_item_id",
+        "input_count",
+        "output_instance_id",
+        "output_item_id"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_item_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "output_instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output_item_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "production_job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "kind",
+        "available_tick",
+        "duration_ticks",
+        "input_items",
+        "output_item"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "charge_cards",
+            "prepare_cassette",
+            "wrap_gift"
+          ]
+        },
+        "available_tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ticks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stock_item"
+          }
+        },
+        "output_item": {
+          "$ref": "#/$defs/stock_item"
+        }
+      }
+    }
+  }
+}

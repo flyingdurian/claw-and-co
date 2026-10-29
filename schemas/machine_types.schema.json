@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clawco.example/schemas/machine_types.schema.json",
+  "title": "Claw & Co. machine types v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "machine_types"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "clawco.machine_types/v1"
+    },
+    "machine_types": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/$defs/machine_type"
+      }
+    }
+  },
+  "$defs": {
+    "machine_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "label",
+        "sprite_key",
+        "cassette_formats",
+        "accepted_prize_kinds",
+        "admission_credits",
+        "timing"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "kind": {
+          "enum": [
+            "plush_3_prong",
+            "ufo_2_prong",
+            "barber_cut"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sprite_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cassette_formats": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "plush_rail",
+              "figure_box",
+              "barber_sling"
+            ]
+          }
+        },
+        "accepted_prize_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "plush",
+              "figure"
+            ]
+          }
+        },
+        "admission_credits": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "attempt_ticks",
+            "settle_ticks",
+            "changeover_ticks",
+            "reset_ticks"
+          ],
+          "properties": {
+            "attempt_ticks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "settle_ticks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "changeover_ticks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "reset_ticks": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

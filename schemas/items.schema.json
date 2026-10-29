@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clawco.example/schemas/items.schema.json",
+  "title": "Claw & Co. item catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "clawco.items/v1"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "label",
+        "sprite_key"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "kind": {
+          "enum": [
+            "card",
+            "plush",
+            "figure",
+            "gift_box",
+            "cassette",
+            "ribbon"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sprite_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "credit_units": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trade_value": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prize_size": {
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ]
+        },
+        "cassette_format": {
+          "enum": [
+            "plush_rail",
+            "figure_box",
+            "barber_sling"
+          ]
+        },
+        "capacity_units": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "wrap_capacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "card_mode": {
+          "enum": [
+            "physical_starter",
+            "topup_service"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "card"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "credit_units",
+              "card_mode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "plush",
+                  "figure"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "prize_size",
+              "trade_value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "cassette"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "cassette_format",
+              "capacity_units"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "gift_box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "wrap_capacity"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

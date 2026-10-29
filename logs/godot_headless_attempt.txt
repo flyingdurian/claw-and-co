@@ -1,0 +1,1 @@
+NOT RUN: Godot executable not available. Install Godot 4.7.2 and set GODOT_BIN=/path/to/godot

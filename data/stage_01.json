@@ -1,0 +1,560 @@
+{
+  "schema_version": "clawco.stage/v1",
+  "stage_id": "stage_01",
+  "title": "Opening Rush",
+  "tick_hz": 60,
+  "duration_ticks": 7200,
+  "currency_code": "CAD",
+  "cart": {
+    "supply_slots": 4,
+    "prize_slots": 2,
+    "bulk_cradle_slots": 1,
+    "gift_slots": 2,
+    "ribbon_slots": 2,
+    "tool_slots": 1
+  },
+  "economy": {
+    "starting_revenue_minor": 0,
+    "starting_cash_minor": 2000
+  },
+  "cabinet_instances": [
+    {
+      "machine_id": "M01",
+      "machine_type_id": "machine_plush",
+      "bank_id": "left_bank",
+      "slot_index": 0,
+      "access_policy": "walk_up",
+      "queue_limit": 2,
+      "loaded_cassette": {
+        "cassette_instance_id": "K01",
+        "cassette_item_id": "cassette_plush",
+        "contents": [
+          {
+            "instance_id": "P001",
+            "item_id": "plush_mochi"
+          }
+        ]
+      }
+    },
+    {
+      "machine_id": "M02",
+      "machine_type_id": "machine_ufo",
+      "bank_id": "left_bank",
+      "slot_index": 1,
+      "access_policy": "reserved_choice",
+      "queue_limit": 2,
+      "loaded_cassette": {
+        "cassette_instance_id": "K02",
+        "cassette_item_id": "cassette_figure",
+        "contents": [
+          {
+            "instance_id": "P002",
+            "item_id": "figure_fox"
+          }
+        ]
+      }
+    },
+    {
+      "machine_id": "M03",
+      "machine_type_id": "machine_barber",
+      "bank_id": "right_bank",
+      "slot_index": 0,
+      "access_policy": "walk_up",
+      "queue_limit": 2,
+      "loaded_cassette": {
+        "cassette_instance_id": "K03",
+        "cassette_item_id": "cassette_barber",
+        "contents": [
+          {
+            "instance_id": "P003",
+            "item_id": "figure_fox"
+          }
+        ]
+      }
+    },
+    {
+      "machine_id": "M04",
+      "machine_type_id": "machine_plush",
+      "bank_id": "right_bank",
+      "slot_index": 1,
+      "access_policy": "reserved_choice",
+      "queue_limit": 2,
+      "loaded_cassette": {
+        "cassette_instance_id": "K04",
+        "cassette_item_id": "cassette_plush",
+        "contents": [
+          {
+            "instance_id": "P004",
+            "item_id": "plush_panda"
+          }
+        ]
+      }
+    }
+  ],
+  "initial_inventory": {
+    "workshop": [
+      {
+        "instance_id": "CARD_BLANK_01",
+        "item_id": "card_starter"
+      },
+      {
+        "instance_id": "CARD_BLANK_02",
+        "item_id": "card_starter"
+      },
+      {
+        "instance_id": "CARD_BLANK_03",
+        "item_id": "card_starter"
+      },
+      {
+        "instance_id": "BOX_01",
+        "item_id": "box_small"
+      },
+      {
+        "instance_id": "RIBBON_01",
+        "item_id": "ribbon_pink"
+      }
+    ],
+    "machine_bay": [
+      {
+        "cassette_instance_id": "K05",
+        "cassette_item_id": "cassette_plush",
+        "contents": [
+          {
+            "instance_id": "P005",
+            "item_id": "plush_mochi"
+          }
+        ]
+      }
+    ],
+    "trade_counter": [
+      {
+        "instance_id": "P900",
+        "item_id": "figure_star"
+      }
+    ],
+    "customer_owned": [
+      {
+        "customer_id": "C03",
+        "items": [
+          {
+            "instance_id": "P301",
+            "item_id": "plush_mochi"
+          },
+          {
+            "instance_id": "P302",
+            "item_id": "plush_mochi"
+          }
+        ]
+      },
+      {
+        "customer_id": "C04",
+        "items": [
+          {
+            "instance_id": "P401",
+            "item_id": "figure_fox"
+          }
+        ]
+      }
+    ]
+  },
+  "customer_accounts": [
+    {
+      "customer_id": "C01",
+      "initial_credits": 0,
+      "card_instance_id": null
+    },
+    {
+      "customer_id": "C02",
+      "initial_credits": 3,
+      "card_instance_id": "EXISTING_CARD_02"
+    },
+    {
+      "customer_id": "C03",
+      "initial_credits": 0,
+      "card_instance_id": null
+    },
+    {
+      "customer_id": "C04",
+      "initial_credits": 0,
+      "card_instance_id": null
+    },
+    {
+      "customer_id": "C05",
+      "initial_credits": 0,
+      "card_instance_id": null
+    },
+    {
+      "customer_id": "C06",
+      "initial_credits": 3,
+      "card_instance_id": "EXISTING_CARD_06"
+    },
+    {
+      "customer_id": "C07",
+      "initial_credits": 3,
+      "card_instance_id": "EXISTING_CARD_07"
+    },
+    {
+      "customer_id": "C08",
+      "initial_credits": 0,
+      "card_instance_id": null
+    }
+  ],
+  "offers": [
+    {
+      "offer_id": "offer_starter",
+      "kind": "starter_card",
+      "card_item_id": "card_starter",
+      "price_minor": 500,
+      "credit_units": 6
+    },
+    {
+      "offer_id": "offer_topup",
+      "kind": "top_up",
+      "card_item_id": "card_topup",
+      "price_minor": 400,
+      "credit_units": 5
+    }
+  ],
+  "waves": [
+    {
+      "wave_id": "wave_1",
+      "start_tick": 0,
+      "spectator_count": 1,
+      "visits": [
+        {
+          "visit_id": "V01",
+          "customer_id": "C01",
+          "arrival_tick": 120,
+          "deadline_tick": 1800,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_starter",
+              "intended_session_id": "S01"
+            },
+            {
+              "action": "admit_session",
+              "session_id": "S01"
+            }
+          ]
+        },
+        {
+          "visit_id": "V02",
+          "customer_id": "C02",
+          "arrival_tick": 540,
+          "deadline_tick": 2100,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_topup",
+              "intended_session_id": "S02"
+            },
+            {
+              "action": "admit_session",
+              "session_id": "S02"
+            }
+          ]
+        },
+        {
+          "visit_id": "V03",
+          "customer_id": "C03",
+          "arrival_tick": 900,
+          "deadline_tick": 2100,
+          "steps": [
+            {
+              "action": "trade_up",
+              "rule_id": "T01",
+              "duration_ticks": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wave_id": "wave_2",
+      "start_tick": 1800,
+      "spectator_count": 2,
+      "visits": [
+        {
+          "visit_id": "V04",
+          "customer_id": "C04",
+          "arrival_tick": 1920,
+          "deadline_tick": 3300,
+          "steps": [
+            {
+              "action": "gift_wrap",
+              "prize_instance_id": "P401",
+              "gift_box_id": "BOX_01",
+              "ribbon_id": "RIBBON_01",
+              "duration_ticks": 360
+            }
+          ]
+        },
+        {
+          "visit_id": "V05",
+          "customer_id": "C05",
+          "arrival_tick": 2280,
+          "deadline_tick": 3900,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_starter",
+              "intended_session_id": "S03"
+            },
+            {
+              "action": "admit_session",
+              "session_id": "S03"
+            }
+          ]
+        },
+        {
+          "visit_id": "V06",
+          "customer_id": "C06",
+          "arrival_tick": 3060,
+          "deadline_tick": 4500,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_topup",
+              "intended_session_id": "S04"
+            },
+            {
+              "action": "admit_session",
+              "session_id": "S04"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "wave_id": "wave_3",
+      "start_tick": 3600,
+      "spectator_count": 1,
+      "visits": [
+        {
+          "visit_id": "V07",
+          "customer_id": "C07",
+          "arrival_tick": 3900,
+          "deadline_tick": 5400,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_topup"
+            }
+          ]
+        },
+        {
+          "visit_id": "V08",
+          "customer_id": "C08",
+          "arrival_tick": 4620,
+          "deadline_tick": 6300,
+          "steps": [
+            {
+              "action": "purchase_card",
+              "offer_id": "offer_starter",
+              "intended_session_id": "S05"
+            },
+            {
+              "action": "admit_session",
+              "session_id": "S05"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "S01",
+      "customer_id": "C01",
+      "machine_id": "M01",
+      "requested_prize_instance_id": "P001",
+      "attempts": [
+        {
+          "attempt_index": 1,
+          "duration_ticks": 240,
+          "result": "win"
+        }
+      ],
+      "output_policy": "self_collect",
+      "collection_delay_ticks": 120
+    },
+    {
+      "session_id": "S02",
+      "customer_id": "C02",
+      "machine_id": "M02",
+      "requested_prize_instance_id": "P002",
+      "attempts": [
+        {
+          "attempt_index": 1,
+          "duration_ticks": 300,
+          "result": "stuck"
+        },
+        {
+          "attempt_index": 2,
+          "duration_ticks": 300,
+          "result": "win"
+        }
+      ],
+      "output_policy": "self_collect",
+      "collection_delay_ticks": 120
+    },
+    {
+      "session_id": "S03",
+      "customer_id": "C05",
+      "machine_id": "M03",
+      "requested_prize_instance_id": "P003",
+      "attempts": [
+        {
+          "attempt_index": 1,
+          "duration_ticks": 360,
+          "result": "miss"
+        }
+      ],
+      "output_policy": "self_collect",
+      "collection_delay_ticks": 0
+    },
+    {
+      "session_id": "S04",
+      "customer_id": "C06",
+      "machine_id": "M04",
+      "requested_prize_instance_id": "P004",
+      "attempts": [
+        {
+          "attempt_index": 1,
+          "duration_ticks": 240,
+          "result": "win"
+        }
+      ],
+      "output_policy": "self_collect",
+      "collection_delay_ticks": 180
+    },
+    {
+      "session_id": "S05",
+      "customer_id": "C08",
+      "machine_id": "M01",
+      "requested_prize_instance_id": "P005",
+      "attempts": [
+        {
+          "attempt_index": 1,
+          "duration_ticks": 240,
+          "result": "win"
+        }
+      ],
+      "output_policy": "self_collect",
+      "collection_delay_ticks": 120
+    }
+  ],
+  "staff_jobs": [
+    {
+      "job_id": "J01",
+      "kind": "position_reset",
+      "available_tick": 1200,
+      "deadline_tick": 2400,
+      "machine_id": "M02"
+    },
+    {
+      "job_id": "J02",
+      "kind": "restock",
+      "available_tick": 2100,
+      "deadline_tick": 4200,
+      "machine_id": "M01",
+      "cassette_instance_id": "K05"
+    }
+  ],
+  "tradeup_rules": [
+    {
+      "rule_id": "T01",
+      "input_item_id": "plush_mochi",
+      "input_count": 2,
+      "output_instance_id": "P900",
+      "output_item_id": "figure_star"
+    }
+  ],
+  "production_jobs": [
+    {
+      "job_id": "PB01",
+      "kind": "charge_cards",
+      "available_tick": 0,
+      "duration_ticks": 180,
+      "input_items": [
+        {
+          "instance_id": "CARD_BLANK_01",
+          "item_id": "card_starter"
+        }
+      ],
+      "output_item": {
+        "instance_id": "CARD_BLANK_01",
+        "item_id": "card_starter"
+      }
+    },
+    {
+      "job_id": "PB02",
+      "kind": "charge_cards",
+      "available_tick": 1800,
+      "duration_ticks": 180,
+      "input_items": [
+        {
+          "instance_id": "CARD_BLANK_02",
+          "item_id": "card_starter"
+        }
+      ],
+      "output_item": {
+        "instance_id": "CARD_BLANK_02",
+        "item_id": "card_starter"
+      }
+    },
+    {
+      "job_id": "PB03",
+      "kind": "charge_cards",
+      "available_tick": 3600,
+      "duration_ticks": 180,
+      "input_items": [
+        {
+          "instance_id": "CARD_BLANK_03",
+          "item_id": "card_starter"
+        }
+      ],
+      "output_item": {
+        "instance_id": "CARD_BLANK_03",
+        "item_id": "card_starter"
+      }
+    },
+    {
+      "job_id": "PB04",
+      "kind": "prepare_cassette",
+      "available_tick": 1980,
+      "duration_ticks": 90,
+      "input_items": [
+        {
+          "instance_id": "K05",
+          "item_id": "cassette_plush"
+        }
+      ],
+      "output_item": {
+        "instance_id": "K05",
+        "item_id": "cassette_plush"
+      }
+    }
+  ],
+  "scoring": {
+    "on_time_step": 100,
+    "late_step": 35,
+    "perfect_wrap_bonus": 60,
+    "correct_tradeup_bonus": 70,
+    "thresholds": [
+      {
+        "stars": 1,
+        "minimum_score": 250
+      },
+      {
+        "stars": 2,
+        "minimum_score": 650
+      },
+      {
+        "stars": 3,
+        "minimum_score": 950
+      }
+    ]
+  }
+}

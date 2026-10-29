@@ -1,0 +1,79 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/MachineView.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/living/base_clean_M03.png" id="2"]
+[ext_resource type="Texture2D" path="res://art/parity/cabinet/M03/prize_interiors.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/parity/cabinet/M03/mechanism.png" id="4"]
+[ext_resource type="Texture2D" path="res://art/living/glass_M03.png" id="5"]
+[ext_resource type="Texture2D" path="res://art/parity/cabinet/M03/marquee.png" id="6"]
+[ext_resource type="Texture2D" path="res://art/parity/fx/light_cookie.png" id="7"]
+[ext_resource type="Texture2D" path="res://art/living/interior_M03.png" id="8"]
+
+[node name="M03" type="Control"]
+size = Vector2(244, 447)
+mouse_filter = 1
+script = ExtResource("1")
+machine_id = "M03"
+art = ExtResource("2")
+
+[node name="BaseBody" type="Sprite2D" parent="."]
+centered = false
+texture = ExtResource("2")
+
+[node name="PrizeInterior" type="Sprite2D" parent="."]
+position = Vector2(21, 111)
+centered = false
+texture = ExtResource("8")
+
+[node name="Mechanism" type="Sprite2D" parent="."]
+position = Vector2(88, 75)
+centered = false
+texture = ExtResource("4")
+
+[node name="StockHero" type="Sprite2D" parent="."]
+position = Vector2(120, 227)
+texture_filter = 1
+
+[node name="ChutePrize" type="Sprite2D" parent="."]
+position = Vector2(183, 348)
+texture_filter = 1
+visible = false
+
+[node name="ActionSparkle" type="Sprite2D" parent="."]
+position = Vector2(121, 201)
+visible = false
+
+[node name="SpecularGlassOverlay" type="Sprite2D" parent="."]
+position = Vector2(21, 111)
+centered = false
+texture = ExtResource("5")
+modulate = Color(1, 1, 1, 0.15)
+
+[node name="NeonMarquee" type="Sprite2D" parent="."]
+centered = false
+texture = ExtResource("6")
+modulate = Color(1, 1, 1, 0.20)
+
+[node name="GlowLight" type="PointLight2D" parent="."]
+position = Vector2(122, 108)
+texture = ExtResource("7")
+texture_scale = 2.2
+energy = 0.22
+color = Color(1, 0.68, 0.29, 1)
+
+[node name="Status" type="Label" parent="."]
+position = Vector2(9, 404)
+size = Vector2(226, 30)
+text = "M03  READY"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 0.975, 0.84, 1)
+theme_override_colors/font_shadow_color = Color(0.03, 0.02, 0.13, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+
+[node name="SelectButton" type="Button" parent="."]
+size = Vector2(244, 447)
+flat = true
+focus_mode = 0
+tooltip_text = "Interact with cabinet M03"

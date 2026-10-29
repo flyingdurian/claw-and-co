@@ -1,0 +1,3 @@
+PASS: JSON schema accepts valid items.stage1.json and rejects invalid mutation
+PASS: JSON schema accepts valid machine_types.stage1.json and rejects invalid mutation
+PASS: JSON schema accepts valid stage_01.json and rejects invalid mutation

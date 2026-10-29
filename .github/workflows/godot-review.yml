@@ -1,0 +1,67 @@
+name: Claw & Co. | Godot 4.7.2 Visual Review
+on:
+  push:
+    branches: [ main, 'r5/**', 'ci/**' ]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: clawco-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  godot-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Fetch source
+        uses: actions/checkout@v4
+      - name: Install graphical software renderer and FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb ffmpeg libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers unzip python3-pil
+      - name: Verify original project and CI harness
+        id: static
+        continue-on-error: true
+        run: python3 ci/validate_pipeline.py | tee ci/output/static-preflight.log
+      - name: Download verified official Godot 4.7.2 Linux binary
+        id: install
+        continue-on-error: true
+        run: |
+          python3 ci/fetch_godot.py
+          "$PWD/ci/bin/godot" --version | tee ci/output/godot-version.txt
+      - name: Run project import and actual Godot suites
+        id: suites
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        run: bash ci/run_suites.sh
+      - name: Capture rendered screenshots and ten-second demonstration
+        id: capture
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          GALLIUM_DRIVER: llvmpipe
+        run: bash ci/run_capture.sh
+      - name: Create evidence and blockers summary
+        if: always()
+        run: python3 ci/report.py
+      - name: Upload evidence even when tests fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clawco-godot-review-${{ github.run_number }}
+          path: |
+            ci/output/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Fail CI if import, tests or capture failed
+        if: always()
+        env:
+          STATIC_STATUS: ${{ steps.static.outcome }}
+          INSTALL_STATUS: ${{ steps.install.outcome }}
+          SUITES_STATUS: ${{ steps.suites.outcome }}
+          CAPTURE_STATUS: ${{ steps.capture.outcome }}
+        run: |
+          printf 'static=%s engine=%s suites=%s captures=%s\n' "$STATIC_STATUS" "$INSTALL_STATUS" "$SUITES_STATUS" "$CAPTURE_STATUS"
+          test "$STATIC_STATUS" = success && test "$INSTALL_STATUS" = success && test "$SUITES_STATUS" = success && test "$CAPTURE_STATUS" = success

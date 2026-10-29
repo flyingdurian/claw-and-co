@@ -1,0 +1,1 @@
+PASS: 3 JSON schemas, 11 SKUs, 3 machine types, 4 cabinets, 8 visits, 5 sessions, 19 uniquely owned item instances, 2 staff jobs, 4 production jobs

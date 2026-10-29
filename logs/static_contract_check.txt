@@ -1,0 +1,3 @@
+PASS: 13 GDScript files, 12 unique global classes, explicit 60Hz Forward+ project
+PASS: 4+2+1 cart locked; 7200 ticks; no RNG or asynchronous scene timers; no temporary scenes/sprites
+NOTE: Static source checks do not parse or execute GDScript

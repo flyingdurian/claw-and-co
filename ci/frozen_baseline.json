@@ -1,0 +1,14 @@
+{
+  "source_archive": "claw_and_co_r4_1_parser_fixed_godot472.zip",
+  "untouched_source_sha256": {
+    "scripts/core/InventoryLedger.gd": "54f343aefd218649a1f6073014192dd9dfd65410695dbc7a832c11b08191eb54",
+    "scripts/core/SchemaLoader.gd": "61a88fb91aa4d746b7fd5a4aed700ebc7c432960ef0f9274ba9c22508b5ccf75",
+    "scripts/core/SimulationClock.gd": "0801a27f28bc0547374d9ae94d0270a7d5d91a7e9c87eb5967c4cc27d104ca57",
+    "scripts/core/SimulationDriver.gd": "577278a01c097fcfd7f06a623c9c68fb5d1cfdb9f772a591f79e7305a4456e35",
+    "scripts/core/SimulationRoot.gd": "676e289c758455021debdb64cc1e529a4219f7b70f5ae03dda9192eb1a0ac28a",
+    "scripts/managers/CartManager.gd": "0ff03e3193d2a24b8884be78d4eca3aa39fdfbdc718576318e78dcedd6ba998f",
+    "scripts/managers/CustomerManager.gd": "6e889fcafe9125082b9ece0184e3d777484979c0f9acee2f07e4ccbdf4643ad1",
+    "scripts/managers/MachineManager.gd": "163e69ec4cd2a54a1e5fb6a77b3584165c2754128699ec728c04a1e6eb9b65d5",
+    "scripts/managers/WorkshopManager.gd": "4433d196e8e956ff89b8b79c7934b75a8413aca8b17c198f150784d794b5e1e0"
+  }
+}

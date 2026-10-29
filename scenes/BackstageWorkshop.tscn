@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/BackstageWorkshop.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/parity/workshop_backdrop.png" id="2"]
+[ext_resource type="Texture2D" path="res://art/parity/workshop/station_charger.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/parity/workshop/station_wrap.png" id="4"]
+[ext_resource type="Texture2D" path="res://art/parity/workshop/station_cassette.png" id="5"]
+[ext_resource type="Texture2D" path="res://art/parity/fx/light_cookie.png" id="6"]
+
+[node name="BackstageWorkshop" type="Control"]
+size = Vector2(1280, 720)
+script = ExtResource("1")
+visible = false
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+[node name="Layer" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="IllustratedWorkshop" type="Sprite2D" parent="ParallaxBackground/Layer"]
+position = Vector2(640, 360)
+texture = ExtResource("2")
+
+[node name="CardCharger" type="Sprite2D" parent="."]
+position = Vector2(173, 285)
+texture = ExtResource("3")
+
+[node name="RibbonGiftBench" type="Sprite2D" parent="."]
+position = Vector2(650, 316)
+texture = ExtResource("4")
+
+[node name="CassetteSupply" type="Sprite2D" parent="."]
+position = Vector2(1061, 290)
+texture = ExtResource("5")
+
+[node name="ChargerGlow" type="PointLight2D" parent="."]
+position = Vector2(185, 260)
+texture = ExtResource("6")
+energy = 0.26
+texture_scale = 2.1
+color = Color(0.34, 0.74, 1, 1)
+
+[node name="WorkStatus" type="Label" parent="."]
+position = Vector2(40, 65)
+size = Vector2(950, 32)
+text = "PRODUCTION · 0 ACTIVE | 0 COMPLETED"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(1, 0.96, 0.81, 1)
+theme_override_colors/font_shadow_color = Color(0.10, 0.04, 0.24, 1)
+theme_override_constants/shadow_offset_x = 2
+
+[node name="ChargeButton" type="Button" parent="."]
+position = Vector2(46, 423)
+size = Vector2(205, 34)
+flat = true
+text = "CHARGE CARDS"
+theme_override_font_sizes/font_size = 14
+[node name="CassetteButton" type="Button" parent="."]
+position = Vector2(873, 423)
+size = Vector2(195, 34)
+flat = true
+text = "UNBOX CASSETTE"
+theme_override_font_sizes/font_size = 14
+[node name="WrapButton" type="Button" parent="."]
+position = Vector2(434, 423)
+size = Vector2(191, 34)
+flat = true
+text = "GIFT WRAP"
+theme_override_font_sizes/font_size = 14
+[node name="TradeButton" type="Button" parent="."]
+position = Vector2(654, 423)
+size = Vector2(174, 34)
+flat = true
+text = "TRADE-UP"
+theme_override_font_sizes/font_size = 14
+[node name="PickupButton" type="Button" parent="."]
+position = Vector2(1039, 467)
+size = Vector2(200, 34)
+flat = true
+text = "LOAD CASSETTE"
+theme_override_font_sizes/font_size = 14
+[node name="LoadCardButton" type="Button" parent="."]
+position = Vector2(35, 469)
+size = Vector2(194, 34)
+flat = true
+text = "LOAD 1 CARD"
+theme_override_font_sizes/font_size = 14
+[node name="LoadGiftButton" type="Button" parent="."]
+position = Vector2(245, 469)
+size = Vector2(191, 34)
+flat = true
+text = "LOAD GIFT BOX"
+theme_override_font_sizes/font_size = 14
+[node name="LoadRibbonButton" type="Button" parent="."]
+position = Vector2(454, 469)
+size = Vector2(188, 34)
+flat = true
+text = "LOAD RIBBON"
+theme_override_font_sizes/font_size = 14

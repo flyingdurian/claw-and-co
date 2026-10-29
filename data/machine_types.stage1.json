@@ -1,0 +1,62 @@
+{
+  "schema_version": "clawco.machine_types/v1",
+  "machine_types": [
+    {
+      "id": "machine_plush",
+      "kind": "plush_3_prong",
+      "label": "Triple Claw Plush",
+      "sprite_key": "cabinet_three_prong",
+      "cassette_formats": [
+        "plush_rail"
+      ],
+      "accepted_prize_kinds": [
+        "plush"
+      ],
+      "admission_credits": 3,
+      "timing": {
+        "attempt_ticks": 240,
+        "settle_ticks": 60,
+        "changeover_ticks": 180,
+        "reset_ticks": 90
+      }
+    },
+    {
+      "id": "machine_ufo",
+      "kind": "ufo_2_prong",
+      "label": "Twin Arm UFO",
+      "sprite_key": "cabinet_ufo",
+      "cassette_formats": [
+        "figure_box"
+      ],
+      "accepted_prize_kinds": [
+        "figure"
+      ],
+      "admission_credits": 4,
+      "timing": {
+        "attempt_ticks": 300,
+        "settle_ticks": 75,
+        "changeover_ticks": 210,
+        "reset_ticks": 120
+      }
+    },
+    {
+      "id": "machine_barber",
+      "kind": "barber_cut",
+      "label": "Barber Cut",
+      "sprite_key": "cabinet_barber",
+      "cassette_formats": [
+        "barber_sling"
+      ],
+      "accepted_prize_kinds": [
+        "figure"
+      ],
+      "admission_credits": 5,
+      "timing": {
+        "attempt_ticks": 360,
+        "settle_ticks": 90,
+        "changeover_ticks": 240,
+        "reset_ticks": 150
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/TopBarHUD.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/parity/hud_plate.png" id="2"]
+
+[ext_resource type="Texture2D" path="res://art/parity/meter_under.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/parity/meter_progress.png" id="4"]
+
+[node name="TopBarHUD" type="Control"]
+size = Vector2(1280, 70)
+script = ExtResource("1")
+mouse_filter = 2
+
+[node name="PhotographicHUD" type="Sprite2D" parent="."]
+position = Vector2(338, 1)
+centered = false
+texture = ExtResource("2")
+
+[node name="StageTitle" type="Label" parent="."]
+position = Vector2(438, 9)
+size = Vector2(263, 31)
+text = "OPENING RUSH"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(1, 0.94, 0.64, 1)
+
+[node name="Timer" type="Label" parent="."]
+position = Vector2(744, 8)
+size = Vector2(115, 31)
+text = "02:00"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="Money" type="Label" parent="."]
+position = Vector2(904, 9)
+size = Vector2(102, 31)
+text = "$20.00"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(1, 0.98, 0.82, 1)
+
+[node name="Score" type="Label" parent="."]
+position = Vector2(1014, 40)
+size = Vector2(140, 22)
+text = "SCORE 0"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.86, 0.94, 1, 1)
+
+[node name="Stars" type="Label" parent="."]
+position = Vector2(1108, 9)
+size = Vector2(120, 27)
+text = "☆☆☆"
+theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(1, 0.91, 0.56, 1)
+
+[node name="ScoreMeter" type="TextureProgressBar" parent="."]
+position = Vector2(1110, 45)
+size = Vector2(154, 13)
+max_value = 950.0
+value = 0
+show_percentage = false
+mouse_filter = 2
+texture_under = ExtResource("3")
+texture_progress = ExtResource("4")

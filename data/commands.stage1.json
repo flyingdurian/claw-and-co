@@ -1,0 +1,214 @@
+{
+  "schema_version": "clawco.replay/v1",
+  "commands": [
+    {
+      "tick": 0,
+      "command_id": "prod1",
+      "action": "start_production",
+      "payload": {
+        "job_id": "PB01"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 100,
+      "command_id": "area1",
+      "action": "switch_area",
+      "payload": {
+        "area": "arcade_floor"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 200,
+      "command_id": "sale01",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V01"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 201,
+      "command_id": "admit01",
+      "action": "admit_session",
+      "payload": {
+        "visit_id": "V01"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 600,
+      "command_id": "sale02",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V02"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 601,
+      "command_id": "admit02",
+      "action": "admit_session",
+      "payload": {
+        "visit_id": "V02"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 930,
+      "command_id": "trade03",
+      "action": "trade_up",
+      "payload": {
+        "visit_id": "V03"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 1200,
+      "command_id": "keyreset",
+      "action": "staff_key",
+      "payload": {
+        "job_id": "J01"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 1800,
+      "command_id": "prod2",
+      "action": "start_production",
+      "payload": {
+        "job_id": "PB02"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 1940,
+      "command_id": "wrap04",
+      "action": "gift_wrap",
+      "payload": {
+        "visit_id": "V04"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 1980,
+      "command_id": "prod4",
+      "action": "start_production",
+      "payload": {
+        "job_id": "PB04"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 2000,
+      "command_id": "area2",
+      "action": "switch_area",
+      "payload": {
+        "area": "workshop"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 2110,
+      "command_id": "pickup-cassette",
+      "action": "pickup_cart",
+      "payload": {
+        "instance_id": "K05",
+        "slot": "bulk_0",
+        "from": "machine_bay:ready"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 2120,
+      "command_id": "restock1",
+      "action": "restock",
+      "payload": {
+        "job_id": "J02"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 2300,
+      "command_id": "sale05",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V05"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 2301,
+      "command_id": "admit03",
+      "action": "admit_session",
+      "payload": {
+        "visit_id": "V05"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 3100,
+      "command_id": "sale06",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V06"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 3101,
+      "command_id": "admit04",
+      "action": "admit_session",
+      "payload": {
+        "visit_id": "V06"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 3600,
+      "command_id": "prod3",
+      "action": "start_production",
+      "payload": {
+        "job_id": "PB03"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 3950,
+      "command_id": "sale07",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V07"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 4650,
+      "command_id": "sale08",
+      "action": "purchase_card",
+      "payload": {
+        "visit_id": "V08"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 4651,
+      "command_id": "admit05",
+      "action": "admit_session",
+      "payload": {
+        "visit_id": "V08"
+      },
+      "expect_ok": true
+    },
+    {
+      "tick": 5000,
+      "command_id": "area3",
+      "action": "switch_area",
+      "payload": {
+        "area": "machine_bay"
+      },
+      "expect_ok": true
+    }
+  ]
+}

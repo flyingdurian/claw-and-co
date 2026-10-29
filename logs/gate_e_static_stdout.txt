@@ -1,0 +1,4 @@
+PASS Gate E static dependencies: scenes=10 scripts=8 textures=24 referenced_paths=31
+PASS 4 distinct cabinet sprite PNGs / 8 customer sprites / four workstations
+PASS frozen-driver command and quote bridge present
+Godot import and interaction smoke: NOT RUN by this Python check

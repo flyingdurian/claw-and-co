@@ -1,0 +1,11 @@
+.godot/
+ci/bin/
+ci/output/*
+!ci/output/.gitkeep
+previews/*.png
+previews/*.avi
+previews/*.mp4
+logs/*.log
+*.tmp
+Thumbs.db
+.DS_Store

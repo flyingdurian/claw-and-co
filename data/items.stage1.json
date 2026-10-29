@@ -1,0 +1,90 @@
+{
+  "schema_version": "clawco.items/v1",
+  "items": [
+    {
+      "id": "card_starter",
+      "kind": "card",
+      "label": "Starter IC Card",
+      "sprite_key": "ic_card_starter",
+      "credit_units": 6,
+      "card_mode": "physical_starter"
+    },
+    {
+      "id": "card_topup",
+      "kind": "card",
+      "label": "IC Card Credit Top-Up",
+      "sprite_key": "ic_card_topup",
+      "credit_units": 5,
+      "card_mode": "topup_service"
+    },
+    {
+      "id": "plush_mochi",
+      "kind": "plush",
+      "label": "Mochi Bunny Plush",
+      "sprite_key": "plush_mochi",
+      "prize_size": "small",
+      "trade_value": 1
+    },
+    {
+      "id": "plush_panda",
+      "kind": "plush",
+      "label": "Panda Mini Plush",
+      "sprite_key": "plush_panda",
+      "prize_size": "small",
+      "trade_value": 1
+    },
+    {
+      "id": "figure_fox",
+      "kind": "figure",
+      "label": "Fox Knight Figure",
+      "sprite_key": "figure_fox",
+      "prize_size": "medium",
+      "trade_value": 3
+    },
+    {
+      "id": "figure_star",
+      "kind": "figure",
+      "label": "Star Ranger Grand Figure",
+      "sprite_key": "figure_star",
+      "prize_size": "large",
+      "trade_value": 8
+    },
+    {
+      "id": "box_small",
+      "kind": "gift_box",
+      "label": "Gift Box",
+      "sprite_key": "box_small",
+      "wrap_capacity": 1
+    },
+    {
+      "id": "ribbon_pink",
+      "kind": "ribbon",
+      "label": "Pink Ribbon",
+      "sprite_key": "ribbon_pink"
+    },
+    {
+      "id": "cassette_plush",
+      "kind": "cassette",
+      "label": "Plush Rail Cassette",
+      "sprite_key": "cassette_plush",
+      "cassette_format": "plush_rail",
+      "capacity_units": 2
+    },
+    {
+      "id": "cassette_figure",
+      "kind": "cassette",
+      "label": "Figure Box Cassette",
+      "sprite_key": "cassette_figure",
+      "cassette_format": "figure_box",
+      "capacity_units": 2
+    },
+    {
+      "id": "cassette_barber",
+      "kind": "cassette",
+      "label": "Barber Sling Cassette",
+      "sprite_key": "cassette_barber",
+      "cassette_format": "barber_sling",
+      "capacity_units": 1
+    }
+  ]
+}
