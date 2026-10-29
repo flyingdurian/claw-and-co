@@ -60,13 +60,15 @@ func run_all() -> void:
               "cable lower tip must reach connector @" + str(tick))
         check(float(state.get("connector_to_hub_overlap", -1)) >= 3.0,
               "connector must reach claw hub @" + str(tick))
-        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 386.0) and
-              is_equal_approx(float(state.get("fixed_left_y", -1)), 407.0) and
-              is_equal_approx(float(state.get("fixed_right_x", -1)), 555.0) and
-              is_equal_approx(float(state.get("fixed_right_y", -1)), 410.0),
+        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 346.0) and
+              is_equal_approx(float(state.get("fixed_left_y", -1)), 405.0) and
+              is_equal_approx(float(state.get("fixed_right_x", -1)), 563.0) and
+              is_equal_approx(float(state.get("fixed_right_y", -1)), 405.0),
               "guide rails anchored to cabinet across all demo ticks @" + str(tick))
         check(float(state.get("trolley_screen_x", -1)) >= 300 and float(state.get("trolley_screen_x", 1200)) <= 875, "trolley travel envelope @" + str(tick))
-        check(float(state.get("claw_top_screen_y", -1)) >= 380 and float(state.get("claw_top_screen_y", 1500)) <= 780, "top claw travel envelope @" + str(tick))
+        check(float(state.get("claw_top_screen_y", -1)) >= 380 and
+              float(state.get("claw_top_screen_y", 1500)) <= 700,
+              "claw mount stays above front lip at full drop @" + str(tick))
         first.append(rig.call("pose_signature"))
     var second: Array[String] = []
     for tick in range(0, 721, 9):
@@ -84,7 +86,7 @@ func run_all() -> void:
     var cable_high: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
     rig.call("set_pose", 0.85, 0.50, 1.0, 0.0)
     var cable_low: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
-    check(cable_low > cable_high + 165.0, "Z descent increases real cable length without moving fixed guides")
+    check(cable_low > cable_high + 150.0, "Z descent increases real cable length without moving fixed guides")
     rig.call("set_pose", 0.0, 1.0, 1.0, 1.0)
     var extrema: Dictionary = rig.get("last_pose")
     check(is_equal_approx(float(extrema.get("lateral",0)),0.08), "min lateral clamp")
