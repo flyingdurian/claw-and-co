@@ -45,14 +45,30 @@ func run_all() -> void:
     ]
     for path in structural_nodes:
         check(rig.has_node(path), "separate part: " + path)
-    var rails_left := rig.get_node("FixedDepthRails/LeftGuide") as Sprite2D
-    var rails_right := rig.get_node("FixedDepthRails/RightGuide") as Sprite2D
+    var rails_left := rig.get_node("FixedDepthRails/LeftGuide") as Polygon2D
+    var rails_right := rig.get_node("FixedDepthRails/RightGuide") as Polygon2D
     var left_initial := rails_left.global_transform
     var right_initial := rails_right.global_transform
+    # Actual artwork geometry, not merely numerical mount markers.
+    check(rails_left.texture != null and rails_right.texture != null,
+        "two fixed rails use real Astra chrome textures")
+    check(rails_left.polygon.size() == 4 and rails_right.polygon.size() == 4,
+        "both camera-matched guides have four physical corner points")
+    check(rails_left.uv.size() == 4 and rails_right.uv.size() == 4,
+        "both roof rails have UV-mapped premium chrome material")
+    var left_edge := (rails_left.polygon[1] + rails_left.polygon[2]) * 0.5
+    var right_edge := (rails_right.polygon[1] + rails_right.polygon[2]) * 0.5
+    check(left_edge.distance_to(Vector2(300.0,415.0)) < 0.1,
+        "left metal guide front endpoint coincides with roof mount")
+    check(right_edge.distance_to(Vector2(645.0,414.0)) < 0.1,
+        "right metal guide front endpoint coincides with roof mount")
     var original_mounts: Dictionary = {}
     for name in ["LeftRear", "LeftFront", "RightRear", "RightFront"]:
         var roof_anchor := rig.get_node("FixedRoofMounts/" + name) as Marker2D
         original_mounts[name] = roof_anchor.global_transform
+        var mount_hardware := roof_anchor.get_node("BoltedRoofBracket") as Sprite2D
+        check(mount_hardware.texture != null and mount_hardware.region_enabled,
+            "physical textured bracket fixed to cabinet: " + name)
     var left_wheel := rig.get_node("DepthBridge/LeftRollerEngagement") as Marker2D
     var right_wheel := rig.get_node("DepthBridge/RightRollerEngagement") as Marker2D
     var first: Array[String] = []
