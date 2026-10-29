@@ -13,16 +13,16 @@ func capture() -> void:
     root.add_child(scene)
     for i in range(4):
         await process_frame
-    if not scene.art_ready:
+    if not bool(scene.get("art_ready")):
         printerr("R51_CAPTURE: art not loaded"); quit(1); return
     DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(PATH))
-    scene.set_stock_demo("plush")
-    scene.set_view_demo("normal")
+    scene.call("set_stock_demo", "plush")
+    scene.call("set_view_demo", "normal")
     if not await shot("01_M01_populated"): quit(1); return
-    scene.set_stock_demo("empty")
+    scene.call("set_stock_demo", "empty")
     if not await shot("02_M01_empty"): quit(1); return
     scene.set_stock_demo("plush")
-    scene.set_view_demo("detail")
+    scene.call("set_view_demo", "detail")
     if not await shot("03_M01_detail"): quit(1); return
     print("R51_ENGINE_CAPTURE=3 frames; ART_OWNER_APPROVAL=PENDING")
     quit(0)
