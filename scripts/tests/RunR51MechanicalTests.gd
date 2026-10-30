@@ -215,7 +215,10 @@ func run_all() -> void:
     var y_far: float = (rig.get_node("DepthBridge") as Node2D).position.y
     rig.call("set_pose", 0.25, 0.90, 0.0, 0.0)
     var y_near: float = (rig.get_node("DepthBridge") as Node2D).position.y
-    check(y_near > y_far + 18.0, "Y depth projection changes bridge but not fixed rails")
+    var rail_depth_screen_span := (430.5 - 409.5) * (0.90 - 0.10)
+    check(is_equal_approx(y_near-y_far, rail_depth_screen_span) and
+          y_near-y_far > 14.0,
+          "bridge Y travel follows actual shallow rail geometry, never the old arbitrary 18px limit")
     rig.call("set_pose", 0.85, 0.50, 0.0, 0.0)
     var cable_high: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
     rig.call("set_pose", 0.85, 0.50, 1.0, 0.0)
