@@ -1,0 +1,87 @@
+{
+  "phase": "r5.1",
+  "status": "asset_creation_required",
+  "resolution": [
+    1280,
+    720
+  ],
+  "image_requirements": [
+    {
+      "path": "art/r5/arcade_environment.png",
+      "minimum_dimensions": [
+        1280,
+        720
+      ],
+      "alpha": false,
+      "forbidden_content": [
+        "machines",
+        "customers",
+        "cart",
+        "HUD",
+        "bubbles"
+      ]
+    },
+    {
+      "path": "art/r5/m01_body.png",
+      "minimum_dimensions": [
+        320,
+        470
+      ],
+      "alpha": true,
+      "forbidden_content": [
+        "prizes",
+        "patrons",
+        "speech_bubbles"
+      ]
+    },
+    {
+      "path": "art/r5/m01_interior.png",
+      "minimum_dimensions": [
+        220,
+        250
+      ],
+      "alpha": true,
+      "forbidden_content": [
+        "baked_prizes"
+      ]
+    },
+    {
+      "path": "art/r5/m01_mechanism.png",
+      "minimum_dimensions": [
+        70,
+        90
+      ],
+      "alpha": true,
+      "forbidden_content": []
+    },
+    {
+      "path": "art/r5/m01_glass.png",
+      "minimum_dimensions": [
+        220,
+        250
+      ],
+      "alpha": true,
+      "forbidden_content": [
+        "painted_stock",
+        "solid_opaque_glass"
+      ]
+    },
+    {
+      "path": "art/r5/m01_marquee.png",
+      "minimum_dimensions": [
+        250,
+        75
+      ],
+      "alpha": true,
+      "forbidden_content": [
+        "fake_hud"
+      ]
+    }
+  ],
+  "godot_review_scene": "scenes/r5/R51VisualProof.tscn",
+  "owner_acceptance": false,
+  "original_approved_benchmarks": [
+    "docs/references/approved_gate_e_akihabara_composite.png",
+    "docs/references/approved_living_arcade_full_aisle.png"
+  ]
+}
