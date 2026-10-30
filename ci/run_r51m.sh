@@ -14,9 +14,9 @@ python3 - <<'PY'
 from pathlib import Path
 from PIL import Image
 screens=sorted(Path('ci/output/r51m/screenshots').glob('*.png'))
-assert len(screens)==9, f'Need 9 real Godot screenshot keyframes, got {len(screens)}'
+assert len(screens)==11, f'Need 11 real Godot screenshot keyframes, got {len(screens)}'
 for path in screens:
  with Image.open(path) as im:assert im.size==(1280,720), path
 assert Path('ci/output/r51m/movie/M01_mechanism_12s.mp4').stat().st_size>25000
-print('R51M_CAPTURE_VERIFIED=9 frames + 12sec engine movie (NOT owner artistic acceptance)')
+print('R51M_CAPTURE_VERIFIED=11 frames + 12sec engine movie (NOT owner artistic acceptance)')
 PY
