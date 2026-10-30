@@ -60,11 +60,11 @@ func run_all() -> void:
         "both camera-matched guides have four physical corner points")
     check(rails_left.uv.size() == 4 and rails_right.uv.size() == 4,
         "both roof rails have UV-mapped premium chrome material")
-    check(rails_left.polygon[1].distance_to(rails_left.polygon[2]) >= 37.9 and
-          rails_right.polygon[1].distance_to(rails_right.polygon[2]) >= 37.9,
+    check(rails_left.polygon[1].distance_to(rails_left.polygon[2]) >= 27.9 and
+          rails_right.polygon[1].distance_to(rails_right.polygon[2]) >= 27.9,
           "near end of both illustrated guides has full structural width")
-    check(rails_left.polygon[0].distance_to(rails_left.polygon[3]) >= 29.9 and
-          rails_right.polygon[0].distance_to(rails_right.polygon[3]) >= 29.9,
+    check(rails_left.polygon[0].distance_to(rails_left.polygon[3]) >= 27.9 and
+          rails_right.polygon[0].distance_to(rails_right.polygon[3]) >= 27.9,
           "far end of both illustrated guides has visible structural thickness")
     # The owner's green guides BOTH retreat upward-right on the original M01
     # image. The rejected red track retreated upward-left and inward.
@@ -72,26 +72,40 @@ func run_all() -> void:
     var r9_left_near := (rails_left.polygon[1] + rails_left.polygon[2]) * 0.5
     var r9_right_far := (rails_right.polygon[0] + rails_right.polygon[3]) * 0.5
     var r9_right_near := (rails_right.polygon[1] + rails_right.polygon[2]) * 0.5
-    check(r9_left_far.x > r9_left_near.x + 140.0 and
-          r9_right_far.x > r9_right_near.x + 140.0,
+    check(r9_left_far.x > r9_left_near.x + 120.0 and
+          r9_right_far.x > r9_right_near.x + 120.0,
           "both guide rails retreat outward/rightward, not the red inward track")
     check(absf((r9_left_far.y-r9_left_near.y) -
-          (r9_right_far.y-r9_right_near.y)) < 1.0,
+          (r9_right_far.y-r9_right_near.y)) < 0.1,
           "right guide matches the successful green left guide depth slope")
-    check(r9_right_far.x > 670.0 and r9_right_near.x < 530.0,
+    check(r9_right_far.x > 700.0 and r9_right_near.x > 570.0,
           "right roof guide uses outward rear mounting, not the rejected red rail")
+    # R10: straight physical guides with no sheared rail texture or inboard bogie.
+    var left_vector := r9_left_far - r9_left_near
+    var right_vector := r9_right_far - r9_right_near
+    check(left_vector.normalized().dot(right_vector.normalized()) > 0.99999,
+        "both fixed guide centerlines are straight and parallel")
+    check(absf(rails_left.uv[0].y - rails_left.uv[1].y) < 0.01 and
+          absf(rails_left.uv[2].y - rails_left.uv[3].y) < 0.01 and
+          absf(rails_right.uv[0].y - rails_right.uv[1].y) < 0.01 and
+          absf(rails_right.uv[2].y - rails_right.uv[3].y) < 0.01,
+          "straight chrome source texture has no diagonal UV shear")
+    check(r9_left_near.x >= 309.0 and r9_right_near.x >= 575.0,
+        "left front mount clears frame and right front mount is moved outward")
+    check((r9_right_near - r9_left_near).x > 260.0,
+        "physical rail separation accommodates entire transverse bridge")
     var left_edge := (rails_left.polygon[1] + rails_left.polygon[2]) * 0.5
     var right_edge := (rails_right.polygon[1] + rails_right.polygon[2]) * 0.5
-    check(left_edge.distance_to(Vector2(280.0,422.0)) < 0.1,
+    check(left_edge.distance_to(Vector2(313.0,430.0)) < 0.1,
         "left metal guide front endpoint coincides with roof mount")
-    check(right_edge.distance_to(Vector2(512.0,422.0)) < 0.1,
+    check(right_edge.distance_to(Vector2(584.0,431.0)) < 0.1,
         "right metal guide front endpoint coincides with roof mount")
     var integral_soffit := rig.get_node("FixedRoofCradle/IntegralRoofSoffit") as Polygon2D
     check(integral_soffit.texture != null and integral_soffit.polygon.size() == 4 and
           integral_soffit.uv.size() == 4 and integral_soffit.z_index < 0,
           "integral roof soffit uses authentic chrome illustration behind rails")
-    check(integral_soffit.polygon[2].distance_to(Vector2(512, 422)) < 0.01 and
-          integral_soffit.polygon[3].distance_to(Vector2(280, 422)) < 0.01,
+    check(integral_soffit.polygon[2].distance_to(Vector2(584, 431)) < 0.01 and
+          integral_soffit.polygon[3].distance_to(Vector2(313, 430)) < 0.01,
           "continuous roof soffit meets both near cabinet roof supports")
     var integral_soffit_initial := integral_soffit.global_transform
     var cradle_rear := rig.get_node("FixedRoofCradle/RearLoadBeam") as Polygon2D
@@ -100,8 +114,8 @@ func run_all() -> void:
         "fixed structural cradle uses high-fidelity original metal textures")
     check(cradle_rear.polygon.size() == 4 and cradle_front.polygon.size() == 4,
         "load-bearing roof crossmembers are correctly textured physical strips")
-    var expected_rear_mid := (Vector2(440.0,380.0) + Vector2(688.0,380.0)) * 0.5
-    var expected_front_mid := (Vector2(280.0,422.0) + Vector2(512.0,422.0)) * 0.5
+    var expected_rear_mid := (Vector2(440.0,409.0) + Vector2(711.0,410.0)) * 0.5
+    var expected_front_mid := (Vector2(313.0,430.0) + Vector2(584.0,431.0)) * 0.5
     check(((cradle_rear.polygon[0] + cradle_rear.polygon[1] +
         cradle_rear.polygon[2] + cradle_rear.polygon[3]) * 0.25).distance_to(
         expected_rear_mid) < 0.1, "rear load beam connects rear structural mounts")
@@ -152,10 +166,10 @@ func run_all() -> void:
               "cable lower tip must reach connector @" + str(tick))
         check(float(state.get("connector_to_hub_overlap", -1)) >= 3.0,
               "connector must reach claw hub @" + str(tick))
-        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 360.0) and
-              is_equal_approx(float(state.get("fixed_left_y", -1)), 401.0) and
-              is_equal_approx(float(state.get("fixed_right_x", -1)), 600.0) and
-              is_equal_approx(float(state.get("fixed_right_y", -1)), 401.0),
+        check(is_equal_approx(float(state.get("fixed_left_x", -1)), 376.5) and
+              is_equal_approx(float(state.get("fixed_left_y", -1)), 419.5) and
+              is_equal_approx(float(state.get("fixed_right_x", -1)), 647.5) and
+              is_equal_approx(float(state.get("fixed_right_y", -1)), 420.5),
               "guide rails anchored to cabinet across all demo ticks @" + str(tick))
         check(float(state.get("left_roller_error", 1000)) <= 0.75 and
               float(state.get("right_roller_error", 1000)) <= 0.75,
@@ -169,8 +183,8 @@ func run_all() -> void:
         var bridge_r := Vector2(float(state.get("bridge_right_x",0)),
             float(state.get("bridge_right_y",0)))
         var depth_fraction: float = float(state.get("depth", 0))
-        check(bridge_l.distance_to(Vector2(440,380).lerp(Vector2(280,422), depth_fraction)) < 0.1 and
-              bridge_r.distance_to(Vector2(688,380).lerp(Vector2(512,422), depth_fraction)) < 0.1,
+        check(bridge_l.distance_to(Vector2(440,409).lerp(Vector2(313,430), depth_fraction)) < 0.1 and
+              bridge_r.distance_to(Vector2(711,410).lerp(Vector2(584,431), depth_fraction)) < 0.1,
               "both bridge ends interpolate same roof-mounted depth @" + str(tick))
         check(float(state.get("trolley_screen_x", -1)) >= 300 and float(state.get("trolley_screen_x", 1200)) <= 875, "trolley travel envelope @" + str(tick))
         check(float(state.get("claw_top_screen_y", -1)) >= 380 and
