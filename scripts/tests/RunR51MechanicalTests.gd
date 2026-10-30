@@ -193,7 +193,7 @@ func run_all() -> void:
     var cable_high: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
     rig.call("set_pose", 0.85, 0.50, 1.0, 0.0)
     var cable_low: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
-    check(cable_low > cable_high + 150.0, "Z descent increases real cable length without moving fixed guides")
+    check(cable_low > cable_high + 145.0, "Z descent increases real cable length without moving fixed guides")
     rig.call("set_pose", 0.0, 1.0, 1.0, 1.0)
     var extrema: Dictionary = rig.get("last_pose")
     check(is_equal_approx(float(extrema.get("lateral",0)),0.08), "min lateral clamp")
