@@ -160,8 +160,10 @@ func run_all() -> void:
         check(float(state.get("cable_length", -1)) >= 0.0, "connected cable length @" + str(tick))
         # These are visual geometry invariants the R5.1-M R1 tests missed.
         check(float(state.get("trolley_screen_x", -1)) >= 365.0 and
-              float(state.get("trolley_screen_x", 800)) <= 551.0,
-              "claw must remain inside front glass, never central divider/side window @" + str(tick))
+              float(state.get("trolley_screen_x", 800)) <= 581.0,
+              "claw mount stays within glass-safe X envelope, not center divider @" + str(tick))
+        check(float(state.get("trolley_screen_x", 0)) + 80.0 <= 665.0,
+              "conservative claw half-width clears right glass-frame boundary @" + str(tick))
         check(float(state.get("cable_to_connector_error", -1)) <= 3.0,
               "cable lower tip must reach connector @" + str(tick))
         check(float(state.get("connector_to_hub_overlap", -1)) >= 3.0,
@@ -224,6 +226,11 @@ func run_all() -> void:
     rig.call("set_pose", 0.85, 0.50, 1.0, 0.0)
     var cable_low: float = float((rig.get("last_pose") as Dictionary).get("cable_length", -1))
     check(cable_low > cable_high + 145.0, "Z descent increases real cable length without moving fixed guides")
+    rig.call("set_pose", 0.92, 0.78, 0.0, 0.0)
+    var right_pose: Dictionary = rig.get("last_pose")
+    check(float(right_pose.get("trolley_screen_x",0)) >= 578.0 and
+          float(right_pose.get("trolley_screen_x",1000)) <= 581.0,
+          "moving trolley reaches right guide vicinity without being fixed there")
     rig.call("set_pose", 0.0, 1.0, 1.0, 1.0)
     var extrema: Dictionary = rig.get("last_pose")
     check(is_equal_approx(float(extrema.get("lateral",0)),0.08), "min lateral clamp")
