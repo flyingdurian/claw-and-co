@@ -303,7 +303,10 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     var connector_center_y := connector_bottom_y - connector_height * 0.5
     connector_sprite.position = Vector2(0, connector_center_y)
     var connector_top_y := connector_center_y - connector_height * 0.5
-    var cable_top_y := 52.0
+    # Sink the cable anchor into the actual winch housing at rest.
+    # Previously the idle connector sat ABOVE the cable anchor, leaving a
+    # disconnected span and a misleading 2px minimum-length cable.
+    var cable_top_y := 41.0
     var cable_bottom_y := connector_top_y + 2.0
     var cable_length := maxf(2.0, cable_bottom_y - cable_top_y)
     cable_sprite.position = Vector2(0, cable_top_y + cable_length * 0.5)
