@@ -8,10 +8,10 @@ const CLAW := BASE + "claw/"
 
 # Cabinet-local anchor survey. These four points are on the underside of M01's roof.
 # Front is nearer the player; far/rear positions converge toward the back.
-const LEFT_REAR := Vector2(383.0, 371.0)
-const RIGHT_REAR := Vector2(562.0, 371.0)
-const LEFT_FRONT := Vector2(300.0, 415.0)
-const RIGHT_FRONT := Vector2(645.0, 414.0)
+const LEFT_REAR := Vector2(370.0, 390.0)
+const RIGHT_REAR := Vector2(565.0, 410.0)
+const LEFT_FRONT := Vector2(305.0, 425.0)
+const RIGHT_FRONT := Vector2(635.0, 443.0)
 const TRACK_EPSILON := 0.75
 
 var roof_mounts: Node2D
@@ -167,8 +167,8 @@ func _roof_undertray() -> Polygon2D:
     pan.texture = chrome
     pan.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     pan.polygon = PackedVector2Array([
-        Vector2(374.0, 349.0), Vector2(570.0, 349.0),
-        Vector2(656.0, 406.0), Vector2(291.0, 406.0)
+        Vector2(360.0, 379.0), Vector2(580.0, 396.0),
+        Vector2(645.0, 439.0), Vector2(293.0, 420.0)
     ])
     pan.uv = PackedVector2Array([
         Vector2(340.0, 103.0), Vector2(1080.0, 103.0),
@@ -267,21 +267,30 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     # endpoints that mount both fixed roof rails. No independent bridge track.
     var bridge_left := LEFT_REAR.lerp(LEFT_FRONT, y)
     var bridge_right := RIGHT_REAR.lerp(RIGHT_FRONT, y)
+    var delta := bridge_right - bridge_left
+    var span := delta.length()
     var bridge_middle := (bridge_left + bridge_right) * 0.5
-    var span := bridge_right.x - bridge_left.x
+    # The M01 roof is pitched in perspective, so the left/right ends do not
+    # share the same screen Y. Both wheels must rest on the tilted bridge.
     bridge_root.position = bridge_middle
+    bridge_root.rotation = delta.angle()
     bridge_sprite.scale = Vector2(
         span / float(bridge_sprite.texture.get_width()),
         lerpf(0.105, 0.135, y))
-    left_roller_anchor.position = bridge_left - bridge_middle
-    right_roller_anchor.position = bridge_right - bridge_middle
-    # Clamp center so the ENTIRE open claw stays inside the front window.
-    var proposed_x := lerpf(bridge_left.x, bridge_right.x, x)
-    var projected_x := clampf(proposed_x, 365.0, 551.0)
-    trolley_root.position = Vector2(projected_x - bridge_middle.x, 14.0)
+    left_roller_anchor.position = Vector2(-span * 0.5, 0.0)
+    right_roller_anchor.position = Vector2(span * 0.5, 0.0)
+    # Trolley travels on pitched crossbar; hanging cable stays gravity upright.
+    var candidate := bridge_left.lerp(bridge_right, x)
+    var clamped_x := clampf(candidate.x, 368.0, 548.0)
+    var actual_fraction := clampf(
+        (clamped_x - bridge_left.x) / maxf(1.0, delta.x), 0.08, 0.92)
+    trolley_root.position = Vector2(lerpf(-span*0.5, span*0.5,
+        actual_fraction), 14.0)
+    trolley_root.rotation = -bridge_root.rotation
+    var projected_x := to_local(trolley_root.global_position).x
     # The hoist's moving head, cable, and claw all share this trolley root.
     # The bounded descent keeps the fingers above the front opening lip.
-    var drop_max := lerpf(153.0, 163.0, y)
+    var drop_max := lerpf(143.0, 153.0, y)
     var claw_height := 79.0 + drop_max * z
     claw_root.position = Vector2(0.0, claw_height)
 
@@ -306,7 +315,7 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     right_finger.rotation_degrees = lerpf(0.0, 17.0, g)
     rear_finger.rotation_degrees = lerpf(0.0, 10.0, g)
     # The third upper linkage is still provisional; do not claim gripping physics.
-    var claw_screen_y := bridge_middle.y + trolley_root.position.y + claw_height
+    var claw_screen_y := to_local(claw_root.global_position).y
     var left_engagement_error := left_roller_anchor.global_position.distance_to(
         to_global(bridge_left))
     var right_engagement_error := right_roller_anchor.global_position.distance_to(
@@ -326,6 +335,9 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
         "bridge_right_x": bridge_right.x, "bridge_right_y": bridge_right.y,
         "left_roller_error": left_engagement_error,
         "right_roller_error": right_engagement_error,
+        "bridge_pitch": bridge_root.rotation,
+        "hoist_world_angle": trolley_root.global_rotation,
+        "claw_center_screen_x": projected_x,
         "rear_beam_center": (LEFT_REAR + RIGHT_REAR) * 0.5,
         "front_beam_center": (LEFT_FRONT + RIGHT_FRONT) * 0.5
     }
