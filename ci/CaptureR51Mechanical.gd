@@ -41,7 +41,13 @@ func capture() -> void:
     mechanic.call("set_pose", 0.5, 0.92, 0.0, 0.0)
     if not await shot("11_roof_near_bearings"):
         quit(1); return
-    print("R51M_ENGINE_CAPTURE=11 authentic 1280x720 frames; owner visual approval pending")
+    # The chrome housing in the owner's red circle is the MOVING trolley,
+    # not a stationary right guide. Show it riding toward the right-side
+    # green reference region without locking the hoist to a rail endpoint.
+    mechanic.call("set_pose", 0.92, 0.78, 0.0, 0.0)
+    if not await shot("12_trolley_right_side_travel"):
+        quit(1); return
+    print("R51M_ENGINE_CAPTURE=12 authentic 1280x720 frames; owner visual approval pending")
     quit(0)
 func shot(label:String)->bool:
     for i in range(3):
