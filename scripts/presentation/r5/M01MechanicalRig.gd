@@ -22,6 +22,7 @@ var fixed_left_rail: Polygon2D
 var fixed_right_rail: Polygon2D
 var left_roller_anchor: Marker2D
 var right_roller_anchor: Marker2D
+var roof_undertray: Polygon2D
 var roof_rear_crossmember: Polygon2D
 var roof_front_crossmember: Polygon2D
 var fixed_structure: Node2D
@@ -152,10 +153,36 @@ func _roof_crossmember(label: String, source: String, left: Vector2,
     fixed_structure.add_child(beam)
     return beam
 
+func _roof_undertray() -> Polygon2D:
+    # R7: One coherent roof soffit sheet, not a pile of superposed metal bars.
+    # It sits INSIDE the existing roof trim, behind both fixed guides. Mapping
+    # chrome from the existing Astra rail material preserves commercial finish.
+    # Its near edge is occluded by M01's painted structural fascia.
+    var chrome := load(GANTRY + "depth_rail_a.png") as Texture2D
+    if chrome == null:
+        push_error("R5.1-M4 R7 missing authentic chrome ceiling material")
+        return null
+    var pan := Polygon2D.new()
+    pan.name = "IntegralRoofSoffit"
+    pan.texture = chrome
+    pan.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+    pan.polygon = PackedVector2Array([
+        Vector2(374.0, 349.0), Vector2(570.0, 349.0),
+        Vector2(656.0, 406.0), Vector2(291.0, 406.0)
+    ])
+    pan.uv = PackedVector2Array([
+        Vector2(340.0, 103.0), Vector2(1080.0, 103.0),
+        Vector2(1080.0, 178.0), Vector2(340.0, 178.0)
+    ])
+    pan.z_index = -2
+    fixed_structure.add_child(pan)
+    return pan
+
 func _ready() -> void:
     roof_mounts = _pivot(self, "FixedRoofMounts", Vector2.ZERO)
     fixed_rails = _pivot(self, "FixedDepthRails", Vector2.ZERO)
     fixed_structure = _pivot(self, "FixedRoofCradle", Vector2.ZERO)
+    roof_undertray = _roof_undertray()
     roof_rear_crossmember = _roof_crossmember("RearLoadBeam",
         "depth_rail_a.png", LEFT_REAR, RIGHT_REAR, 11.0)
     roof_front_crossmember = _roof_crossmember("FrontLoadBeam",
@@ -222,7 +249,7 @@ func _ready() -> void:
     _sprite(right_finger, "RightGrippingTip", CLAW + "right_gripper.png", Vector2(-42, -43), Vector2.ONE, false)
     rear_finger = _pivot(claw_root, "RearFingerPivot", Vector2(0, 472))
     _sprite(rear_finger, "ForeshortenedThirdProng", CLAW + "rear_gripper.png", Vector2(-58, -31), Vector2.ONE, false)
-    assets_loaded = fixed_left_rail != null and fixed_right_rail != null and roof_rear_crossmember != null and roof_front_crossmember != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null and left_bogie != null and right_bogie != null
+    assets_loaded = fixed_left_rail != null and fixed_right_rail != null and roof_undertray != null and roof_rear_crossmember != null and roof_front_crossmember != null and bridge_sprite != null and trolley_sprite != null and winch_sprite != null and cable_sprite != null and connector_sprite != null and left_bogie != null and right_bogie != null
     for bracket in bracket_sprites.values():
         assets_loaded = assets_loaded and bracket != null
     if assets_loaded:
