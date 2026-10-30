@@ -6,16 +6,15 @@ const BASE := "res://art/r5/mechanics/"
 const GANTRY := BASE + "gantry/"
 const CLAW := BASE + "claw/"
 
-# R5.1-M4 R9 OWNER-ANNOTATED REGISTRATION.
-# Green line pairs in the 2026-10-29 cabinet screenshot bound TWO outward
-# projecting guides. They were mapped into the unchanged 1024x1536 M01 source
-# using image registration. The right guide was previously reversed/inboard.
-# The endpoints below are engineering centerlines, not painted screenshot art.
-# The moving bridge and all contact points derive from these SAME coordinates.
-const LEFT_REAR := Vector2(440.0, 380.0)
-const RIGHT_REAR := Vector2(688.0, 380.0)
-const LEFT_FRONT := Vector2(280.0, 422.0)
-const RIGHT_FRONT := Vector2(512.0, 422.0)
+# R5.1-M4 R10: both roof guides are STRAIGHT and parallel in camera space.
+# Source: owner markup of R9 close-up. Left near mount is brought INSIDE the
+# glass frame, right near mount moves outward; rear-right end tucks behind the
+# existing roof fascia. These are fixed guide CENTERLINES, not moving parts.
+# The moving bridge AND BOTH bearing bogies derive from these same endpoints.
+const LEFT_REAR := Vector2(440.0, 409.0)
+const RIGHT_REAR := Vector2(711.0, 410.0)
+const LEFT_FRONT := Vector2(313.0, 430.0)
+const RIGHT_FRONT := Vector2(584.0, 431.0)
 const TRACK_EPSILON := 0.75
 
 var roof_mounts: Node2D
@@ -113,19 +112,22 @@ func _mount_rail(label: String, source: String, far: Vector2,
     guide.texture = tex
     guide.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     var normal := Vector2(-(near - far).y, (near - far).x).normalized()
-    var back_half := 15.0
-    var front_half := 19.0
+    # Straight, constant-width structural extrusion: no bending/tapering a
+    # rail just to follow the cross-bridge. Perspective belongs to guide path.
+    var back_half := 14.0
+    var front_half := 14.0
     guide.polygon = PackedVector2Array([
         far - normal * back_half,
         near - normal * front_half,
         near + normal * front_half,
         far + normal * back_half
     ])
-    # Samples the metallic beam with existing bolts and specular pink edge.
-    # These are texture-space UVs, NOT a flat-color polygon placeholder.
+    # Sample one straight metal face from the original premium rail artwork.
+    # Rectangular UVs eliminate the diagonal texture shear that made R9 look
+    # warped; all four rail corners share a rigid extrusion centerline.
     guide.uv = PackedVector2Array([
-        Vector2(340.0, 111.0), Vector2(1180.0, 149.0),
-        Vector2(1180.0, 222.0), Vector2(340.0, 193.0)
+        Vector2(340.0, 131.0), Vector2(1180.0, 131.0),
+        Vector2(1180.0, 196.0), Vector2(340.0, 196.0)
     ])
     fixed_rails.add_child(guide)
     return guide
@@ -171,8 +173,8 @@ func _roof_undertray() -> Polygon2D:
     pan.texture = chrome
     pan.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     pan.polygon = PackedVector2Array([
-        Vector2(440.0, 375.0), Vector2(688.0, 375.0),
-        Vector2(512.0, 422.0), Vector2(280.0, 422.0)
+        Vector2(440.0, 405.0), Vector2(711.0, 406.0),
+        Vector2(584.0, 431.0), Vector2(313.0, 430.0)
     ])
     pan.uv = PackedVector2Array([
         Vector2(340.0, 103.0), Vector2(1080.0, 103.0),
@@ -345,6 +347,10 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
         "bridge_pitch": bridge_root.rotation,
         "hoist_world_angle": trolley_root.global_rotation,
         "claw_center_screen_x": projected_x,
+        "left_mount_front_x": LEFT_FRONT.x,
+        "right_mount_front_x": RIGHT_FRONT.x,
+        "rail_left_span": LEFT_REAR.distance_to(LEFT_FRONT),
+        "rail_right_span": RIGHT_REAR.distance_to(RIGHT_FRONT),
         "rear_beam_center": (LEFT_REAR + RIGHT_REAR) * 0.5,
         "front_beam_center": (LEFT_FRONT + RIGHT_FRONT) * 0.5
     }
