@@ -32,7 +32,16 @@ func capture() -> void:
     scene.call("set_zoom_for_capture", true)
     if not await shot("09_closeup_finger_joints"):
         quit(1); return
-    print("R51M_ENGINE_CAPTURE=9 authentic 1280x720 frames; owner visual approval pending")
+    # Additional tight roof views at BOTH bridge-depth endpoints. These are
+    # native Godot frames, not offline mosaics or generated reference art.
+    var mechanic := scene.get("mechanic") as Node2D
+    mechanic.call("set_pose", 0.5, 0.08, 0.0, 0.0)
+    if not await shot("10_roof_far_bearings"):
+        quit(1); return
+    mechanic.call("set_pose", 0.5, 0.92, 0.0, 0.0)
+    if not await shot("11_roof_near_bearings"):
+        quit(1); return
+    print("R51M_ENGINE_CAPTURE=11 authentic 1280x720 frames; owner visual approval pending")
     quit(0)
 func shot(label:String)->bool:
     for i in range(3):
