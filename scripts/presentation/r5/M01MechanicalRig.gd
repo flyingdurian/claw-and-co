@@ -6,12 +6,16 @@ const BASE := "res://art/r5/mechanics/"
 const GANTRY := BASE + "gantry/"
 const CLAW := BASE + "claw/"
 
-# Cabinet-local anchor survey. These four points are on the underside of M01's roof.
-# Front is nearer the player; far/rear positions converge toward the back.
-const LEFT_REAR := Vector2(370.0, 390.0)
-const RIGHT_REAR := Vector2(565.0, 410.0)
-const LEFT_FRONT := Vector2(305.0, 425.0)
-const RIGHT_FRONT := Vector2(635.0, 443.0)
+# R5.1-M4 R9 OWNER-ANNOTATED REGISTRATION.
+# Green line pairs in the 2026-10-29 cabinet screenshot bound TWO outward
+# projecting guides. They were mapped into the unchanged 1024x1536 M01 source
+# using image registration. The right guide was previously reversed/inboard.
+# The endpoints below are engineering centerlines, not painted screenshot art.
+# The moving bridge and all contact points derive from these SAME coordinates.
+const LEFT_REAR := Vector2(440.0, 380.0)
+const RIGHT_REAR := Vector2(688.0, 380.0)
+const LEFT_FRONT := Vector2(280.0, 422.0)
+const RIGHT_FRONT := Vector2(512.0, 422.0)
 const TRACK_EPSILON := 0.75
 
 var roof_mounts: Node2D
@@ -167,8 +171,8 @@ func _roof_undertray() -> Polygon2D:
     pan.texture = chrome
     pan.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
     pan.polygon = PackedVector2Array([
-        Vector2(360.0, 379.0), Vector2(580.0, 396.0),
-        Vector2(645.0, 439.0), Vector2(293.0, 420.0)
+        Vector2(440.0, 375.0), Vector2(688.0, 375.0),
+        Vector2(512.0, 422.0), Vector2(280.0, 422.0)
     ])
     pan.uv = PackedVector2Array([
         Vector2(340.0, 103.0), Vector2(1080.0, 103.0),
