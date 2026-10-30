@@ -287,7 +287,11 @@ func set_pose(lateral: float, depth: float, drop_fraction: float, grip_fraction:
     right_roller_anchor.position = Vector2(span * 0.5, 0.0)
     # Trolley travels on pitched crossbar; hanging cable stays gravity upright.
     var candidate := bridge_left.lerp(bridge_right, x)
-    var clamped_x := clampf(candidate.x, 368.0, 548.0)
+    # Cabinet front-glass opening can safely carry a ~80px half-width
+    # animated claw silhouette up to x=580 (right glass boundary ~665).
+    # R9's 548 clamp kept the trolley artificially near the center, making
+    # the owner's right-side green region unreachable in proof captures.
+    var clamped_x := clampf(candidate.x, 368.0, 580.0)
     var actual_fraction := clampf(
         (clamped_x - bridge_left.x) / maxf(1.0, delta.x), 0.08, 0.92)
     trolley_root.position = Vector2(lerpf(-span*0.5, span*0.5,
