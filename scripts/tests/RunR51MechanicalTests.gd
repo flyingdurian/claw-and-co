@@ -29,6 +29,7 @@ func run_all() -> void:
     check(bool(rig.get("assets_loaded")), "rig component loading")
     var structural_nodes := [
         "FixedDepthRails/LeftGuide", "FixedDepthRails/RightGuide",
+        "FixedRoofCradle/IntegralRoofSoffit",
         "FixedRoofCradle/RearLoadBeam", "FixedRoofCradle/FrontLoadBeam",
         "DepthBridge/LeftRollerEngagement/LeftBearingBogie",
         "DepthBridge/RightRollerEngagement/RightBearingBogie",
@@ -71,6 +72,14 @@ func run_all() -> void:
         "left metal guide front endpoint coincides with roof mount")
     check(right_edge.distance_to(Vector2(645.0,414.0)) < 0.1,
         "right metal guide front endpoint coincides with roof mount")
+    var integral_soffit := rig.get_node("FixedRoofCradle/IntegralRoofSoffit") as Polygon2D
+    check(integral_soffit.texture != null and integral_soffit.polygon.size() == 4 and
+          integral_soffit.uv.size() == 4 and integral_soffit.z_index < 0,
+          "integral roof soffit uses authentic chrome illustration behind rails")
+    check(integral_soffit.polygon[2].distance_to(Vector2(656, 406)) < 0.01 and
+          integral_soffit.polygon[3].distance_to(Vector2(291, 406)) < 0.01,
+          "continuous roof soffit meets both near cabinet roof supports")
+    var integral_soffit_initial := integral_soffit.global_transform
     var cradle_rear := rig.get_node("FixedRoofCradle/RearLoadBeam") as Polygon2D
     var cradle_front := rig.get_node("FixedRoofCradle/FrontLoadBeam") as Polygon2D
     check(cradle_rear.texture != null and cradle_front.texture != null,
@@ -161,6 +170,8 @@ func run_all() -> void:
         "rear roof cradle remains fixed throughout the entire cycle")
     check(cradle_front.global_transform == front_initial,
         "front roof cradle remains fixed throughout the entire cycle")
+    check(integral_soffit.global_transform == integral_soffit_initial,
+        "continuous roof metal sheet never inherits moving bridge transform")
     for name in original_mounts.keys():
         check((rig.get_node("FixedRoofMounts/" + str(name)) as Marker2D).global_transform ==
             original_mounts[name], "cabinet roof mount is immobile: " + str(name))
