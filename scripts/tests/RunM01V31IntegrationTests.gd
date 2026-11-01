@@ -54,6 +54,8 @@ func run_all()->void:
           not (rig.get_node("CabinetFixedHardware/leftBackMount") as Sprite2D).visible,
           "both decorative left mount caps concealed without moving rail anchors")
     var rails:Node2D=rig.get_node("CabinetFixedHardware")
+    check(not (rig.get_node("CabinetFixedHardware/LeftFixedDepthGuide/RigidOriginalRailSection2") as Sprite2D).visible,
+        "exposed left front rail decoration is concealed, geometry is unchanged")
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
     var chain:Node2D=rig.get_node("FlexibleChain")

@@ -76,6 +76,11 @@ func _ready() -> void:
             mount.visible=false
     _beam(fixed,"LeftFixedDepthGuide","depth_rail_left",a["leftBack"],a["leftFront"],float(config["guide_thickness"]))
     _beam(fixed,"RightFixedDepthGuide","depth_rail_right",a["rightBack"],a["rightFront"],float(config["guide_thickness"]))
+    # The protruding front-left guide's decorative metal end-cap is behind
+    # the genuine opaque cabinet frame. Hide ONLY this cap sprite; leave
+    # rail path, geometry, all bearing anchors and animation unchanged.
+    var left_front_rail_cap := fixed.get_node("LeftFixedDepthGuide/RigidOriginalRailSection2") as Sprite2D
+    left_front_rail_cap.visible=false
     moving_bridge=_node(self,"MovingYBridge")
     moving_bridge.z_index=1
     # Preserve actual source bridge endplates; only repeat/stetch the center profile.
