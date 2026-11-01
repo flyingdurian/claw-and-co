@@ -1,0 +1,104 @@
+{
+  "schema": "claw-co.m01-connected-gantry/v3",
+  "version": 3.1,
+  "patch": "v3.1-owner-calibrated-occlusion-chain-full-x",
+  "baseline": "ClawCo_M01_Gantry_Studio_V3_Calibration.json",
+  "source_size": {
+    "width": 1024,
+    "height": 1536
+  },
+  "artwork": {
+    "cabinet": "M01 Raspberry Claw Cabinet Body.png",
+    "mechanism": "M01 industrial gantry exploded atlas.png",
+    "claw": "Six-Part Chrome Claw Disassembly Atlas.png"
+  },
+  "roof_origin": {
+    "x": 1.8679977809695743,
+    "y": 72.63924584955174
+  },
+  "four_anchor_positions": {
+    "leftBack": {
+      "x": 226.38405177977876,
+      "y": 381.2654755274091
+    },
+    "leftFront": {
+      "x": 268.92151255239645,
+      "y": 335.06686548291833
+    },
+    "rightBack": {
+      "x": 728.327873079631,
+      "y": 431.0420089925018
+    },
+    "rightFront": {
+      "x": 880.6100520920781,
+      "y": 396.98420837896697
+    }
+  },
+  "base_mount_positions": {
+    "leftBack": {
+      "x": 224.51605399880918,
+      "y": 308.62622967785734
+    },
+    "leftFront": {
+      "x": 267.0535147714269,
+      "y": 262.53404290653503
+    },
+    "rightBack": {
+      "x": 726.4598752986614,
+      "y": 359.6585622301344
+    },
+    "rightFront": {
+      "x": 878.7420543111085,
+      "y": 325.98175210454514
+    }
+  },
+  "wall_inset": 0,
+  "roof_pitch_degrees": 5.4,
+  "bridge": {
+    "thickness": 61,
+    "visual_scale_percent": 105,
+    "overhang": 0,
+    "right_bearing_offset": 0
+  },
+  "guide_thickness": 46,
+  "individual_scales": {
+    "bracket": 111,
+    "winch": 113,
+    "connector": 145,
+    "claw": 103,
+    "chain_length": 112
+  },
+  "trolley_scale_percent": 80,
+  "chain": {
+    "scale_percent": 109,
+    "sag": 33,
+    "feed_fraction": 0.29,
+    "trolley_attachment": {
+      "x": 5,
+      "y": 2
+    }
+  },
+  "suspension": {
+    "rest_gap": 57,
+    "max_drop": 265
+  },
+  "layer_preset": "front",
+  "preview": {
+    "x": 0.5,
+    "y": 0.35,
+    "z": 0,
+    "grip": 0
+  },
+  "mechanical_hierarchy": [
+    "cabinet_fixed_mounts",
+    "fixed_guide_rails",
+    "moving_depth_bridge_Y",
+    "moving_trolley_X",
+    "winch",
+    "electrical_chain_from_trolley",
+    "suspension_cable_Z",
+    "connector",
+    "articulated_claw"
+  ],
+  "warning": "2D image-layer placement only; genuine side camera, load bearings, physical clearance and prize grasp remain subject to Godot/3D validation."
+}
