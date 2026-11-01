@@ -31,6 +31,11 @@ func run_all()->void:
     var chain_mask: Sprite2D=rig.get_node("ChainFeedRoofTerminationMask")
     check(pillar.texture.get_size()==Vector2(1024,1536) and
           chain_mask.texture.get_size()==Vector2(1024,1536),"registered full-canvas masks")
+    check(chain_mask.region_enabled and chain_mask.region_rect.size.x<=20.0 and
+          chain_mask.region_rect.size.y<=35.0,
+          "chain termination mask cannot conceal the main flexible arch")
+    var left_cap: Sprite2D=rig.get_node("CabinetFixedHardware/leftFrontMount")
+    check(not left_cap.visible,"near-left mounting cap concealed under original pillar")
     var rails:Node2D=rig.get_node("CabinetFixedHardware")
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
