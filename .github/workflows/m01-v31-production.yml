@@ -1,0 +1,46 @@
+name: Claw & Co. | Approved M01 V3.1 Production Proof
+on:
+  push:
+    branches: [ 'integration/m01-v31-approved-gantry' ]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  m01-v31:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot runtime dependencies and image tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb ffmpeg libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers python3-pil
+      - name: Import original, hash-verified owner V3.1 assets
+        run: |
+          if [ ! -f art/m01_v31/M01Cabinet.png ]; then
+            curl -fLsS --retry 3 --max-time 100 "https://d2ol7oe51mr4n9.cloudfront.net/user_3JEbazkCX92Kd0K6P0PCEPoIKXS/a5178ad6-7cf8-463c-aa4b-a80b3647567a.zip" -o /tmp/owner_v31_handoff.zip
+            python3 ci/stage_m01_v31_assets.py /tmp/owner_v31_handoff.zip
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add art/m01_v31 data/r5/M01V31Calibration.json
+            git commit -m "Import exact approved V3.1 atlas sprites and registered masks"
+            git push origin HEAD:integration/m01-v31-approved-gantry
+          else
+            echo "Approved V3.1 source sprites already committed"
+          fi
+      - name: Download exact Godot 4.7.2
+        run: python3 ci/fetch_godot.py
+      - name: Run isolated production V3.1 mechanical integration and real engine video
+        run: bash ci/run_m01_v31.sh
+      - name: Regression of accepted simulation, Gate E and production presentation
+        run: bash ci/run_suites.sh
+      - name: Retain test logs and original engine captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m01-v31-production-proof
+          path: |
+            ci/output/m01v31
+            ci/output/logs
+          if-no-files-found: warn
+          retention-days: 14
