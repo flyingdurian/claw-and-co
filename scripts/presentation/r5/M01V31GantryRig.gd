@@ -122,7 +122,10 @@ func _ready() -> void:
     _sprite(self,"OriginalLeftPillarForegroundMask","left_pillar_occlusion",Vector2.ZERO,1,false).z_index=8
     # Correction B: tiny source-derived painted roof patch conceals just the
     # short chain feed termination, not the moving bridge or its trolley.
-    _sprite(self,"ChainFeedRoofTerminationMask","chain_feed_occlusion",Vector2.ZERO,1,false).z_index=7
+    var roof_contact_mask := _sprite(self,"ChainFeedRoofTerminationMask","M01Cabinet",Vector2(346,318),1,false)
+    roof_contact_mask.region_enabled=true
+    roof_contact_mask.region_rect=Rect2(346,318,130,69)
+    roof_contact_mask.z_index=7
     ready_assets=true
     var p: Dictionary=config["preview"]
     set_pose(float(p["x"]),float(p["y"]),float(p["z"]),float(p["grip"]))
