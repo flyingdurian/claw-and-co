@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 GODOT="$PWD/ci/bin/godot"
 OUT=ci/output/m01v31
 mkdir -p "$OUT"/screenshots "$OUT"/movie "$OUT"/logs
+python3 ci/inspect_m01_v31_masks.py > "$OUT/logs/mask_inspection.log" 2>&1
 "$GODOT" --headless --path . --import --quit > "$OUT/logs/import.log" 2>&1
 "$GODOT" --headless --path . --script res://scripts/tests/RunM01V31IntegrationTests.gd > "$OUT/logs/rig_tests.log" 2>&1
 grep 'M01_V31_TEST_ASSERTIONS=' "$OUT/logs/rig_tests.log"
