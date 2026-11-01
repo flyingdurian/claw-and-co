@@ -88,12 +88,30 @@ func _ready() -> void:
         var w:=cap_src if i!=1 else tex.get_width()-cap_src*2
         section.region_rect=Rect2(a0,0,w,tex.get_height())
         bridge_slices.append(section)
+    # Trim only the occluded extreme tip of the first rail cap. This affects
+    # presentation pixels, not its anchor, geometry, movement or end bearing.
+    var end_trim_shader := Shader.new()
+    end_trim_shader.code = "shader_type canvas_item; uniform float trim_pixels = 0.0; varying float local_x; void vertex(){ local_x = VERTEX.x; } void fragment(){ if (local_x < trim_pixels) discard; }"
+    var end_trim_material := ShaderMaterial.new()
+    end_trim_material.shader = end_trim_shader
+    end_trim_material.set_shader_parameter("trim_pixels",float(cap_src)*0.25)
+    bridge_slices[0].material = end_trim_material
     chain_root=_node(self,"FlexibleChain")
     chain_root.z_index=2
+    # Downscale only the individual approved chain-link art to 65% within
+    # its existing 39x86 draw footprint. Existing chain positions, count,
+    # curvature, endpoints and motion logic remain completely unchanged.
+    var chain_source := load(ART+"cable_chain.png") as Texture2D
+    var chain_tile := chain_source.get_image().get_region(Rect2i(285,21,39,86))
+    chain_tile.resize(25,56,Image.INTERPOLATE_LANCZOS)
+    var chain_footprint := Image.create(39,86,false,Image.FORMAT_RGBA8)
+    chain_footprint.fill(Color.TRANSPARENT)
+    chain_footprint.blit_rect(chain_tile,Rect2i(0,0,25,56),Vector2i(7,15))
+    var reduced_chain_art := ImageTexture.create_from_image(chain_footprint)
     for i in 72:
         var link:=_sprite(chain_root,"OriginalAstraChainLink_%02d"%i,"cable_chain")
-        link.region_enabled=true
-        link.region_rect=Rect2(285,21,39,86)
+        link.texture=reduced_chain_art
+        link.region_enabled=false
         chain_links.append(link)
     carriage=_node(self,"MovingXTrolley")
     carriage.z_index=3
@@ -122,17 +140,33 @@ func _ready() -> void:
     rear_pivot=_node(claw_root,"RearPivot")
     rear_pivot.position=Vector2(0,472)
     _sprite(rear_pivot,"ThirdFinger","rear_gripper",Vector2(-58,-31),1,false)
-    # Correction A: an authentic pillar-only source mask, NOT an entire
-    # foreground cabinet that conceals the playable mechanism.
+    # Original roof fascia and registered chain-entry paint. Critically, no
+    # rectangular crop from M01Cabinet is drawn over the moving front rail.
+    _sprite(self,"OriginalRoofFasciaOcclusion","roof_fascia_mask",Vector2.ZERO,1,false).z_index=6
+    _sprite(self,"ChainFeedRoofTerminationMask","chain_feed_occlusion",Vector2.ZERO,1,false).z_index=7
     _sprite(self,"OriginalLeftPillarForegroundMask","left_pillar_occlusion",Vector2.ZERO,1,false).z_index=8
-    # Correction B: tiny source-derived painted roof patch conceals just the
-    # short chain feed termination, not the moving bridge or its trolley.
-    # Owner correction B: tiny contact cap at the chain's roof entry, not
-    # a broad rectangle that hides half of the animated chain arch.
-    var roof_contact_mask := _sprite(self,"ChainFeedRoofTerminationMask","M01Cabinet",Vector2(391,341),1,false)
-    roof_contact_mask.region_enabled=true
-    roof_contact_mask.region_rect=Rect2(391,341,18,33)
-    roof_contact_mask.z_index=7
+    # The source 'front_posts_mask' stops at x=782: it is NOT the far-right
+    # pillar. Restore the true right-front edge from unchanged cabinet source
+    # pixels (full 1024x1536 registration); fill only tiny internal alpha
+    # slits, never paint an arbitrary opaque rectangle over the chamber.
+    var original_body := (load(ART+"M01Cabinet.png") as Texture2D).get_image()
+    var right_pillar := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
+    right_pillar.fill(Color.TRANSPARENT)
+    right_pillar.blit_rect(original_body,Rect2i(900,230,124,620),Vector2i(900,230))
+    for yy in range(230,850):
+        var last_x := -100
+        var last_color := Color.TRANSPARENT
+        for xx in range(900,1024):
+            var source_color := original_body.get_pixel(xx,yy)
+            if source_color.a >= 0.90:
+                if xx-last_x>1 and xx-last_x<=5:
+                    for fill_x in range(last_x+1,xx):
+                        right_pillar.set_pixel(fill_x,yy,last_color.lerp(source_color,float(fill_x-last_x)/float(xx-last_x)))
+                last_x=xx
+                last_color=source_color
+    var right_edge := _sprite(self,"OriginalRightPillarRestoration","M01Cabinet",Vector2.ZERO,1,false)
+    right_edge.texture=ImageTexture.create_from_image(right_pillar)
+    right_edge.z_index=9
     ready_assets=true
     var p: Dictionary=config["preview"]
     set_pose(float(p["x"]),float(p["y"]),float(p["z"]),float(p["grip"]))

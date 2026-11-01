@@ -26,14 +26,24 @@ func run_all()->void:
     check(float(cfg["suspension"]["rest_gap"])==57.0 and float(cfg["suspension"]["max_drop"])==265.0,
         "approved rest and full descent")
     check(rig.has_node("OriginalLeftPillarForegroundMask") and
-          rig.has_node("ChainFeedRoofTerminationMask"),"two precise occlusion layers")
+          rig.has_node("ChainFeedRoofTerminationMask") and
+          rig.has_node("OriginalRoofFasciaOcclusion") and
+          rig.has_node("OriginalRightPillarRestoration"),
+          "four source-registered foreground restoration layers")
     var pillar: Sprite2D=rig.get_node("OriginalLeftPillarForegroundMask")
     var chain_mask: Sprite2D=rig.get_node("ChainFeedRoofTerminationMask")
+    var roof_mask: Sprite2D=rig.get_node("OriginalRoofFasciaOcclusion")
+    var right_mask: Sprite2D=rig.get_node("OriginalRightPillarRestoration")
     check(pillar.texture.get_size()==Vector2(1024,1536) and
-          chain_mask.texture.get_size()==Vector2(1024,1536),"registered full-canvas masks")
-    check(chain_mask.region_enabled and chain_mask.region_rect.size.x<=20.0 and
-          chain_mask.region_rect.size.y<=35.0,
-          "chain termination mask cannot conceal the main flexible arch")
+          chain_mask.texture.get_size()==Vector2(1024,1536) and
+          roof_mask.texture.get_size()==Vector2(1024,1536) and
+          right_mask.texture.get_size()==Vector2(1024,1536),
+          "all source-registered masks are exactly 1024x1536")
+    check(not chain_mask.region_enabled and chain_mask.position==Vector2.ZERO and
+          chain_mask.texture.get_image().get_used_rect().size.y<=16,
+          "chain occlusion uses alpha-transparent strip, never rectangular rail patch")
+    check(right_mask.texture.get_image().get_pixel(937,530).a>0.0,
+          "right-front pillar source artwork restored, not transparent environment")
     var left_cap: Sprite2D=rig.get_node("CabinetFixedHardware/leftFrontMount")
     check(not left_cap.visible,"near-left mounting cap concealed under original pillar")
     var rails:Node2D=rig.get_node("CabinetFixedHardware")
@@ -44,6 +54,8 @@ func run_all()->void:
     var fixed0:=rails.transform
     var mask0:=pillar.transform
     var chainmask0:=chain_mask.transform
+    var rightmask0:=right_mask.transform
+    var roofmask0:=roof_mask.transform
     var p0: Dictionary=rig.last_pose.duplicate(true)
     rig.set_pose(1.0,0.35,0,0)
     var px:Dictionary=rig.last_pose.duplicate(true)
@@ -66,10 +78,17 @@ func run_all()->void:
     check(pz["wire_bottom"].y-p0["wire_bottom"].y==265.0,"Z lowers cable exactly 265 source px")
     check(pz["trolley"]==p0["trolley"] and pz["left"]==p0["left"],"Z does not move XY assembly")
     check(pz["chain_end"].distance_to(p0["chain_end"])<.001,"Z never disconnects chain feed")
-    check(pillar.transform==mask0 and chain_mask.transform==chainmask0,
-        "both owner masks remain cabinet-fixed")
+    check(pillar.transform==mask0 and chain_mask.transform==chainmask0 and
+          right_mask.transform==rightmask0 and roof_mask.transform==roofmask0,
+        "four masks remain cabinet-fixed")
     check(chain.get_child_count()>=60 and chain.get_child(0).texture!=null,
         "original Astra link art powers dynamic flexible chain")
+    check(chain.get_child(0).texture.get_size()==Vector2(39,86) and
+          not chain.get_child(0).region_enabled and
+          (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
+          "chain uses 65-percent source-faithful display art, same center and path")
+    check(rig.bridge_slices[0].material is ShaderMaterial,
+          "front-left rail cap trims behind pillar without changing its transform")
     var hashes: Array[String]=[]
     for pass_idx in 2:
         var signature: Array[String]=[]
