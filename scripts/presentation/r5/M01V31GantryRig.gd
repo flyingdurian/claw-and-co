@@ -105,10 +105,10 @@ func _ready() -> void:
     var chain_tile := chain_source.get_image().get_region(Rect2i(285,21,39,86))
     # Link width is exactly 65% of original; its longitudinal overlap is
     # retained so 0.65-scale teeth do NOT separate at the fixed link cadence.
-    chain_tile.resize(25,78,Image.INTERPOLATE_LANCZOS)
+    chain_tile.resize(25,86,Image.INTERPOLATE_LANCZOS)
     var chain_footprint := Image.create(39,86,false,Image.FORMAT_RGBA8)
     chain_footprint.fill(Color.TRANSPARENT)
-    chain_footprint.blit_rect(chain_tile,Rect2i(0,0,25,78),Vector2i(7,4))
+    chain_footprint.blit_rect(chain_tile,Rect2i(0,0,25,86),Vector2i(7,0))
     var reduced_chain_art := ImageTexture.create_from_image(chain_footprint)
     for i in 72:
         var link:=_sprite(chain_root,"OriginalAstraChainLink_%02d"%i,"cable_chain")
@@ -153,34 +153,15 @@ func _ready() -> void:
     # slits, never paint an arbitrary opaque rectangle over the chamber.
     var original_body := (load(ART+"M01Cabinet.png") as Texture2D).get_image()
     var original_chamber := (load(ART+"m01_chamber_backdrop.png") as Texture2D).get_image()
-    # A separate registered background infill closes only the real alpha gap
-    # between the illustrated right chamber wall and right-front pillar.
-    # Pixel colors are sourced from neighboring original illustrated wall
-    # pixels; no flat primitive or fabricated opaque panel is introduced.
+    # Seamlessly extend the original illustrated right chamber wall beneath
+    # the source-authentic front pillar, using one coherent texture resample.
+    # Unlike a row-by-row alpha fill, shapes remain continuous at every y.
+    # Only presentation pixels change; the source art is never overwritten.
     var chamber_infill := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     chamber_infill.fill(Color.TRANSPARENT)
-    for yy in range(315,910):
-        var wall_edge := -1
-        for xx in range(850,927):
-            if original_chamber.get_pixel(xx,yy).a > 0.80:
-                wall_edge=xx
-        if wall_edge<0:continue
-        var pillar_start := -1
-        for xx in range(maxi(wall_edge+1,920),992):
-            if original_body.get_pixel(xx,yy).a > 0.80:
-                pillar_start=xx
-                break
-        if pillar_start<0 or pillar_start-wall_edge>75:continue
-        var edge_color := original_chamber.get_pixel(maxi(wall_edge-5,850),yy)
-        if edge_color.a<0.80:
-            edge_color=original_chamber.get_pixel(wall_edge,yy)
-        for xx in range(wall_edge+1,pillar_start):
-            if original_body.get_pixel(xx,yy).a>0.65 or original_chamber.get_pixel(xx,yy).a>0.65:
-                continue
-            var t:=float(xx-wall_edge)/float(pillar_start-wall_edge)
-            var sampled:=original_chamber.get_pixel(maxi(850,wall_edge-3-int(float(xx-wall_edge)*.16)),yy)
-            if sampled.a<0.80:sampled=edge_color
-            chamber_infill.set_pixel(xx,yy,sampled.darkened(.14*t*t))
+    var illustrated_right_wall := original_chamber.get_region(Rect2i(738,315,165,590))
+    illustrated_right_wall.resize(205,590,Image.INTERPOLATE_LANCZOS)
+    chamber_infill.blit_rect(illustrated_right_wall,Rect2i(0,0,205,590),Vector2i(738,315))
     var wall_fill := _sprite(self,"RightChamberGapClosure","m01_chamber_backdrop",Vector2.ZERO,1,false)
     wall_fill.texture=ImageTexture.create_from_image(chamber_infill)
     wall_fill.z_index=0
