@@ -75,7 +75,7 @@ func run_all()->void:
         hashes.append("|".join(signature).sha256_text())
     check(hashes[0]==hashes[1],"720 tick authored demo deterministic replay")
     # Real game presentation bridge integration: machine screen creates V31 rig.
-    var machine:=load("res://scenes/machines/M01_Machine.tscn").instantiate()
+    var machine: Node=(load("res://scenes/machines/M01_Machine.tscn") as PackedScene).instantiate()
     root.add_child(machine)
     for i in 2:await process_frame
     check(machine.get("m01_v31_rig")!=null,"actual M01 MachineView hosts V3.1 rig")
