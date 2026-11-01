@@ -96,7 +96,7 @@ func run_all()->void:
         "original Astra link art powers dynamic flexible chain")
     check(chain.get_child(0).texture.get_size()==Vector2(39,86) and
           not chain.get_child(0).region_enabled and
-          (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=86,
+          (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
           "chain uses 65-percent source-faithful display art, same center and path")
     check(rig.bridge_slices[0].material is ShaderMaterial and
           rig.bridge_slices[0].region_rect.position.x>0,

@@ -113,10 +113,13 @@ func _ready() -> void:
     var chain_tile := chain_source.get_image().get_region(Rect2i(285,21,39,86))
     # Link width is exactly 65% of original; its longitudinal overlap is
     # retained so 0.65-scale teeth do NOT separate at the fixed link cadence.
-    chain_tile.resize(25,86,Image.INTERPOLATE_LANCZOS)
+    # Preserve source link length along the animated path so adjacent links
+    # interlock at the original authored cadence. Reduce ONLY the transverse
+    # art thickness to 65%, eliminating the separated-tooth silhouette.
+    chain_tile.resize(39,56,Image.INTERPOLATE_LANCZOS)
     var chain_footprint := Image.create(39,86,false,Image.FORMAT_RGBA8)
     chain_footprint.fill(Color.TRANSPARENT)
-    chain_footprint.blit_rect(chain_tile,Rect2i(0,0,25,86),Vector2i(7,0))
+    chain_footprint.blit_rect(chain_tile,Rect2i(0,0,39,56),Vector2i(0,15))
     var reduced_chain_art := ImageTexture.create_from_image(chain_footprint)
     for i in 72:
         var link:=_sprite(chain_root,"OriginalAstraChainLink_%02d"%i,"cable_chain")
