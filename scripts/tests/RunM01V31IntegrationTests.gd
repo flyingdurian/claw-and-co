@@ -28,24 +28,31 @@ func run_all()->void:
     check(rig.has_node("OriginalLeftPillarForegroundMask") and
           rig.has_node("ChainFeedRoofTerminationMask") and
           rig.has_node("OriginalRoofFasciaOcclusion") and
-          rig.has_node("OriginalRightPillarRestoration"),
+          rig.has_node("OriginalRightPillarRestoration") and
+          rig.has_node("RightChamberGapClosure"),
           "four source-registered foreground restoration layers")
     var pillar: Sprite2D=rig.get_node("OriginalLeftPillarForegroundMask")
     var chain_mask: Sprite2D=rig.get_node("ChainFeedRoofTerminationMask")
     var roof_mask: Sprite2D=rig.get_node("OriginalRoofFasciaOcclusion")
     var right_mask: Sprite2D=rig.get_node("OriginalRightPillarRestoration")
+    var chamber_fill: Sprite2D=rig.get_node("RightChamberGapClosure")
     check(pillar.texture.get_size()==Vector2(1024,1536) and
           chain_mask.texture.get_size()==Vector2(1024,1536) and
           roof_mask.texture.get_size()==Vector2(1024,1536) and
-          right_mask.texture.get_size()==Vector2(1024,1536),
+          right_mask.texture.get_size()==Vector2(1024,1536) and
+          chamber_fill.texture.get_size()==Vector2(1024,1536),
           "all source-registered masks are exactly 1024x1536")
     check(not chain_mask.region_enabled and chain_mask.position==Vector2.ZERO and
           chain_mask.texture.get_image().get_used_rect().size.y<=16,
           "chain occlusion uses alpha-transparent strip, never rectangular rail patch")
     check(right_mask.texture.get_image().get_pixel(937,530).a>0.0,
           "right-front pillar source artwork restored, not transparent environment")
+    check(chamber_fill.texture.get_image().get_used_rect().size.x>0,
+          "right chamber gap infill generated from the existing illustrated wall")
     var left_cap: Sprite2D=rig.get_node("CabinetFixedHardware/leftFrontMount")
-    check(not left_cap.visible,"near-left mounting cap concealed under original pillar")
+    check(not left_cap.visible and
+          not (rig.get_node("CabinetFixedHardware/leftBackMount") as Sprite2D).visible,
+          "both decorative left mount caps concealed without moving rail anchors")
     var rails:Node2D=rig.get_node("CabinetFixedHardware")
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
@@ -56,6 +63,7 @@ func run_all()->void:
     var chainmask0:=chain_mask.transform
     var rightmask0:=right_mask.transform
     var roofmask0:=roof_mask.transform
+    var wallmask0:=chamber_fill.transform
     var p0: Dictionary=rig.last_pose.duplicate(true)
     rig.set_pose(1.0,0.35,0,0)
     var px:Dictionary=rig.last_pose.duplicate(true)
@@ -79,13 +87,14 @@ func run_all()->void:
     check(pz["trolley"]==p0["trolley"] and pz["left"]==p0["left"],"Z does not move XY assembly")
     check(pz["chain_end"].distance_to(p0["chain_end"])<.001,"Z never disconnects chain feed")
     check(pillar.transform==mask0 and chain_mask.transform==chainmask0 and
-          right_mask.transform==rightmask0 and roof_mask.transform==roofmask0,
+          right_mask.transform==rightmask0 and roof_mask.transform==roofmask0 and
+          chamber_fill.transform==wallmask0,
         "four masks remain cabinet-fixed")
     check(chain.get_child_count()>=60 and chain.get_child(0).texture!=null,
         "original Astra link art powers dynamic flexible chain")
     check(chain.get_child(0).texture.get_size()==Vector2(39,86) and
           not chain.get_child(0).region_enabled and
-          (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
+          (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=78,
           "chain uses 65-percent source-faithful display art, same center and path")
     check(rig.bridge_slices[0].material is ShaderMaterial,
           "front-left rail cap trims behind pillar without changing its transform")
