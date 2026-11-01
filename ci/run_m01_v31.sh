@@ -8,8 +8,8 @@ mkdir -p "$OUT"/screenshots "$OUT"/movie "$OUT"/logs
 "$GODOT" --headless --path . --script res://scripts/tests/RunM01V31IntegrationTests.gd > "$OUT/logs/rig_tests.log" 2>&1
 grep 'M01_V31_TEST_ASSERTIONS=' "$OUT/logs/rig_tests.log"
 if grep -E 'SCRIPT ERROR:|Parse Error:|^ERROR:' "$OUT/logs/import.log" "$OUT/logs/rig_tests.log"; then exit 1; fi
-LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 150s xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path . --rendering-method gl_compatibility --resolution 1280x720 --script res://ci/CaptureM01V31.gd > "$OUT/logs/frames.log" 2>&1
-LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 200s xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path . --rendering-method gl_compatibility --resolution 1280x720 --fixed-fps 24 --write-movie "$OUT/movie/godot_raw.avi" --quit-after 288 res://scenes/r5/M01V31Proof.tscn > "$OUT/logs/movie.log" 2>&1
+LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 150s xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path . --rendering-method gl_compatibility --resolution 1280x720 --audio-driver Dummy --script res://ci/CaptureM01V31.gd > "$OUT/logs/frames.log" 2>&1
+LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 200s xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path . --rendering-method gl_compatibility --resolution 1280x720 --audio-driver Dummy --fixed-fps 24 --write-movie "$OUT/movie/godot_raw.avi" --quit-after 288 res://scenes/r5/M01V31Proof.tscn > "$OUT/logs/movie.log" 2>&1
 ffmpeg -hide_banner -loglevel error -y -i "$OUT/movie/godot_raw.avi" -an -c:v libx264 -preset fast -crf 22 -pix_fmt yuv420p -movflags +faststart "$OUT/movie/M01_v31_engine_12s.mp4"
 rm -f "$OUT/movie/godot_raw.avi"
 python3 - <<'PY'
