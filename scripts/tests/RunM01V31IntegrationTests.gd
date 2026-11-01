@@ -43,7 +43,13 @@ func run_all()->void:
     rig.set_pose(1.0,0.35,0,0)
     var px:Dictionary=rig.last_pose.duplicate(true)
     check(bridge.position.distance_to(Vector2(0,0))>10,"bridge exists on roof")
-    check(px["trolley"].distance_to(p0["trolley"])>250.0,"full X travels usable span")
+    check(px["trolley"].distance_to(p0["trolley"])>185.0,
+        "trolley reaches far right end from center")
+    rig.set_pose(0.0,0.35,0,0)
+    var far_left: Dictionary=rig.last_pose.duplicate(true)
+    check(px["trolley"].distance_to(far_left["trolley"])>370.0,
+        "trolley travels full bearing-to-bearing usable span")
+    rig.set_pose(1.0,0.35,0,0)
     check(px["left"]==p0["left"] and px["right"]==p0["right"],"X does not move bridge bearings")
     rig.set_pose(0.5,1.0,0,0)
     var py:Dictionary=rig.last_pose.duplicate(true)
