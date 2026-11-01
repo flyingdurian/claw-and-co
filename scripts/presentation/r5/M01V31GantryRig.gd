@@ -89,7 +89,10 @@ func _ready() -> void:
     for i in 3:
         var section:=_sprite(moving_bridge,"OriginalAstraBridgeSegment"+str(i),"cross_bridge",Vector2.ZERO,1,false)
         section.region_enabled=true
-        var a0:=0 if i==0 else cap_src if i==1 else tex.get_width()-cap_src
+        # The left metallic endplate must disappear behind the front pillar:
+        # use adjacent ORIGINAL rail interior art in the identical visual span.
+        # Neither source asset nor bridge transform/geometry is modified.
+        var a0:=cap_src if i<2 else tex.get_width()-cap_src
         var w:=cap_src if i!=1 else tex.get_width()-cap_src*2
         section.region_rect=Rect2(a0,0,w,tex.get_height())
         bridge_slices.append(section)
