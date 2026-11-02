@@ -1,0 +1,43 @@
+{
+  "schema": "clawco.m01.v2.visual-fixtures/1",
+  "stage_id": "stage_01",
+  "attempt_duration_ticks": 240,
+  "notes": "Visual-only fixtures. The authoritative session manifest and ledger are never modified.",
+  "pairs": [
+    {
+      "pair_index": 0,
+      "session_id": "V2_PAIR_0",
+      "prize_instance_id": "V2_PRIZE_0",
+      "win_id": "W1",
+      "miss_id": "M1"
+    },
+    {
+      "pair_index": 1,
+      "session_id": "V2_PAIR_1",
+      "prize_instance_id": "V2_PRIZE_1",
+      "win_id": "W2",
+      "miss_id": "M2"
+    },
+    {
+      "pair_index": 2,
+      "session_id": "V2_PAIR_2",
+      "prize_instance_id": "V2_PRIZE_2",
+      "win_id": "W3",
+      "miss_id": "M3"
+    },
+    {
+      "pair_index": 3,
+      "session_id": "V2_PAIR_3",
+      "prize_instance_id": "V2_PRIZE_3",
+      "win_id": "W4",
+      "miss_id": "M4"
+    },
+    {
+      "pair_index": 4,
+      "session_id": "V2_PAIR_4",
+      "prize_instance_id": "V2_PRIZE_4",
+      "win_id": "W5",
+      "miss_id": "M5"
+    }
+  ]
+}
