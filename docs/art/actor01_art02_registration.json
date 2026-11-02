@@ -1,0 +1,596 @@
+{
+  "schema": "clawco.actor01.art02/v1",
+  "gate": "ART-02",
+  "owner_approval": "PENDING",
+  "approved_master": {
+    "path": "art/performers/actor_01/identity_master_candidate.png",
+    "sha256": "dfc1312937313976179bf5cb830f088e79134eb9018fce09a468ed1b943e81e3",
+    "native_resolution": [
+      1024,
+      1536
+    ],
+    "original_byte_count": 2005493,
+    "owner_approved": true
+  },
+  "artwork_status": "NOT_EXPORTED",
+  "art_source": "approved master; retain exact RGB and alpha bytes",
+  "coordinate_system": "approved master native pixel coordinates top-left; y positive down",
+  "pivot_data_status": "PROVISIONAL_NON_AUTHORITATIVE",
+  "pivots": {
+    "HeadPivot": [
+      557,
+      491
+    ],
+    "PonytailPivot": [
+      355,
+      142
+    ],
+    "BowPivot": [
+      397,
+      144
+    ],
+    "TorsoPivot": [
+      538,
+      675
+    ],
+    "HipCenter": [
+      533,
+      949
+    ],
+    "BagCharmPivot": [
+      300,
+      859
+    ],
+    "Shoulder_l": [
+      419,
+      599
+    ],
+    "Elbow_l": [
+      350,
+      795
+    ],
+    "Wrist_l": [
+      338,
+      914
+    ],
+    "Shoulder_r": [
+      681,
+      590
+    ],
+    "Elbow_r": [
+      769,
+      786
+    ],
+    "Wrist_r": [
+      795,
+      916
+    ],
+    "Hip_l": [
+      465,
+      1021
+    ],
+    "Knee_l": [
+      426,
+      1160
+    ],
+    "Ankle_l": [
+      415,
+      1347
+    ],
+    "Hip_r": [
+      610,
+      1019
+    ],
+    "Knee_r": [
+      622,
+      1172
+    ],
+    "Ankle_r": [
+      635,
+      1340
+    ]
+  },
+  "layer_image_dir": "art/performers/actor_01/art02_layers",
+  "exports": [
+    {
+      "name": "head_base",
+      "group": "Head",
+      "filename": "head_base.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 8,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "face identity; complete neck and rear scalp",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_neutral",
+      "group": "Face",
+      "filename": "face_neutral.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "exact neutral eyes, eyelids, mouth and blush",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_focus",
+      "group": "Face",
+      "filename": "face_focus.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; concentrated eyes and mouth",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_joy",
+      "group": "Face",
+      "filename": "face_joy.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; joyful expression",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_sad",
+      "group": "Face",
+      "filename": "face_sad.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; disappointment",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_angry",
+      "group": "Face",
+      "filename": "face_angry.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; frustration",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_anticipation",
+      "group": "Face",
+      "filename": "face_anticipation.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; anticipation",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_speaking",
+      "group": "Face",
+      "filename": "face_speaking.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; speaking",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "face_determined",
+      "group": "Face",
+      "filename": "face_determined.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 13,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "same head; try-again expression",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hair_rear",
+      "group": "Hair",
+      "filename": "hair_rear.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 3,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "reconstructed rear scalp and ponytail root",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "ponytail",
+      "group": "Hair",
+      "filename": "ponytail.png",
+      "parent_joint": "PonytailPivot",
+      "z_order": 2,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "full ponytail strands painted at hidden root",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hair_front",
+      "group": "Hair",
+      "filename": "hair_front.png",
+      "parent_joint": "HeadPivot",
+      "z_order": 16,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "bangs and face-framing wisps continuous under edge",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "pink_bow",
+      "group": "Hair",
+      "filename": "pink_bow.png",
+      "parent_joint": "BowPivot",
+      "z_order": 17,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "separate layered glossy bow with true attachment",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hood_back",
+      "group": "Clothing",
+      "filename": "hood_back.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 1,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "inside hood painted behind neck and ponytail",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hoodie_torso",
+      "group": "Clothing",
+      "filename": "hoodie_torso.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 6,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "rabbit emblem, pouch, folds, hem and shaded sides",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hood_drawstrings",
+      "group": "Clothing",
+      "filename": "hood_drawstrings.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 10,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "separately draped drawstrings with knot details",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "skirt",
+      "group": "Clothing",
+      "filename": "skirt.png",
+      "parent_joint": "HipCenter",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "continuous pleats and under-skirt painted",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "backpack",
+      "group": "Accessories",
+      "filename": "backpack.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 0,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "pink bag body and rear face",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "backpack_strap_l",
+      "group": "Accessories",
+      "filename": "backpack_strap_l.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 11,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "stitched left strap with buckle",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "backpack_strap_r",
+      "group": "Accessories",
+      "filename": "backpack_strap_r.png",
+      "parent_joint": "TorsoPivot",
+      "z_order": 11,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "stitched right strap with buckle",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "rabbit_charm",
+      "group": "Accessories",
+      "filename": "rabbit_charm.png",
+      "parent_joint": "BagCharmPivot",
+      "z_order": 14,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "rabbit charm ears and hanging chain",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "upper_arm_l",
+      "group": "Arms",
+      "filename": "upper_arm_l.png",
+      "parent_joint": "Shoulder_l",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "full bicep cloth and reconstructed shoulder cap",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "forearm_l",
+      "group": "Arms",
+      "filename": "forearm_l.png",
+      "parent_joint": "Elbow_l",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "continuous fabric folds through elbow",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hand_l",
+      "group": "Arms",
+      "filename": "hand_l.png",
+      "parent_joint": "Wrist_l",
+      "z_order": 9,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete palm, back and wrist with cuff overlap",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "upper_arm_r",
+      "group": "Arms",
+      "filename": "upper_arm_r.png",
+      "parent_joint": "Shoulder_r",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "full bicep cloth and reconstructed shoulder cap",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "forearm_r",
+      "group": "Arms",
+      "filename": "forearm_r.png",
+      "parent_joint": "Elbow_r",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "continuous fabric folds through elbow",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "hand_r",
+      "group": "Arms",
+      "filename": "hand_r.png",
+      "parent_joint": "Wrist_r",
+      "z_order": 9,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete palm, back and wrist with cuff overlap",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "thigh_l",
+      "group": "Legs",
+      "filename": "thigh_l.png",
+      "parent_joint": "Hip_l",
+      "z_order": 3,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete upper thigh painted beneath skirt",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "shin_l",
+      "group": "Legs",
+      "filename": "shin_l.png",
+      "parent_joint": "Knee_l",
+      "z_order": 3,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete leg and knee underside",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "sock_l",
+      "group": "Legs",
+      "filename": "sock_l.png",
+      "parent_joint": "Ankle_l",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "pink striped sock with natural fabric shading",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "sneaker_l",
+      "group": "Legs",
+      "filename": "sneaker_l.png",
+      "parent_joint": "Ankle_l",
+      "z_order": 8,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "pink sneaker with upper, tongue, laces, outsole",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "thigh_r",
+      "group": "Legs",
+      "filename": "thigh_r.png",
+      "parent_joint": "Hip_r",
+      "z_order": 3,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete upper thigh painted beneath skirt",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "shin_r",
+      "group": "Legs",
+      "filename": "shin_r.png",
+      "parent_joint": "Knee_r",
+      "z_order": 3,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "complete leg and knee underside",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "sock_r",
+      "group": "Legs",
+      "filename": "sock_r.png",
+      "parent_joint": "Ankle_r",
+      "z_order": 5,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "pink striped sock with natural fabric shading",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    },
+    {
+      "name": "sneaker_r",
+      "group": "Legs",
+      "filename": "sneaker_r.png",
+      "parent_joint": "Ankle_r",
+      "z_order": 8,
+      "neutral_bbox": null,
+      "neutral_position": null,
+      "pivot_local": null,
+      "hidden_anatomy_requirement": "pink sneaker with upper, tongue, laces, outsole",
+      "source_match_required": true,
+      "transparent_edge_bleed_required": true,
+      "status": "ART_PENDING"
+    }
+  ],
+  "required_proofs": [
+    "neutral_assembled_1280x720_Godot.png",
+    "side_by_side_native_1to1.png",
+    "head_hair_seams_1to1.png",
+    "shoulders_elbows_knees_shoes_closeups_1to1.png",
+    "articulation_extremes_Godot.png",
+    "Godot_registration_log.txt"
+  ],
+  "asset_auto_validation": "NOT_RUN_FULL_SET",
+  "owner_art_gate": "PENDING"
+}

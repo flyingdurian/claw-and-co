@@ -1,0 +1,62 @@
+name: CLAW CO | ART-02 Actor 01 source and reconstruction gate
+on:
+  push:
+    branches: ['r4/actor01-art02-reconstruction']
+  pull_request:
+    branches: ['r4/actor01-art01-identity-recovery']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  art02-registration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify owner-approved original source bytes
+        run: |
+          printf '%s  %s\n' 'dfc1312937313976179bf5cb830f088e79134eb9018fce09a468ed1b943e81e3' 'art/performers/actor_01/identity_master_candidate.png' | sha256sum -c -
+      - name: Install image verification dependencies
+        run: python3 -m pip install --break-system-packages --quiet pillow numpy
+      - name: Confirm ART-01 explicit owner-approved native exception
+        run: |
+          python3 tools/validate_actor01_identity_candidate.py art/performers/actor_01/identity_master_candidate.png --approved-native --out ci/output/r4a-art02/art01_approved_validation.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('ci/output/r4a-art02/art01_approved_validation.json').read_text())
+          assert r['status']=='OWNER_APPROVED_SOURCE_REGISTERED'
+          assert r['owner_native_exception_applied']
+          assert r['visual_owner_approval']=='APPROVED_ART01'
+          print('ART01_EXACT_OWNER_APPROVAL_VERIFIED=TRUE')
+          PY
+      - name: Evaluate ART-02 strict missing-art gate
+        run: |
+          set +e
+          python3 tools/validate_actor01_art02.py --repo-root . --out ci/output/r4a-art02 > /tmp/actor01-art02-eval.log
+          stage_exit=$?
+          set -e
+          cat /tmp/actor01-art02-eval.log
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('ci/output/r4a-art02/actor01_art02_validation.json').read_text())
+          assert r['source_sha256']=='dfc1312937313976179bf5cb830f088e79134eb9018fce09a468ed1b943e81e3'
+          assert r['total_required_layers']==35
+          print('ART01_APPROVED_SOURCE_VERIFIED=TRUE')
+          print('ART02_STATUS='+r['status'])
+          print('ART02_MISSING_RECONSTRUCTED_LAYERS='+str(r['missing_count']))
+          assert r['status'] in ['ART_PENDING','TECHNICAL_READY_ART_PENDING']
+          PY
+          if [ "$stage_exit" -eq 0 ]; then
+            echo 'All source layers are technically present; owner visual acceptance is STILL separately required.'
+          else
+            echo 'ART-02 correctly remains blocked for missing or invalid high-fidelity components.'
+          fi
+      - name: Upload ART-02 registration audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: actor01-art02-asset-registration-gate
+          path: ci/output/r4a-art02
+          retention-days: 14
