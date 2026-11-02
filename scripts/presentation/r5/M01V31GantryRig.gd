@@ -96,6 +96,10 @@ func _ready() -> void:
         var w:=cap_src if i!=1 else tex.get_width()-cap_src*2
         section.region_rect=Rect2(a0,0,w,tex.get_height())
         bridge_slices.append(section)
+    # The decorative near-left plate sits *behind* the opaque cabinet
+    # front-left pillar. Do not move either bridge bearing: the first cap
+    # sprite is concealed while the continuous rail core remains unchanged.
+    bridge_slices[0].visible=false
     # Trim only the occluded extreme tip of the first rail cap. This affects
     # presentation pixels, not its anchor, geometry, movement or end bearing.
     var end_trim_shader := Shader.new()
@@ -175,6 +179,17 @@ func _ready() -> void:
     var upper_roof := _sprite(self,"UpperRightRoofForeground","M01Cabinet",Vector2.ZERO,1,false)
     upper_roof.texture=ImageTexture.create_from_image(upper_right_fascia)
     upper_roof.z_index=6
+    # The front roof/cross-piece is a physical foreground occluder, not
+    # part of the moving gantry. Use only source-registered opaque original
+    # cabinet pixels (no generated paint and no broad rectangular mask).
+    # Unlike the original roof_fascia_mask, this reaches the LOWER trim
+    # line where the thin chain previously appeared above the front face.
+    var front_roof_pixels := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
+    front_roof_pixels.fill(Color.TRANSPARENT)
+    front_roof_pixels.blit_rect(original_body,Rect2i(187,195,752,190),Vector2i(187,195))
+    var roof_front := _sprite(self,"OriginalCabinetFrontCrosspiece","M01Cabinet",Vector2.ZERO,1,false)
+    roof_front.texture=ImageTexture.create_from_image(front_roof_pixels)
+    roof_front.z_index=10
     # Seamlessly extend the original illustrated right chamber wall beneath
     # the source-authentic front pillar, using one coherent texture resample.
     # Unlike a row-by-row alpha fill, shapes remain continuous at every y.

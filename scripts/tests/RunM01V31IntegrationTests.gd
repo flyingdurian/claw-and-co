@@ -30,7 +30,8 @@ func run_all()->void:
           rig.has_node("OriginalRoofFasciaOcclusion") and
           rig.has_node("OriginalRightPillarRestoration") and
           rig.has_node("RightChamberGapClosure") and
-          rig.has_node("UpperRightRoofForeground"),
+          rig.has_node("UpperRightRoofForeground") and
+          rig.has_node("OriginalCabinetFrontCrosspiece"),
           "four source-registered foreground restoration layers")
     var pillar: Sprite2D=rig.get_node("OriginalLeftPillarForegroundMask")
     var chain_mask: Sprite2D=rig.get_node("ChainFeedRoofTerminationMask")
@@ -38,12 +39,14 @@ func run_all()->void:
     var right_mask: Sprite2D=rig.get_node("OriginalRightPillarRestoration")
     var chamber_fill: Sprite2D=rig.get_node("RightChamberGapClosure")
     var upper_roof: Sprite2D=rig.get_node("UpperRightRoofForeground")
+    var roof_front: Sprite2D=rig.get_node("OriginalCabinetFrontCrosspiece")
     check(pillar.texture.get_size()==Vector2(1024,1536) and
           chain_mask.texture.get_size()==Vector2(1024,1536) and
           roof_mask.texture.get_size()==Vector2(1024,1536) and
           right_mask.texture.get_size()==Vector2(1024,1536) and
           chamber_fill.texture.get_size()==Vector2(1024,1536) and
-          upper_roof.texture.get_size()==Vector2(1024,1536),
+          upper_roof.texture.get_size()==Vector2(1024,1536) and
+          roof_front.texture.get_size()==Vector2(1024,1536),
           "all source-registered masks are exactly 1024x1536")
     check(not chain_mask.region_enabled and chain_mask.position==Vector2.ZERO and
           chain_mask.texture.get_image().get_used_rect().size.y<=16,
@@ -64,7 +67,8 @@ func run_all()->void:
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
     var chain:Node2D=rig.get_node("FlexibleChain")
-    check(chain.z_index<bridge.z_index and chain.z_index<upper_roof.z_index,
+    check(chain.z_index<bridge.z_index and chain.z_index<upper_roof.z_index and
+          chain.z_index<roof_front.z_index and roof_front.z_index>bridge.z_index,
         "chain stays behind front bridge and upper roof at all positions")
     check(chamber_fill.z_index==rails.z_index and
           rig.get_children().find(chamber_fill)<rig.get_children().find(rails) and
@@ -79,6 +83,7 @@ func run_all()->void:
     var rightmask0:=right_mask.transform
     var roofmask0:=roof_mask.transform
     var uppermask0:=upper_roof.transform
+    var frontmask0:=roof_front.transform
     var wallmask0:=chamber_fill.transform
     var p0: Dictionary=rig.last_pose.duplicate(true)
     rig.set_pose(1.0,0.35,0,0)
@@ -106,7 +111,8 @@ func run_all()->void:
     check(pz["chain_end"].distance_to(p0["chain_end"])<.001,"Z never disconnects chain feed")
     check(pillar.transform==mask0 and chain_mask.transform==chainmask0 and
           right_mask.transform==rightmask0 and roof_mask.transform==roofmask0 and
-          chamber_fill.transform==wallmask0 and upper_roof.transform==uppermask0,
+          chamber_fill.transform==wallmask0 and upper_roof.transform==uppermask0 and
+          roof_front.transform==frontmask0,
         "four masks remain cabinet-fixed")
     check(chain.get_child_count()>=60 and chain.get_child(0).texture!=null,
         "original Astra link art powers dynamic flexible chain")
@@ -114,7 +120,8 @@ func run_all()->void:
           not chain.get_child(0).region_enabled and
           (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
           "chain uses 65-percent source-faithful display art, same center and path")
-    check(rig.bridge_slices[0].material is ShaderMaterial and
+    check(not rig.bridge_slices[0].visible and
+          rig.bridge_slices[0].material is ShaderMaterial and
           rig.bridge_slices[0].region_rect.position.x>0,
           "front-left rail cap uses original interior chrome, not the exposed endplate")
     var hashes: Array[String]=[]
