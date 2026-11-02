@@ -66,6 +66,8 @@ func run_all()->void:
     var chain:Node2D=rig.get_node("FlexibleChain")
     check(chain.z_index<bridge.z_index and chain.z_index<upper_roof.z_index,
         "chain stays behind front bridge and upper roof at all positions")
+    check(chamber_fill.z_index<rails.z_index and chamber_fill.z_index<bridge.z_index,
+        "chamber infill must not cover either fixed right guide or moving horizontal rail")
     check(right_mask.texture.get_image().get_used_rect().end.y>=955,
         "right vertical frame restoration extends past truncated border")
     rig.set_pose(0.5,0.35,0,0)

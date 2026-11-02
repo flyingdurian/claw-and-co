@@ -186,7 +186,9 @@ func _ready() -> void:
     chamber_infill.blit_rect(illustrated_right_wall,Rect2i(0,0,205,590),Vector2i(738,315))
     var wall_fill := _sprite(self,"RightChamberGapClosure","m01_chamber_backdrop",Vector2.ZERO,1,false)
     wall_fill.texture=ImageTexture.create_from_image(chamber_infill)
-    wall_fill.z_index=0
+    # Draw wall behind all cabinet hardware; z=0 previously covered the
+    # upper-right fixed guide and made the metal appear cut off.
+    wall_fill.z_index=-1
     var right_pillar := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     right_pillar.fill(Color.TRANSPARENT)
     # Owner #3: DO NOT lay the full pillar mask across the right depth
