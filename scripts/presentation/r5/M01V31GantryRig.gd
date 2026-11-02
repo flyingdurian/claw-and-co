@@ -186,7 +186,16 @@ func _ready() -> void:
     # line where the thin chain previously appeared above the front face.
     var front_roof_pixels := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     front_roof_pixels.fill(Color.TRANSPARENT)
-    front_roof_pixels.blit_rect(original_body,Rect2i(187,195,752,190),Vector2i(187,195))
+    # Front-frame lower edge slopes down toward the right in the source
+    # perspective. Retain ONLY the actual upper-facing lip; copying the
+    # entire rectangular roof region hid the drag chain, which must remain
+    # visible inside the cabinet below this lip.
+    for xx in range(187,939):
+        var lip_bottom := clampi(roundi(320.0+0.064*float(xx-280)),304,357)
+        for yy in range(195,lip_bottom):
+            var px := original_body.get_pixel(xx,yy)
+            if px.a>0.005:
+                front_roof_pixels.set_pixel(xx,yy,px)
     var roof_front := _sprite(self,"OriginalCabinetFrontCrosspiece","M01Cabinet",Vector2.ZERO,1,false)
     roof_front.texture=ImageTexture.create_from_image(front_roof_pixels)
     roof_front.z_index=10
