@@ -155,10 +155,17 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     var source_width: float=float(m01_authoritative_carry.texture.get_width())
     var grip_scale: float=maxf(.001,claw_grip.scale.x)
     var base_scale: float=114.0/maxf(1.0,source_width)/grip_scale
-    var squash: float=float(visual.get("squash",1.0))
-    m01_authoritative_carry.scale=Vector2(base_scale,base_scale*squash)
+    # V2 secondary plush material response is cosmetic and bounded.
+    # A tensioned plush narrows and stretches slightly; deep-pile contact
+    # compresses it. All 3 prongs stay in the approved fixed hierarchy.
+    var squash: float=clampf(float(visual.get("squash",1.0)),.86,1.08)
+    var stretch: float=clampf(float(visual.get("stretch",1.0)),.92,1.14)
+    var tension: float=clampf(float(visual.get("tension",0.0)),0.0,1.0)
+    m01_authoritative_carry.scale=Vector2(
+        base_scale*(1.0-.09*tension),base_scale*squash*stretch)
     m01_authoritative_carry.position=Vector2(0,710)+Vector2(visual.get("offset",Vector2.ZERO))
-    m01_authoritative_carry.rotation=float(visual.get("rotation",0.0))
+        +Vector2(0,2.0*tension)
+    m01_authoritative_carry.rotation=clampf(float(visual.get("rotation",0.0)),-.28,.28)
     if carrying:
         m01_authoritative_carry.visible=true
     elif falling and m01_falling_proxy!=null:
@@ -167,8 +174,14 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
         var floor_target: Vector2=Vector2(405,775)
         m01_falling_proxy.texture=m01_authoritative_carry.texture
         m01_falling_proxy.position=drop_origin.lerp(floor_target,fall_u)+Vector2(0,-28.0*sin(PI*fall_u))
-        m01_falling_proxy.rotation=float(visual.get("fall_rotation",0.0))
-        m01_falling_proxy.scale=Vector2.ONE*(114.0/maxf(1.0,source_width))
+        var is_landed: bool=bool(visual.get("landed",false))
+        var tip_rotation: float=float(visual.get("fall_rotation",0.0))
+        # Damped as the plush settles; no restless spinning at the floor.
+        m01_falling_proxy.rotation=tip_rotation*(1.0-.70*fall_u)
+        var floor_squash: float=.93 if is_landed else 1.0
+        m01_falling_proxy.scale=Vector2(
+            114.0/maxf(1.0,source_width),
+            114.0/maxf(1.0,source_width)*floor_squash)
         m01_falling_proxy.visible=true
     for i in stock.size():
         if str(stock[i].get("instance",""))==requested and i<stock_sprites.size():
