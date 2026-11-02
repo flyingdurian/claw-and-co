@@ -170,9 +170,9 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
             # in the same source-image coordinates as the approved V3.1 rig.
             # This is presentation-only: stock still comes from InventoryLedger.
             var chamber_slots: Array[Vector2]=[
-                Vector2(405,860),Vector2(660,855),Vector2(530,730),
-                Vector2(355,700),Vector2(735,690),Vector2(500,615),
-                Vector2(640,590)]
+                Vector2(405,775),Vector2(660,770),Vector2(530,650),
+                Vector2(355,645),Vector2(735,630),Vector2(500,560),
+                Vector2(640,540)]
             sprite.position=artwork.position+chamber_slots[mini(i,chamber_slots.size()-1)]*artwork.scale.x
             sprite.scale=Vector2.ONE*.30
             sprite.z_index=1
