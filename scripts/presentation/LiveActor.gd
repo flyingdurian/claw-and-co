@@ -27,6 +27,7 @@ var tick: int = 0
 var foot_point: Vector2 = Vector2.ZERO
 var articulated: ArticulatedCustomerRig = null
 var previous_foot: Vector2 = Vector2.ZERO
+var last_facing: float = 1.0
 
 func configure(id: String, texture: Texture2D, index: int, scale_factor: float = 0.60) -> void:
     person_id = id
@@ -88,7 +89,8 @@ func render_at(authoritative_tick: int, at_foot: Vector2, action: String, reacti
     foot_point = at_foot
     position = at_foot
     var direction: float = signf(at_foot.x-previous_foot.x)
-    if is_zero_approx(direction): direction = 1.0
+    if is_zero_approx(direction): direction = last_facing
+    last_facing = direction
     previous_foot = at_foot
     z_index = clampi(int(at_foot.y), 0, 4095)
     var group: String = "chat"
@@ -179,7 +181,9 @@ func render_at(authoritative_tick: int, at_foot: Vector2, action: String, reacti
         body.visible = false
         articulated.visible = true
         articulated.scale = Vector2(visual_scale,visual_scale)
-        articulated.position = Vector2(0, -actor_height * .82 * visual_scale)
+        # R4-A rig uses foot-contact coordinates anchored at actor's origin.
+        # The former -height offset detached modular feet from the aisle floor.
+        articulated.position = Vector2.ZERO
         articulated.sample(tick,action,direction)
     body.scale = Vector2(visual_scale*(1.0 + lean*.36), visual_scale*squash)
     body.position = Vector2(side*visual_scale, (-actor_height*.5 - bob)*visual_scale)

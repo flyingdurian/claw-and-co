@@ -1,0 +1,66 @@
+name: CLAW CO | R4-A Actor 01 Hybrid Performer Pilot
+on:
+  push:
+    branches: [ 'r4/actor01-hybrid-rig-pilot' ]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  r4a-actor01:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+      - name: Materialize editable original Actor 01 art
+        run: |
+          python3 tools/generate_actor01_art.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('art/performers/actor_01')
+          assert len(list(p.glob('*.svg')))==25
+          assert (p/'rig.json').exists()
+          print('R4A_REGISTERED_SVG_PARTS=25')
+          PY
+      - name: Install Godot software renderer and video encoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb ffmpeg libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers python3-pil
+      - name: Fetch verified official Godot 4.7.2
+        run: python3 ci/fetch_godot.py
+      - name: Run accepted simulation and crowd suites
+        run: bash ci/run_suites.sh
+      - name: Validate Actor 01 independent joints and expressions
+        run: |
+          mkdir -p ci/output/r4a
+          set -o pipefail
+          ci/bin/godot --headless --path . --script res://scripts/tests/RunActor01R4ATests.gd | tee ci/output/r4a/actor01_rig_tests.log
+          grep -E 'R4A_ACTOR01_ASSERTIONS=.*FAILED=0' ci/output/r4a/actor01_rig_tests.log
+      - name: Capture full continuous Godot 1280x720 Actor 01 animation video
+        run: |
+          mkdir -p ci/output/r4a/screenshots ci/output/r4a/video
+          set -o pipefail
+          LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 225s xvfb-run -a -s '-screen 0 1280x720x24' ci/bin/godot --path . --rendering-method gl_compatibility --resolution 1280x720 --audio-driver Dummy --fixed-fps 24 --write-movie ci/output/r4a/video/actor01_raw.avi --script res://ci/CaptureActor01R4A.gd | tee ci/output/r4a/capture.log
+          ffmpeg -hide_banner -loglevel error -y -i ci/output/r4a/video/actor01_raw.avi -an -c:v libx264 -preset fast -crf 21 -pix_fmt yuv420p -movflags +faststart ci/output/r4a/video/actor01_r4a_18s.mp4
+          rm -f ci/output/r4a/video/actor01_raw.avi
+          test "$(find ci/output/r4a/screenshots -name '*.png' | wc -l)" -eq 7
+          test -s ci/output/r4a/video/actor01_r4a_18s.mp4
+      - name: Register source SVG layers as committed feature branch art
+        if: success()
+        run: |
+          git config user.name "claw-co-r4a-ci"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add art/performers/actor_01
+          if ! git diff --cached --quiet; then
+            git commit -m "art(r4-a): register generated 25 editable Actor 01 SVG layers and rig manifest"
+            git push origin HEAD:r4/actor01-hybrid-rig-pilot
+          fi
+      - name: Upload original editable art, seven true screenshots and engine MP4
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clawco-r4a-actor01-pilot-proof
+          path: |
+            art/performers/actor_01
+            ci/output/r4a
+            ci/output/logs
+          retention-days: 14
