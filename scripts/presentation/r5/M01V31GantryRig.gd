@@ -118,7 +118,9 @@ func _ready() -> void:
     # The decorative near-left plate sits *behind* the opaque cabinet
     # front-left pillar. Do not move either bridge bearing: the first cap
     # sprite is concealed while the continuous rail core remains unchanged.
-    bridge_slices[0].visible=false
+    # Seat the source-matched left profile beneath the pillar. The new
+    # cabinet-local shader clips any surplus to the opaque frame boundary.
+    bridge_slices[0].visible=true
     # Trim only the occluded extreme tip of the first rail cap. This affects
     # presentation pixels, not its anchor, geometry, movement or end bearing.
     var end_trim_shader := Shader.new()

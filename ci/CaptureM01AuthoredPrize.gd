@@ -18,8 +18,10 @@ func run()->void:
     backdrop.texture=load("res://art/r5/front_aisle_architecture.png")
     root.add_child(backdrop)
     machine=(load("res://scenes/machines/M01_Machine.tscn") as PackedScene).instantiate()
-    machine.position=Vector2(375,-210)
-    machine.scale=Vector2.ONE*1.65
+    # Show the entire original cabinet seated on the illuminated arcade
+    # floor, not an artificially cropped floating machine.
+    machine.position=Vector2(470,145)
+    machine.scale=Vector2.ONE*1.30
     root.add_child(machine)
     for i in 5:await process_frame
     var stock:Dictionary={"TEST_PRIZE":{"item_id":"plush_panda","owner":"cassette:C01","reservation":"S01"}}
