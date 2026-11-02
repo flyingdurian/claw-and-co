@@ -1,0 +1,48 @@
+name: ART-01 approved original exact-byte registration
+on:
+  push:
+    branches: ['r4/actor01-art02-reconstruction']
+    paths: ['.github/workflows/actor01-approve-source-import.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-approved-original:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download the approved original and verify exact bytes
+        env:
+          SOURCE: "https://d2ol7oe51mr4n9.cloudfront.net/user_3JEbazkCX92Kd0K6P0PCEPoIKXS/21d17c44-d2e8-4801-b76c-99f29558500f.png"
+          EXPECTED: "dfc1312937313976179bf5cb830f088e79134eb9018fce09a468ed1b943e81e3"
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 15 --max-time 90 "$SOURCE" -o /tmp/actor01_approved_original.png
+          echo "$EXPECTED  /tmp/actor01_approved_original.png" | sha256sum -c -
+          python3 - <<'PY'
+          import struct
+          from pathlib import Path
+          p=Path('/tmp/actor01_approved_original.png')
+          b=p.read_bytes()
+          assert b[:8]==b'\x89PNG\r\n\x1a\n'
+          width,height,bit_depth,color_type=struct.unpack('>IIBB',b[16:26])
+          assert (width,height,bit_depth,color_type)==(1024,1536,8,6)
+          print('APPROVED_ACTOR01_ORIGINAL=VERIFIED',len(b),'bytes')
+          PY
+          mkdir -p art/performers/actor_01
+          cp /tmp/actor01_approved_original.png art/performers/actor_01/identity_master_candidate.png
+          echo "$EXPECTED  art/performers/actor_01/identity_master_candidate.png" | sha256sum -c -
+      - name: Commit exact original only to ART-02 development branch
+        run: |
+          set -euo pipefail
+          git config user.name 'clawco-art01-source-audit'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add art/performers/actor_01/identity_master_candidate.png
+          if git diff --cached --quiet; then
+            echo 'Original already registered byte-identically'
+          else
+            git commit -m 'art(art01): register owner-approved byte-exact Actor 01 identity master'
+            git push origin HEAD:r4/actor01-art02-reconstruction
+          fi
