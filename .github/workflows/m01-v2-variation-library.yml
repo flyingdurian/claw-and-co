@@ -31,7 +31,7 @@ jobs:
           ci/bin/godot --headless --path . --script res://scripts/tests/RunM01V2VariationTests.gd | tee ci/output/m01v2/v2_variation_tests.log
           grep -E 'M01_V1_ASSERTIONS=.*FAILED=0' ci/output/m01v2/v1_compatibility.log
           grep -E 'M01_V2_ASSERTIONS=.*FAILED=0' ci/output/m01v2/v2_variation_tests.log
-      - name: Capture 42 genuine Godot 1280x720 V2 frames
+      - name: Capture 47 genuine Godot 1280x720 V2 frames
         run: |
           mkdir -p ci/output/m01v2/screenshots
           set -o pipefail
@@ -41,7 +41,7 @@ jobs:
           from PIL import Image
           p=Path('ci/output/m01v2/screenshots')
           files=list(p.glob('*.png'))
-          assert len(files)==42,len(files)
+          assert len(files)==47,len(files)
           out=Path('ci/output/m01v2')
           for f in files:
               with Image.open(f) as im: assert im.size==(1280,720),f
@@ -52,7 +52,7 @@ jobs:
                   with Image.open(p/(vid+f'_{tick:03}.png')) as im:
                       canvas.paste(im.convert('RGB'),((i%5)*1280,(i//5)*720))
               canvas.save(out/(f'v2_all_ten_tick_{tick}.jpg'),quality=90)
-          print('M01_V2_CAPTURE_PROOF=42 REAL GODOT IMAGES')
+          print('M01_V2_CAPTURE_PROOF=47 REAL GODOT IMAGES')
           PY
       - name: Upload real V2 capture sheets, engine proof and regression logs
         if: always()

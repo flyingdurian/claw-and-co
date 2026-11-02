@@ -61,6 +61,9 @@ func run()->void:
                 "cassette":"V2","output":""}}},"inventory":{instance:{
                     "item_id":"plush_panda","owner":"cassette:V2","reservation":sid}}}
             var marks:Array=[163,205,228,238]
+            if id=="W4":marks=[163,194,205,228,238]
+            if id=="W5":marks=[163,187,205,213,228,238]
+            if id=="M4":marks=[163,194,201,205,228,238]
             if id=="M5":marks=[163,205,225,228,237,238]
             for visual_tick in marks:
                 snap["tick"]=visual_tick
@@ -69,6 +72,6 @@ func run()->void:
                 label.text="M01 V2  "+id+"   |   Tick "+str(visual_tick)+" / 240\n"+phase
                 await _shot(id+"_%03d"%visual_tick)
                 count+=1
-    assert(count==42)
-    print("M01_V2_GODOT_CAPTURES=42")
+    assert(count==47)
+    print("M01_V2_GODOT_CAPTURES=47")
     quit(0)
