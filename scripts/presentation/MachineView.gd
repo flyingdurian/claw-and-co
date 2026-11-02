@@ -163,8 +163,9 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     var tension: float=clampf(float(visual.get("tension",0.0)),0.0,1.0)
     m01_authoritative_carry.scale=Vector2(
         base_scale*(1.0-.09*tension),base_scale*squash*stretch)
-    m01_authoritative_carry.position=Vector2(0,710)+Vector2(visual.get("offset",Vector2.ZERO))
-        +Vector2(0,2.0*tension)
+    m01_authoritative_carry.position=(Vector2(0,710)
+        +Vector2(visual.get("offset",Vector2.ZERO))
+        +Vector2(0,2.0*tension))
     m01_authoritative_carry.rotation=clampf(float(visual.get("rotation",0.0)),-.28,.28)
     if carrying:
         m01_authoritative_carry.visible=true
