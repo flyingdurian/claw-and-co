@@ -20,7 +20,8 @@ func run() -> void:
     expect(str(miss["cue"])=="CUT_MISS","Barber failure has miss visual cue")
     var win: Dictionary = MOTION.sample("M01","PLAYING",.91,200,"win")
     var lost: Dictionary = MOTION.sample("M01","PLAYING",.91,200,"miss")
-    expect(float(win["stock_lift"])>float(lost["stock_lift"]),"M01 only lifts prize on authored win")
+    expect(float(win["stock_lift"])==0.0 and float(lost["stock_lift"])==0.0,
+        "M01 legacy stock lift cannot reveal result; V1 paired pickup supplies both visuals")
     var broken: Dictionary = MOTION.sample("M02","RESET_REQUIRED",0.0,100,"stuck")
     var reset: Dictionary = MOTION.sample("M02","RESETTING",.5,145,"stuck")
     expect(str(broken["cue"])=="FAULT","M02 jam indicator derives from actual machine state")
