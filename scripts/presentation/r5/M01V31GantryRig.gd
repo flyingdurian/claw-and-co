@@ -186,9 +186,12 @@ func _ready() -> void:
     chamber_infill.blit_rect(illustrated_right_wall,Rect2i(0,0,205,590),Vector2i(738,315))
     var wall_fill := _sprite(self,"RightChamberGapClosure","m01_chamber_backdrop",Vector2.ZERO,1,false)
     wall_fill.texture=ImageTexture.create_from_image(chamber_infill)
-    # Draw wall behind all cabinet hardware; z=0 previously covered the
-    # upper-right fixed guide and made the metal appear cut off.
-    wall_fill.z_index=-1
+    # Keep the chamber fill ABOVE the outer arcade background, but BELOW
+    # all physical rails by drawing it first within the V3.1 rig. A negative
+    # Z index incorrectly put it behind the original cabinet and reopened
+    # the transparent right-side hole; a later Z=0 draw covered the guide.
+    wall_fill.z_index=0
+    move_child(wall_fill,0)
     var right_pillar := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     right_pillar.fill(Color.TRANSPARENT)
     # Owner #3: DO NOT lay the full pillar mask across the right depth
