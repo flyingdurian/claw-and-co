@@ -27,15 +27,16 @@ func run()->void:
         "authored win carries exactly reserved prize during real M01 animation")
     var prize: Sprite2D=machine.get("m01_authoritative_carry") as Sprite2D
     var claw: Node2D=(machine.get("m01_v31_rig") as Node2D).get("claw_root") as Node2D
-    check(prize.get_parent()==claw and prize.get_index()==1,
-        "prize is physically parented inside the three-prong claw behind articulated fingers")
-    check(prize.position==Vector2(0,640) and prize.z_index==0,
+    check(prize.get_parent()==claw and prize.get_index()==2 and
+          claw.get_node("RearPivot").get_index()==1,
+        "rear finger behind prize and two gripping fingers in front")
+    check(prize.position==Vector2(0,710) and prize.z_index==0,
         "prize center is inside lower claw grip, not floating near trolley")
     check(not machine.get("stock_sprites")[0].visible,"reserved physical stock is not drawn twice")
     var rig: Node2D=machine.get("m01_v31_rig") as Node2D
     check(prize.texture!=null and
-          absf(prize.texture.get_width()*prize.scale.x*claw.scale.x-106.0)<.02,
-          "plush sized to 106 actual cabinet pixels within prongs")
+          absf(prize.texture.get_width()*prize.scale.x*claw.scale.x-114.0)<.02,
+          "plush sized to 114 cabinet pixels within three-prong clearance")
     var physical_position: Vector2=prize.global_position
     rig.call("set_pose",.15,.85,.6,1)
     check(prize.global_position.distance_to(physical_position)>30.0,

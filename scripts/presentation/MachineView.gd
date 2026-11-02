@@ -81,11 +81,14 @@ func _ready() -> void:
         # Draw the prize UNDER the left/right/rear finger rigs, not over them.
         var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
         claw_grip.add_child(m01_authoritative_carry)
-        claw_grip.move_child(m01_authoritative_carry,1)
+        # True three-prong depth: rear finger BEHIND the plush, left/right
+        # gripping fingers IN FRONT, motor head above. Rig poses unchanged.
+        claw_grip.move_child(claw_grip.get_node("RearPivot"),1)
+        claw_grip.move_child(m01_authoritative_carry,2)
         m01_authoritative_carry.z_index=0
         # Claw-local coordinates: the central motor hub is at y=0, and the
         # gripper tips converge below y≈600. Place the prize between them.
-        m01_authoritative_carry.position=Vector2(0,640)
+        m01_authoritative_carry.position=Vector2(0,710)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -130,11 +133,11 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     if m01_authoritative_carry.texture==null: return
     var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
     # The approved rig's root is scaled. Convert the illustrated plush
-    # to 106 cabinet pixels (instead of the prior 203px floating sprite).
+    # to 114 cabinet pixels (instead of the prior 203px floating sprite).
     # This is a visual-scale transform only; never alter the grip geometry.
     var source_width: float=float(m01_authoritative_carry.texture.get_width())
     var grip_scale: float=maxf(0.001,claw_grip.scale.x)
-    m01_authoritative_carry.scale=Vector2.ONE*(106.0/maxf(1.0,source_width)/grip_scale)
+    m01_authoritative_carry.scale=Vector2.ONE*(114.0/maxf(1.0,source_width)/grip_scale)
     m01_authoritative_carry.visible=true
     # The same exact instance cannot appear simultaneously on the floor.
     for i in stock.size():
