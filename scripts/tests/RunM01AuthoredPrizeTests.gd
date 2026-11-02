@@ -25,6 +25,8 @@ func run()->void:
     machine.call("apply_snapshot",snapshot,{"S01":session_win})
     check(machine.get("m01_authoritative_carry").visible,
         "authored win carries exactly reserved prize during real M01 animation")
+    check((machine.get("m01_authoritative_carry") as Sprite2D).scale.x>1.25,
+        "reserved prize remains readable at real interactive cabinet scale")
     check(not machine.get("stock_sprites")[0].visible,"reserved physical stock is not drawn twice")
     var pose: Dictionary=(machine.get("m01_v31_rig") as Node2D).get("last_pose")
     check(machine.get("m01_authoritative_carry").position.distance_to(

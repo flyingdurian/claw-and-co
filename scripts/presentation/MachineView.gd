@@ -77,7 +77,9 @@ func _ready() -> void:
         m01_authoritative_carry.name="M01ReservedPrizeInClaw"
         m01_authoritative_carry.visible=false
         m01_authoritative_carry.z_index=2
-        m01_authoritative_carry.scale=Vector2.ONE*.34
+        # Real prize atlas is ~145px wide; .34 made a near-invisible dot
+        # at the 242px cabinet scale. Display at tactile plush size instead.
+        m01_authoritative_carry.scale=Vector2.ONE*1.40
         artwork.add_child(m01_authoritative_carry)
 
 func _stock_items(snapshot: Dictionary) -> Array:
