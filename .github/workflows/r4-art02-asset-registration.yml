@@ -18,6 +18,18 @@ jobs:
           printf '%s  %s\n' 'dfc1312937313976179bf5cb830f088e79134eb9018fce09a468ed1b943e81e3' 'art/performers/actor_01/identity_master_candidate.png' | sha256sum -c -
       - name: Install image verification dependencies
         run: python3 -m pip install --break-system-packages --quiet pillow numpy
+      - name: Confirm ART-01 explicit owner-approved native exception
+        run: |
+          python3 tools/validate_actor01_identity_candidate.py art/performers/actor_01/identity_master_candidate.png --approved-native --out ci/output/r4a-art02/art01_approved_validation.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('ci/output/r4a-art02/art01_approved_validation.json').read_text())
+          assert r['status']=='OWNER_APPROVED_SOURCE_REGISTERED'
+          assert r['owner_native_exception_applied']
+          assert r['visual_owner_approval']=='APPROVED_ART01'
+          print('ART01_EXACT_OWNER_APPROVAL_VERIFIED=TRUE')
+          PY
       - name: Evaluate ART-02 strict missing-art gate
         run: |
           set +e
