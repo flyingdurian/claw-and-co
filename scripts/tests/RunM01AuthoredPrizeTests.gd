@@ -37,6 +37,11 @@ func run()->void:
     machine.call("apply_snapshot",snapshot,{"S01":session_miss})
     check(not machine.get("m01_authoritative_carry").visible and machine.get("stock_sprites")[0].visible,
         "miss never carries prize and stock remains visible")
+    var stock_sprite: Sprite2D=machine.get("stock_sprites")[0] as Sprite2D
+    check(stock_sprite.position.x>60.0 and stock_sprite.position.x<190.0 and
+          stock_sprite.position.y>150.0 and stock_sprite.position.y<310.0 and
+          stock_sprite.scale.x<=.31,
+          "missed M01 prize stays small and physically within illustrated chamber")
     var wrong: Dictionary=snapshot.duplicate(true)
     wrong["inventory"]["TEST_PRIZE"]["reservation"]="DIFFERENT_SESSION"
     machine.call("apply_snapshot",wrong,{"S01":session_win})
@@ -50,6 +55,10 @@ func run()->void:
     machine.call("apply_snapshot",held,{"S01":session_win})
     check(not machine.get("m01_authoritative_carry").visible and machine.get("output_prize").visible,
         "authentic output slot is used after the authoritative state transfers")
+    var hatch_prize: Sprite2D=machine.get("output_prize") as Sprite2D
+    check(hatch_prize.position.x<140.0 and hatch_prize.position.y<330.0 and
+          hatch_prize.scale.x<=.31,
+          "output reward appears inside the original M01 front-left hatch")
     machine.queue_free()
     print("M01_AUTHORED_PRIZE_ASSERTIONS=",assertions," PASSED=",assertions-failures," FAILED=",failures)
     quit(0 if failures==0 else 1)

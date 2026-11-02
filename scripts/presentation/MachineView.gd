@@ -164,6 +164,18 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
         var row: int = i/3
         sprite.position = Vector2(size.x*.5+(float(col)-float(mini(stock.size(),3)-1)*.5)*70.0, 233.0+row*69.0)
         sprite.scale = Vector2.ONE*(.81 if stock.size()<=1 else .45)
+        if machine_id=="M01":
+            # The old 145px plush sprites were pasted across the outside of
+            # M01's 242px face. Register each item inside the ORIGINAL chamber
+            # in the same source-image coordinates as the approved V3.1 rig.
+            # This is presentation-only: stock still comes from InventoryLedger.
+            var chamber_slots: Array[Vector2]=[
+                Vector2(405,860),Vector2(660,855),Vector2(530,730),
+                Vector2(355,700),Vector2(735,690),Vector2(500,615),
+                Vector2(640,590)]
+            sprite.position=artwork.position+chamber_slots[mini(i,chamber_slots.size()-1)]*artwork.scale.x
+            sprite.scale=Vector2.ONE*.30
+            sprite.z_index=1
         sprite.rotation = .026*sin(phase*1.3+float(i)*1.7)
         if state == "PLAYING" and i==0:
             sprite.rotation += .17*sin(progress*PI*2.0)
@@ -178,8 +190,14 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
     output_prize.visible = state=="OUTPUT_HELD" and not output_instance.is_empty()
     if output_prize.visible:
         _set_prize(output_prize,str(out_record.get("item_id","")))
-        output_prize.scale = Vector2.ONE*.48
-        output_prize.position = Vector2(size.x*.76,360.0+5.0*sin(phase*3))
+        if machine_id=="M01":
+            # M01's illustrated pickup hatch is front-left, inside the body.
+            # The authoritative output state alone controls visibility.
+            output_prize.scale=Vector2.ONE*.30
+            output_prize.position=Vector2(size.x*.48,318.0+2.0*sin(phase*3))
+        else:
+            output_prize.scale = Vector2.ONE*.48
+            output_prize.position = Vector2(size.x*.76,360.0+5.0*sin(phase*3))
         output_prize.rotation = .10*sin(phase*2)
     mechanism.position = initial_position
     mechanism.rotation = 0.0
