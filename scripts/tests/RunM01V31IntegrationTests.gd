@@ -55,8 +55,8 @@ func run_all()->void:
           "right-front pillar source artwork restored, not transparent environment")
     check(chamber_fill.texture.get_image().get_used_rect().size.x>0,
           "right chamber gap infill generated from the existing illustrated wall")
-    check(upper_roof.z_index==6,
-          "right marquee mask retains authentic front layer")
+    check(upper_roof.z_index==0 and roof_mask.z_index==0 and roof_front.z_index==10,
+          "interior ceiling beneath chain; exterior cabinet cross-piece ahead")
     var left_cap: Sprite2D=rig.get_node("CabinetFixedHardware/leftFrontMount")
     check(not left_cap.visible and
           not (rig.get_node("CabinetFixedHardware/leftBackMount") as Sprite2D).visible,
@@ -71,9 +71,11 @@ func run_all()->void:
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
     var chain:Node2D=rig.get_node("FlexibleChain")
-    check(chain.z_index<bridge.z_index and chain.z_index<upper_roof.z_index and
-          chain.z_index<roof_front.z_index and roof_front.z_index>bridge.z_index,
-        "chain stays behind front bridge and upper roof at all positions")
+    check(roof_mask.z_index<chain.z_index and upper_roof.z_index<chain.z_index and
+          chain.z_index<bridge.z_index and bridge.z_index<roof_front.z_index,
+        "interior fixture < chain < front bridge < exterior trim")
+    check(rig.left_edge_clip_materials.size()>=3,
+        "Y-forward fixed guide and bridge core are clipped at inner pillar")
     check(chamber_fill.z_index==rails.z_index and
           rig.get_children().find(chamber_fill)<rig.get_children().find(rails) and
           chamber_fill.z_index<bridge.z_index,
@@ -125,7 +127,7 @@ func run_all()->void:
           (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
           "chain uses 65-percent source-faithful display art, same center and path")
     check(not rig.bridge_slices[0].visible and
-          rig.bridge_slices[0].material is ShaderMaterial and
+          rig.bridge_slices[1].material is ShaderMaterial and
           rig.bridge_slices[0].region_rect.position.x>0,
           "front-left rail cap uses original interior chrome, not the exposed endplate")
     var hashes: Array[String]=[]
