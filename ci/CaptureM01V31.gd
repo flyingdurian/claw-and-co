@@ -33,7 +33,13 @@ func capture()->void:
     if not await shot("09_chain_termination_xy_extreme"):quit(1);return
     scene.set_pose(.5,.35,1,1)
     if not await shot("10_claw_closed_full_descent"):quit(1);return
-    print("M01_V31_ACTUAL_GODOT_CAPTURES=10")
+    scene.set_pose(1,0,0,0)
+    if not await shot("11_chain_far_right_back_under_roof"):quit(1);return
+    scene.set_pose(0,1,0,0)
+    if not await shot("12_new_left_travel_stop_y_front"):quit(1);return
+    scene.set_pose(1,1,0,0)
+    if not await shot("13_right_guide_clearance_and_pillar"):quit(1);return
+    print("M01_V31_ACTUAL_GODOT_CAPTURES=13")
     quit(0)
 
 func shot(label:String)->bool:

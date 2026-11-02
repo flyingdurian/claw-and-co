@@ -105,7 +105,9 @@ func _ready() -> void:
     end_trim_material.set_shader_parameter("trim_pixels",float(cap_src)*0.25)
     bridge_slices[0].material = end_trim_material
     chain_root=_node(self,"FlexibleChain")
-    chain_root.z_index=2
+    # Owner #1: the drag chain is behind the near/front moving rail.
+    # Leave the chain spline, feed and trolley connection untouched.
+    chain_root.z_index=0
     # Downscale only the individual approved chain-link art to 65% within
     # its existing 39x86 draw footprint. Existing chain positions, count,
     # curvature, endpoints and motion logic remain completely unchanged.
@@ -164,6 +166,15 @@ func _ready() -> void:
     # slits, never paint an arbitrary opaque rectangle over the chamber.
     var original_body := (load(ART+"M01Cabinet.png") as Texture2D).get_image()
     var original_chamber := (load(ART+"m01_chamber_backdrop.png") as Texture2D).get_image()
+    # Owner #1: the opaque upper-right marquee/fascia must be in front of
+    # a chain at extreme right travel, but not in front of the right guide
+    # below the fascia. Source-registered artwork, never a flat overlay.
+    var upper_right_fascia := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
+    upper_right_fascia.fill(Color.TRANSPARENT)
+    upper_right_fascia.blit_rect(original_body,Rect2i(805,191,208,147),Vector2i(805,191))
+    var upper_roof := _sprite(self,"UpperRightRoofForeground","M01Cabinet",Vector2.ZERO,1,false)
+    upper_roof.texture=ImageTexture.create_from_image(upper_right_fascia)
+    upper_roof.z_index=6
     # Seamlessly extend the original illustrated right chamber wall beneath
     # the source-authentic front pillar, using one coherent texture resample.
     # Unlike a row-by-row alpha fill, shapes remain continuous at every y.
@@ -178,11 +189,16 @@ func _ready() -> void:
     wall_fill.z_index=0
     var right_pillar := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     right_pillar.fill(Color.TRANSPARENT)
-    right_pillar.blit_rect(original_body,Rect2i(900,230,124,620),Vector2i(900,230))
-    for yy in range(230,850):
+    # Owner #3: DO NOT lay the full pillar mask across the right depth
+    # guide at roof height. The top strip includes only the external frame.
+    right_pillar.blit_rect(original_body,Rect2i(938,230,86,260),Vector2i(938,230))
+    # Owner #4: restore the full lower vertical edge rather than stopping
+    # at source row 850, which truncated the border in the earlier build.
+    right_pillar.blit_rect(original_body,Rect2i(906,490,118,465),Vector2i(906,490))
+    for yy in range(490,955):
         var last_x := -100
         var last_color := Color.TRANSPARENT
-        for xx in range(900,1024):
+        for xx in range(906,1024):
             var source_color := original_body.get_pixel(xx,yy)
             if source_color.a >= 0.90:
                 if xx-last_x>1 and xx-last_x<=5:
@@ -190,6 +206,14 @@ func _ready() -> void:
                         right_pillar.set_pixel(fill_x,yy,last_color.lerp(source_color,float(fill_x-last_x)/float(xx-last_x)))
                 last_x=xx
                 last_color=source_color
+    # Continue a fine metallic outline using the original vertical border's
+    # own pixel values; do not paint an unrelated solid vector stroke.
+    for yy in range(849,916):
+        for xx in range(936,947):
+            if right_pillar.get_pixel(xx,yy).a<0.30:
+                var donor:=original_body.get_pixel(xx,830+((yy-849)%7))
+                if donor.a>0.70:
+                    right_pillar.set_pixel(xx,yy,donor)
     var right_edge := _sprite(self,"OriginalRightPillarRestoration","M01Cabinet",Vector2.ZERO,1,false)
     right_edge.texture=ImageTexture.create_from_image(right_pillar)
     right_edge.z_index=9
@@ -252,7 +276,11 @@ func set_pose(x_value:float,y_value:float,z_value:float,grip_value:float)->void:
         spr.position=Vector2(offset if i==0 else offset+cap if i==1 else offset+cap+core,-visual_width*.5)
     var trolley_percent:=float(config["trolley_scale_percent"])
     var margin:=clampf(342.0*.18*(trolley_percent/70.0)*.42,19.0,39.0)
-    var fraction:=(margin/span)+(1.0-2.0*margin/span)*x
+    # Owner #2: raise the left X stop by 78 source pixels so the claw
+    # remains inside the blue-marked usable chamber, not behind the pillar.
+    # Right stop, Y bridge, Z lowering and approach timings are unchanged.
+    var left_stop:=margin+78.0
+    var fraction:=(left_stop/span)+(1.0-(left_stop+margin)/span)*x
     var on_bridge:=left.lerp(right,fraction)
     var trolley:=on_bridge+Vector2(0,4)
     var winch:=trolley+Vector2(0,22.0*trolley_percent/100.0)
