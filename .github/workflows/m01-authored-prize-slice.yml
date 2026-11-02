@@ -1,0 +1,44 @@
+name: CLAW CO | M01 authored prize visual slice
+on:
+  push:
+    branches: [ 'r5/m01-authored-prize-visual-slice' ]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  m01-playable-slice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install renderer and screenshot tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb ffmpeg libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 mesa-vulkan-drivers python3-pil
+      - name: Download exact Godot 4.7.2
+        run: python3 ci/fetch_godot.py
+      - name: Run existing M01 rig and Stage 1/Gate E regression suites
+        run: |
+          bash ci/run_m01_v31.sh
+          bash ci/run_suites.sh
+      - name: Test original M01 playable prize visual binding
+        run: |
+          ci/bin/godot --headless --path . --script res://scripts/tests/RunM01AuthoredPrizeTests.gd | tee ci/output/m01slice_test.log
+          grep "M01_AUTHORED_PRIZE_ASSERTIONS=" ci/output/m01slice_test.log
+      - name: Capture genuine Godot M01 machine win, miss and output
+        run: |
+          mkdir -p ci/output/m01slice/screenshots
+          LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe timeout 140s xvfb-run -a -s '-screen 0 1280x720x24' ci/bin/godot --path . --rendering-method gl_compatibility --resolution 1280x720 --audio-driver Dummy --script res://ci/CaptureM01AuthoredPrize.gd | tee ci/output/m01slice_capture.log
+          test "$(find ci/output/m01slice/screenshots -name '*.png' | wc -l)" -eq 4
+      - name: Upload real engine proof and regression logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m01-authored-prize-slice-proof
+          path: |
+            ci/output/m01slice
+            ci/output/m01slice_test.log
+            ci/output/m01slice_capture.log
+            ci/output/m01v31
+            ci/output/logs
+          retention-days: 14
