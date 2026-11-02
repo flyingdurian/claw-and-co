@@ -48,7 +48,10 @@ static func sample(machine_id: String, state: String, attempt_progress: float, t
             r["dx"] = 66.0*_ease(t/.28) - 31.0*_ease((t-.78)/.20)
             r["dy"] = 115.0*_ease((t-.26)/.22)-115.0*_ease((t-.58)/.21)
             r["grip"] = _ease((t-.48)/.07)
-            r["stock_lift"] = maxf(0.0,80.0*_ease((t-.56)/.25)) if attempt_result == "win" else 0.0
+            # M01 V1 owns the *same* visible pickup for both outcomes.
+            # Never allow a separate legacy win-only stock lift to leak the
+            # result before the protected 75% ambiguity threshold.
+            r["stock_lift"] = 0.0
             r["cue"] = "ALIGN" if t<.26 else ("DESCEND" if t<.50 else ("GRIP" if t<.58 else ("LIFT" if t<.81 else "CHUTE")))
         "M02":
             r["dx"] = 64.0*_ease(t/.28)-26.0*_ease((t-.81)/.17)

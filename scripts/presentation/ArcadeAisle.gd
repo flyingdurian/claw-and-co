@@ -29,6 +29,10 @@ func setup_stage(stage: Dictionary) -> void:
     var session_map: Dictionary = {}
     for s in stage.get("sessions", []): session_map[str(s["session_id"])] = s
     stages = session_map
+    # Stage metadata is routed only to the read-only M01 visual selector.
+    # The authoritative stage schema remains unchanged.
+    (machine_nodes["M01"] as MachineView).set_m01_visual_identity(
+        str(stage.get("stage_id","stage_01")),1731)
     living_crowd.setup_stage(stage)
     for wave in stage.get("waves", []):
         for visit in wave.get("visits", []):
