@@ -39,6 +39,9 @@ func run()->void:
     main.arcade.living_crowd.add_child(performer)
     performer.configure("R4A_DEMO",load("res://art/living/actor_01.png") as Texture2D,0,.55)
     assert(performer.articulated!=null and performer.articulated.rig_valid)
+    var demo_m01:MachineView=main.arcade.machine_nodes["M01"] as MachineView
+    var demo_gantry:Node2D=demo_m01.m01_v31_rig
+    assert(demo_gantry!=null)
     var labels:=CanvasLayer.new()
     main.add_child(labels)
     var banner:=ColorRect.new()
@@ -77,6 +80,10 @@ func run()->void:
             point=Vector2(338,462).lerp(Vector2(1150,510),t)
             pose="LEAVE"
             prop="plush_panda"
+        # Drive the EXISTING approved M01 gantry in the visual-only
+        # play demonstration; do not synthesize win/payout transactions.
+        if sec>=6.7 and sec<10.5:
+            demo_gantry.call("set_demo_tick",int((sec-6.7)*60.0))
         var scale_factor:float=ROUTES.sprite_scale(point.y)
         performer.render_at(frame*2,point,pose,"",prop,-1.0,scale_factor)
         preview_label.text="R4-A · Actor 01 · "+pose+"  |  "+("%.1f"%sec)+" s"

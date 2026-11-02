@@ -75,13 +75,13 @@ func setup(directory:String)->bool:
     root_motion=_add_joint(self,"BodyMotion",Vector2.ZERO)
     torso_pivot=_add_joint(root_motion,"TorsoPivot",Vector2(0,-116))
     head_pivot=_add_joint(root_motion,"HeadPivot",_point(config,"head",Vector2(0,-165)))
-    _add_art(root_motion,directory,"hair_back",-3).position=head_pivot.position
-    _add_art(root_motion,directory,"torso",1).position=torso_pivot.position
-    _add_art(root_motion,directory,"head",6).position=head_pivot.position
-    expression=_add_art(root_motion,directory,"face_neutral",8)
-    expression.position=head_pivot.position
-    _add_art(root_motion,directory,"hair_front",9).position=head_pivot.position
-    _add_art(root_motion,directory,"bow",10).position=head_pivot.position
+    # Actual painted parts must belong to the rotating head/torso pivots.
+    _add_art(head_pivot,directory,"hair_back",-3)
+    _add_art(torso_pivot,directory,"torso",1)
+    _add_art(head_pivot,directory,"head",6)
+    expression=_add_art(head_pivot,directory,"face_neutral",8)
+    _add_art(head_pivot,directory,"hair_front",9)
+    _add_art(head_pivot,directory,"bow",10)
     for side in ["l","r"]:
         var shoulder:=_add_joint(root_motion,"Shoulder_"+side,
             _point(config,"shoulder_"+side,Vector2(-30 if side=="l" else 30,-122)))

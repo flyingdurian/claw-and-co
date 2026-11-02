@@ -71,6 +71,13 @@ func run()->void:
     check(rig.expression.get_meta("emotion","")=="angry","miss reaction expression changes")
     actor.render_at(350,Vector2(500,465),"LEAVE","","",-1.0,.7)
     check(rig.current_pose=="LEAVE","departure uses walk locomotion")
+    check(rig.parts["head"].get_parent()==rig.head_pivot and
+        rig.parts["torso"].get_parent()==rig.torso_pivot and
+        rig.expression.get_parent()==rig.head_pivot,
+        "real painted head and torso belong to independently moving pivots")
+    rig.sample(301,"CHEER",1.0)
+    check(absf(rig.head_pivot.rotation)>.005,
+        "head artwork rotates independently during a cheerful reaction")
     check(rig.parts["hair_front"].texture!=null and rig.parts["bow"].texture!=null,
         "independent illustrated hairstyle and accessory")
     actor.queue_free()
