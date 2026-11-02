@@ -65,7 +65,14 @@ func run_living_tests() -> void:
     for t in range(1,165): sim.advance()
     main.bridge.publish()
     check(p0.position.distance_to(point_start) > 8.0,"background patron actually walks between stations")
-    check(p0.body.texture != texture_start,"animated character uses different image frames")
+    # The walk atlas loops every 28 ticks (4 frames x 7 ticks). Comparing
+    # two arbitrary distant simulation ticks can land on the SAME valid
+    # frame; probe one explicit frame-step instead of a modulo coincidence.
+    var observed_frame: Texture2D = p0.body.texture
+    var observed_tick: int = sim.clock.tick
+    p0.render_at(observed_tick+7,p0.foot_point,p0.pose)
+    check(p0.body.texture != observed_frame,
+        "animated character advances to a different imported frame after 7 ticks")
     check(crowd.actors["V01"].visible,"first customer physically arrives")
     check(crowd.actors["V01"].pose in ["ARRIVE","REQUEST","QUEUE"],"customer first arrival triggers authored pose")
     var sprite: LiveActor = crowd.actors["V01"]
