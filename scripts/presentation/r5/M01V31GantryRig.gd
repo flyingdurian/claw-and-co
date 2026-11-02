@@ -207,12 +207,13 @@ func _ready() -> void:
     # line where the thin chain previously appeared above the front face.
     var front_roof_pixels := Image.create(1024,1536,false,Image.FORMAT_RGBA8)
     front_roof_pixels.fill(Color.TRANSPARENT)
-    # Front-frame lower edge slopes down toward the right in the source
-    # perspective. Retain ONLY the actual upper-facing lip; copying the
-    # entire rectangular roof region hid the drag chain, which must remain
-    # visible inside the cabinet below this lip.
+    # The original ceiling lamp is painted in M01Cabinet source around
+    # y=320..365 and must NOT be copied into this z=10 foreground trim.
+    # The real outer fascia occupies a shallower perspective-sloped lip.
+    # Trim ends above the lamp; the chain (z=1) remains visibly IN FRONT
+    # of the original interior illumination (z=0) and BEHIND this lip.
     for xx in range(187,939):
-        var lip_bottom := clampi(roundi(320.0+0.064*float(xx-280)),304,357)
+        var lip_bottom := clampi(roundi(295.0+0.060*float(xx-280)),294,342)
         for yy in range(195,lip_bottom):
             var px := original_body.get_pixel(xx,yy)
             if px.a>0.005:

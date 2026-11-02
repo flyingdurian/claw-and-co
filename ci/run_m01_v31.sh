@@ -17,9 +17,9 @@ python3 - <<'PY'
 from pathlib import Path
 from PIL import Image
 paths=list(Path('ci/output/m01v31/screenshots').glob('*.png'))
-assert len(paths)==16, len(paths)
+assert len(paths)==17, len(paths)
 for p in paths:
  with Image.open(p) as im: assert im.size==(1280,720),p
 assert Path('ci/output/m01v31/movie/M01_v31_engine_12s.mp4').stat().st_size>35000
-print('V31_GODOT_PROOF=16 genuine engine images + 12s engine movie')
+print('V31_GODOT_PROOF=17 genuine engine images + 12s engine movie')
 PY
