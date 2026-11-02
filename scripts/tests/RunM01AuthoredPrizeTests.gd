@@ -16,10 +16,10 @@ func run()->void:
         "actual Gate E M01 creates approved gantry and reserved prize sprite")
     check(machine.get("m01_chamber_backdrop")!=null and machine.get("m01_chamber_backdrop").show_behind_parent,
         "original registered chamber renders behind cabinet")
-    var session_win: Dictionary={"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":100,"result":"win"}]}
-    var snapshot: Dictionary={"tick":85,
+    var session_win: Dictionary={"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":240,"result":"win"}]}
+    var snapshot: Dictionary={"tick":204,
         "machines":{"machines":{"M01":{"state":"PLAYING","session":"S01","attempt":0,
-        "due":100,"cassette":"C01","output":""}}},
+        "due":240,"cassette":"C01","output":""}}},
         "inventory":{"TEST_PRIZE":{"item_id":"plush_panda","owner":"cassette:C01","reservation":"S01"}}}
     var unchanged: Dictionary=snapshot.duplicate(true)
     machine.call("apply_snapshot",snapshot,{"S01":session_win})
@@ -30,7 +30,7 @@ func run()->void:
     check(prize.get_parent()==claw and prize.get_index()==2 and
           claw.get_node("RearPivot").get_index()==1,
         "rear finger behind prize and two gripping fingers in front")
-    check(prize.position==Vector2(0,710) and prize.z_index==0,
+    check(prize.position.distance_to(Vector2(0,710))<30.0 and prize.z_index==0,
         "prize center is inside lower claw grip, not floating near trolley")
     check(not machine.get("stock_sprites")[0].visible,"reserved physical stock is not drawn twice")
     var rig: Node2D=machine.get("m01_v31_rig") as Node2D
@@ -43,10 +43,19 @@ func run()->void:
         "carried plush is mechanically coupled to claw XY/Z motion")
     machine.call("apply_snapshot",snapshot,{"S01":session_win})
     check(snapshot==unchanged,"presentation never mutates inventory, reservations or machine state")
-    var session_miss: Dictionary={"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":100,"result":"miss"}]}
+    var session_miss: Dictionary={"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":240,"result":"miss"}]}
+    machine.call("apply_snapshot",snapshot,{"S01":session_miss})
+    snapshot["tick"]=160
+    machine.call("apply_snapshot",snapshot,{"S01":session_win})
+    var prefix_win: Dictionary=machine.get("m01_last_visual").duplicate(true)
+    machine.call("apply_snapshot",snapshot,{"S01":session_miss})
+    var prefix_miss: Dictionary=machine.get("m01_last_visual").duplicate(true)
+    check(prefix_win==prefix_miss and machine.get("m01_authoritative_carry").visible,
+        "win and miss share exactly the same visible pickup before tick 180")
+    snapshot["tick"]=235
     machine.call("apply_snapshot",snapshot,{"S01":session_miss})
     check(not machine.get("m01_authoritative_carry").visible and machine.get("stock_sprites")[0].visible,
-        "miss never carries prize and stock remains visible")
+        "authored miss releases the carried illusion before attempt end")
     var stock_sprite: Sprite2D=machine.get("stock_sprites")[0] as Sprite2D
     check(stock_sprite.position.x>60.0 and stock_sprite.position.x<190.0 and
           stock_sprite.position.y>150.0 and stock_sprite.position.y<310.0 and

@@ -1,0 +1,14 @@
+{
+  "schema": "clawco.m01.v1.visual-fixtures/1",
+  "stage_id": "stage_01",
+  "note": "Presentation-only fixtures; no stage gameplay manifest changes or extra payouts.",
+  "attempt_duration_ticks": 240,
+  "pairs": [
+    {"pair_index":0, "win":{"session_id":"PILOT_PAIR_0","result":"win","requested_prize_instance_id":"PILOT_PRIZE_0"},
+                      "miss":{"session_id":"PILOT_PAIR_0","result":"miss","requested_prize_instance_id":"PILOT_PRIZE_0"}},
+    {"pair_index":1, "win":{"session_id":"PILOT_PAIR_1","result":"win","requested_prize_instance_id":"PILOT_PRIZE_1"},
+                      "miss":{"session_id":"PILOT_PAIR_1","result":"miss","requested_prize_instance_id":"PILOT_PRIZE_1"}},
+    {"pair_index":2, "win":{"session_id":"PILOT_PAIR_2","result":"win","requested_prize_instance_id":"PILOT_PRIZE_2"},
+                      "miss":{"session_id":"PILOT_PAIR_2","result":"miss","requested_prize_instance_id":"PILOT_PRIZE_2"}}
+  ]
+}
