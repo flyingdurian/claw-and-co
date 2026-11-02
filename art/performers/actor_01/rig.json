@@ -1,0 +1,109 @@
+{
+  "schema": "clawco.performer-rig/v2",
+  "character": "actor_01",
+  "directory": "res://art/performers/actor_01",
+  "pixel_canvas": [
+    128,
+    128
+  ],
+  "art_provenance": "Original separately illustrated vector parts \u2014 R4-A first visual pilot, not yet owner accepted",
+  "joints": {
+    "head": [
+      0,
+      -165
+    ],
+    "shoulder_l": [
+      -31,
+      -122
+    ],
+    "shoulder_r": [
+      31,
+      -122
+    ],
+    "elbow_l": [
+      0,
+      31
+    ],
+    "elbow_r": [
+      0,
+      31
+    ],
+    "wrist_l": [
+      0,
+      27
+    ],
+    "wrist_r": [
+      0,
+      27
+    ],
+    "hip_l": [
+      -14,
+      -68
+    ],
+    "hip_r": [
+      14,
+      -68
+    ],
+    "knee_l": [
+      0,
+      35
+    ],
+    "knee_r": [
+      0,
+      35
+    ],
+    "ankle_l": [
+      0,
+      34
+    ],
+    "ankle_r": [
+      0,
+      34
+    ]
+  },
+  "motions": {
+    "walk_keys": 12,
+    "walk_period_ticks": 48,
+    "foot_plant_ratio": 0.6,
+    "actions": [
+      "REST",
+      "WALK",
+      "ARRIVE",
+      "ANTICIPATE",
+      "PLAY",
+      "CHEER",
+      "FRUSTRATED",
+      "LEAVE"
+    ]
+  },
+  "parts": [
+    "torso",
+    "head",
+    "hair_back",
+    "hair_front",
+    "bow",
+    "upper_arm_l",
+    "forearm_l",
+    "hand_l",
+    "thigh_l",
+    "shin_l",
+    "foot_l",
+    "upper_arm_r",
+    "forearm_r",
+    "hand_r",
+    "thigh_r",
+    "shin_r",
+    "foot_r"
+  ],
+  "expressions": [
+    "neutral",
+    "focus",
+    "joy",
+    "anticipation",
+    "angry",
+    "sad",
+    "speaking",
+    "determined"
+  ],
+  "visual_acceptance": "pending"
+}

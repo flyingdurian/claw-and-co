@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="-64 -64 128 128"><defs>
+<linearGradient id="skin" x2=".7" y2="1"><stop stop-color="#fff1df"/><stop offset=".55" stop-color="#ffd6c2"/><stop offset="1" stop-color="#efac9b"/></linearGradient>
+<linearGradient id="pink" x2=".8" y2="1"><stop stop-color="#ffd1e4"/><stop offset=".45" stop-color="#fc83b8"/><stop offset="1" stop-color="#d44789"/></linearGradient>
+<linearGradient id="ruby" x2=".9" y2="1"><stop stop-color="#fb93ba"/><stop offset="1" stop-color="#a83170"/></linearGradient>
+<linearGradient id="hair" x2="1" y2="1"><stop stop-color="#a16b52"/><stop offset=".46" stop-color="#653b35"/><stop offset="1" stop-color="#30222e"/></linearGradient>
+<linearGradient id="navy" x2=".8" y2="1"><stop stop-color="#62627a"/><stop offset=".8" stop-color="#332d46"/><stop offset="1" stop-color="#211b31"/></linearGradient>
+<linearGradient id="white" x2=".6" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#afd8ed"/></linearGradient>
+<radialGradient id="blush"><stop stop-color="#ff8f99" stop-opacity=".62"/><stop offset="1" stop-color="#ff8f99" stop-opacity="0"/></radialGradient>
+</defs><path d="M-10 -4 L10 -4 L12 33 Q0 40 -12 33 Z" fill="url(#white)" stroke="#5b3449" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" /><path d="M-10 3 L10 3 M-10 9 L11 9" fill="none" stroke="#5b3449" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" stroke="#ed8daf" stroke-width="3"/></svg>
