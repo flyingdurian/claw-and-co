@@ -6,7 +6,7 @@
 - Source: the owner-uploaded `ClawCo_R4A_Art_Fidelity_Recovery_Kit(1).zip`.
 - Exact visual-production skill verified SHA-256 `617af25d54e27bdf2db5ca94d45c4c8e8415a1c661614073cbdc6c882f7a0936`. Stored at `docs/skills/clawco-visual-production/SKILL.md` after verified branch action.
 - Approved source visual: `references/REFERENCE_A_ACTOR01_TARGET.png` (SHA-256 `4816813be98f9be79bbafcc6e5156fe711ac497b790bd184e7245d54ae65d57a`). Large hero Actor 01 is identity authority; dashboard claims are fictional.
-- Rejected visual: `references/REFERENCE_C_REJECTED_ENGINE_MONTAGE.png`, SHA-256 `6e980f14ae346b484ecc62814517cef8e62168504ebd5c8e9a3c326c2ee49d970` **(check against original manifest before use)**.
+- Rejected visual: `references/REFERENCE_C_REJECTED_ENGINE_MONTAGE.png`, SHA-256 `6e980f14ae346b484ecc62814517cef8e62168504eb6c3951f07a7cc3b1ae350` Verified against owner manifest.
 - Approved later environment: `references/REFERENCE_B_MACHINE_FREE_AISLE.png`. No actual environment integration in ART-01.
 - The attached recovery kit contains the authoritative image bytes. Do not create new source art by cropping the outdated Godot recording.
 
