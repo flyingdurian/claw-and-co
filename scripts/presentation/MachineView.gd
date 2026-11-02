@@ -35,6 +35,7 @@ var last_machine_state: String = ""
 var m01_v31_rig: Node2D = null
 var m01_chamber_backdrop: Sprite2D = null
 var m01_authoritative_carry: Sprite2D = null
+var m01_falling_proxy: Sprite2D = null
 var m01_visual_stage_id: String = "stage_01"
 var m01_visual_seed: int = 1731
 var m01_last_visual: Dictionary = {}
@@ -98,6 +99,11 @@ func _ready() -> void:
         # Claw-local coordinates: the central motor hub is at y=0, and the
         # gripper tips converge below y≈600. Place the prize between them.
         m01_authoritative_carry.position=Vector2(0,710)
+        m01_falling_proxy=Sprite2D.new()
+        m01_falling_proxy.name="M01AuthoredMissFall"
+        m01_falling_proxy.z_index=1
+        m01_falling_proxy.visible=false
+        artwork.add_child(m01_falling_proxy)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -127,7 +133,10 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
         visual: Dictionary, stock: Array) -> void:
     if m01_authoritative_carry==null or m01_v31_rig==null: return
     m01_authoritative_carry.visible=false
-    if state!="PLAYING" or not bool(visual.get("carry",false)): return
+    if m01_falling_proxy!=null: m01_falling_proxy.visible=false
+    var carrying: bool=bool(visual.get("carry",false))
+    var falling: bool=bool(visual.get("drop",false))
+    if state!="PLAYING" or (not carrying and not falling): return
     var requested: String=str(session.get("requested_prize_instance_id",""))
     if requested.is_empty() or sid.is_empty(): return
     var inventory: Dictionary=snapshot.get("inventory",{})
@@ -147,7 +156,17 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     m01_authoritative_carry.scale=Vector2(base_scale,base_scale*squash)
     m01_authoritative_carry.position=Vector2(0,710)+Vector2(visual.get("offset",Vector2.ZERO))
     m01_authoritative_carry.rotation=float(visual.get("rotation",0.0))
-    m01_authoritative_carry.visible=true
+    if carrying:
+        m01_authoritative_carry.visible=true
+    elif falling and m01_falling_proxy!=null:
+        var fall_u: float=clampf(float(visual.get("fall_progress",0.0)),0.0,1.0)
+        var drop_origin: Vector2=artwork.to_local(claw_grip.to_global(Vector2(0,710)))
+        var floor_target: Vector2=Vector2(405,775)
+        m01_falling_proxy.texture=m01_authoritative_carry.texture
+        m01_falling_proxy.position=drop_origin.lerp(floor_target,fall_u)+Vector2(0,-28.0*sin(PI*fall_u))
+        m01_falling_proxy.rotation=float(visual.get("fall_rotation",0.0))
+        m01_falling_proxy.scale=Vector2.ONE*(114.0/maxf(1.0,source_width))
+        m01_falling_proxy.visible=true
     for i in stock.size():
         if str(stock[i].get("instance",""))==requested and i<stock_sprites.size():
             (stock_sprites[i] as Sprite2D).visible=false

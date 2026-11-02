@@ -59,8 +59,9 @@ func run()->void:
         check(str(PILOT.sample(chosen,"miss",235)["variant"])=="M"+str(index+1),
             "correct miss sequence M"+str(index+1))
         check(bool(PILOT.sample(chosen,"win",235)["carry"]) and
-            not bool(PILOT.sample(chosen,"miss",235)["carry"]),
-            "late resolution is authored outcome")
+            not bool(PILOT.sample(chosen,"miss",235)["carry"]) and
+            bool(PILOT.sample(chosen,"miss",235)["drop"]),
+            "late resolution is carried win versus falling miss")
         for result_name in ["win","miss"]:
             var record: Dictionary=pair[result_name]
             var attempt: Dictionary={"duration_ticks":240,"result":result_name}
@@ -81,7 +82,12 @@ func run()->void:
             check(JSON.stringify(snapshot).sha256_text()==before,"no snapshot writes during pickup")
             snapshot["tick"]=235
             machine.call("apply_snapshot",snapshot,{sid:ses})
-            check(carry.visible==(result_name=="win"),"win carries; miss drops at final state")
+            var fall_proxy: Sprite2D=machine.get("m01_falling_proxy") as Sprite2D
+            check(carry.visible==(result_name=="win") and
+                  fall_proxy.visible==(result_name=="miss"),
+                  "win secure carry versus visible authored miss fall")
+            check(not (machine.get("stock_sprites")[0] as Sprite2D).visible,
+                  "no duplicate stock while visual carry or fall exists")
             check(JSON.stringify(snapshot).sha256_text()!=before,
                 "test clock changed as expected while only snapshot is read")
             tested.append(str(chosen["win_id"]) if result_name=="win" else str(chosen["miss_id"]))

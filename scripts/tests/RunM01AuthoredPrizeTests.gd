@@ -54,8 +54,10 @@ func run()->void:
         "win and miss share exactly the same visible pickup before tick 180")
     snapshot["tick"]=235
     machine.call("apply_snapshot",snapshot,{"S01":session_miss})
-    check(not machine.get("m01_authoritative_carry").visible and machine.get("stock_sprites")[0].visible,
-        "authored miss releases the carried illusion before attempt end")
+    check(not machine.get("m01_authoritative_carry").visible and
+          (machine.get("m01_falling_proxy") as Sprite2D).visible and
+          not machine.get("stock_sprites")[0].visible,
+        "miss animates an authored visual fall without duplicate stock")
     var stock_sprite: Sprite2D=machine.get("stock_sprites")[0] as Sprite2D
     check(stock_sprite.position.x>60.0 and stock_sprite.position.x<190.0 and
           stock_sprite.position.y>150.0 and stock_sprite.position.y<310.0 and
@@ -72,7 +74,9 @@ func run()->void:
     held["inventory"]["TEST_PRIZE"]["owner"]="output:M01"
     held["inventory"]["TEST_PRIZE"]["reservation"]=""
     machine.call("apply_snapshot",held,{"S01":session_win})
-    check(not machine.get("m01_authoritative_carry").visible and machine.get("output_prize").visible,
+    check(not machine.get("m01_authoritative_carry").visible and
+          not (machine.get("m01_falling_proxy") as Sprite2D).visible and
+          machine.get("output_prize").visible,
         "authentic output slot is used after the authoritative state transfers")
     var hatch_prize: Sprite2D=machine.get("output_prize") as Sprite2D
     check(hatch_prize.position.x<140.0 and hatch_prize.position.y<330.0 and

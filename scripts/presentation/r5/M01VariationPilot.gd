@@ -29,7 +29,8 @@ static func sample(selection: Dictionary, outcome: String, visual_tick: int) -> 
     var t: int=clampi(visual_tick,0,239)
     var pair: int=int(selection.get("pair_index",0))
     var p: Dictionary={"visual_tick":t,"phase":"ALIGN","x":.5,"y":.35,
-        "z":0.0,"grip":0.0,"carry":false,"offset":Vector2.ZERO,
+        "z":0.0,"grip":0.0,"carry":false,"drop":false,"fall_progress":0.0,"fall_rotation":0.0,
+        "offset":Vector2.ZERO,
         "rotation":0.0,"squash":1.0,"variant":"P"+str(pair+1),
         "resolved":false}
     # Both authoritative outcomes take EXACTLY the same branch until tick 180.
@@ -95,8 +96,11 @@ static func sample(selection: Dictionary, outcome: String, visual_tick: int) -> 
             p["rotation"]=.17*sin(float(t-180)*.23)
         if t>=release_tick:
             p["carry"]=false
+            p["drop"]=true
+            p["fall_progress"]=_smooth(float(t-release_tick)/float(maxi(1,239-release_tick)))
+            p["fall_rotation"]=float([.15,1.35,-2.20][pair])*float(p["fall_progress"])
             p["grip"]=lerpf(1.0,.22,_smooth(float(t-release_tick)/12.0))
-            p["phase"]="M"+str(pair+1)+"_RELEASED"
+            p["phase"]="M"+str(pair+1)+"_FALLING"
     else:
         # No unknown outcome can produce a giveaway 'win' reveal.
         p["carry"]=false
