@@ -148,6 +148,9 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     if item_id.is_empty(): return
     _set_prize(m01_authoritative_carry,item_id)
     if m01_authoritative_carry.texture==null: return
+    # _set_prize enables the sprite for a valid asset. Explicitly clear it
+    # before selecting ONE mutually exclusive representation below.
+    m01_authoritative_carry.visible=false
     var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
     var source_width: float=float(m01_authoritative_carry.texture.get_width())
     var grip_scale: float=maxf(.001,claw_grip.scale.x)
