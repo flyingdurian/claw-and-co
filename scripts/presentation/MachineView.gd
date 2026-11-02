@@ -1,6 +1,7 @@
 class_name MachineView
 extends Control
 const PERFORMANCE = preload("res://scripts/presentation/MachinePerformanceTimeline.gd")
+const VARIATIONS = preload("res://scripts/presentation/r5/M01VariationPilot.gd")
 ## Illustrated cabinet with authoritative inventory-aware prizes and preset tick-locked actions.
 ## No procedural outcome decisions: all actions are purely presentation of MachineManager.
 signal cabinet_selected(machine_id: String)
@@ -34,6 +35,15 @@ var last_machine_state: String = ""
 var m01_v31_rig: Node2D = null
 var m01_chamber_backdrop: Sprite2D = null
 var m01_authoritative_carry: Sprite2D = null
+var m01_falling_proxy: Sprite2D = null
+var m01_visual_stage_id: String = "stage_01"
+var m01_visual_seed: int = 1731
+var m01_last_visual: Dictionary = {}
+var m01_last_selection: Dictionary = {}
+
+func set_m01_visual_identity(stage_id: String, visual_seed: int) -> void:
+    m01_visual_stage_id=stage_id
+    m01_visual_seed=visual_seed
 
 func _ready() -> void:
     initial_position = mechanism.position
@@ -89,6 +99,11 @@ func _ready() -> void:
         # Claw-local coordinates: the central motor hub is at y=0, and the
         # gripper tips converge below y≈600. Place the prize between them.
         m01_authoritative_carry.position=Vector2(0,710)
+        m01_falling_proxy=Sprite2D.new()
+        m01_falling_proxy.name="M01AuthoredMissFall"
+        m01_falling_proxy.z_index=1
+        m01_falling_proxy.visible=false
+        artwork.add_child(m01_falling_proxy)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -111,15 +126,17 @@ func _set_prize(sprite: Sprite2D, item_id: String) -> void:
         sprite.texture = load(path) as Texture2D
         sprite.set_meta("item_id",item_id)
 
-# Read-only physical prize presentation for the accepted M01 gantry.
-# A sprite is carried only while the EXACT reserved instance belongs to the
-# currently authored winning session. Miss, no reservation and output-held
-# states never create a speculative catch or mutate inventory.
+# The SAME reserved sprite is displayed for either authored result until the
+# visually safe resolution window (tick 180). It never alters the inventory;
+# a miss returns its floor sprite after the authored visual release.
 func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
-        progress: float, outcome: String, stock: Array) -> void:
+        visual: Dictionary, stock: Array) -> void:
     if m01_authoritative_carry==null or m01_v31_rig==null: return
     m01_authoritative_carry.visible=false
-    if state!="PLAYING" or outcome!="win" or progress<.58 or progress>=.94: return
+    if m01_falling_proxy!=null: m01_falling_proxy.visible=false
+    var carrying: bool=bool(visual.get("carry",false))
+    var falling: bool=bool(visual.get("drop",false))
+    if state!="PLAYING" or (not carrying and not falling): return
     var requested: String=str(session.get("requested_prize_instance_id",""))
     if requested.is_empty() or sid.is_empty(): return
     var inventory: Dictionary=snapshot.get("inventory",{})
@@ -131,15 +148,28 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     if item_id.is_empty(): return
     _set_prize(m01_authoritative_carry,item_id)
     if m01_authoritative_carry.texture==null: return
+    # _set_prize enables the sprite for a valid asset. Explicitly clear it
+    # before selecting ONE mutually exclusive representation below.
+    m01_authoritative_carry.visible=false
     var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
-    # The approved rig's root is scaled. Convert the illustrated plush
-    # to 114 cabinet pixels (instead of the prior 203px floating sprite).
-    # This is a visual-scale transform only; never alter the grip geometry.
     var source_width: float=float(m01_authoritative_carry.texture.get_width())
-    var grip_scale: float=maxf(0.001,claw_grip.scale.x)
-    m01_authoritative_carry.scale=Vector2.ONE*(114.0/maxf(1.0,source_width)/grip_scale)
-    m01_authoritative_carry.visible=true
-    # The same exact instance cannot appear simultaneously on the floor.
+    var grip_scale: float=maxf(.001,claw_grip.scale.x)
+    var base_scale: float=114.0/maxf(1.0,source_width)/grip_scale
+    var squash: float=float(visual.get("squash",1.0))
+    m01_authoritative_carry.scale=Vector2(base_scale,base_scale*squash)
+    m01_authoritative_carry.position=Vector2(0,710)+Vector2(visual.get("offset",Vector2.ZERO))
+    m01_authoritative_carry.rotation=float(visual.get("rotation",0.0))
+    if carrying:
+        m01_authoritative_carry.visible=true
+    elif falling and m01_falling_proxy!=null:
+        var fall_u: float=clampf(float(visual.get("fall_progress",0.0)),0.0,1.0)
+        var drop_origin: Vector2=artwork.to_local(claw_grip.to_global(Vector2(0,710)))
+        var floor_target: Vector2=Vector2(405,775)
+        m01_falling_proxy.texture=m01_authoritative_carry.texture
+        m01_falling_proxy.position=drop_origin.lerp(floor_target,fall_u)+Vector2(0,-28.0*sin(PI*fall_u))
+        m01_falling_proxy.rotation=float(visual.get("fall_rotation",0.0))
+        m01_falling_proxy.scale=Vector2.ONE*(114.0/maxf(1.0,source_width))
+        m01_falling_proxy.visible=true
     for i in stock.size():
         if str(stock[i].get("instance",""))==requested and i<stock_sprites.size():
             (stock_sprites[i] as Sprite2D).visible=false
@@ -306,8 +336,19 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
     if machine_id=="M01" and m01_v31_rig!=null:
         # Read-only adapter driven by the existing authoritative machine state
         # and authored attempts. No prize or money logic is duplicated.
+        # Preserve approved rig mechanics. Override only the read-only
+        # presentation pose while PLAYING, never its calibrated XYZ math.
         m01_v31_rig.call("apply_machine_presentation",state,progress,tick)
-        _apply_m01_authored_carry(snapshot,sid,state,progress,outcome,stock)
+        m01_last_visual={}
+        m01_last_selection={}
+        if state=="PLAYING" and not session.is_empty():
+            var visual_tick: int=clampi(int(floor(progress*240.0)),0,239)
+            m01_last_selection=VARIATIONS.select(m01_visual_stage_id,sid,attempt_idx,m01_visual_seed)
+            m01_last_visual=VARIATIONS.sample(m01_last_selection,outcome,visual_tick)
+            m01_v31_rig.call("set_pose",
+                float(m01_last_visual["x"]),float(m01_last_visual["y"]),
+                float(m01_last_visual["z"]),float(m01_last_visual["grip"]))
+        _apply_m01_authored_carry(snapshot,sid,state,m01_last_visual,stock)
     if sparkle.visible:
         sparkle.scale = Vector2.ONE*(.65+.22*sin(float(tick)*.22))
         sparkle.rotation = .10*sin(float(tick)*.19)
