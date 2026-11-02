@@ -126,7 +126,8 @@ func run_all()->void:
           not chain.get_child(0).region_enabled and
           (chain.get_child(0).texture as Texture2D).get_image().get_used_rect().size.y<=56,
           "chain uses 65-percent source-faithful display art, same center and path")
-    check(not rig.bridge_slices[0].visible and
+    check(rig.bridge_slices[0].visible and
+          rig.bridge_slices[0].material is ShaderMaterial and
           rig.bridge_slices[1].material is ShaderMaterial and
           rig.bridge_slices[0].region_rect.position.x>0,
           "front-left rail cap uses original interior chrome, not the exposed endplate")
