@@ -31,6 +31,7 @@ var initial_glass_position: Vector2 = Vector2.ZERO
 var stock_sprites: Array = []
 var loaded_items: Array = []
 var last_machine_state: String = ""
+var m01_v31_rig: Node2D = null
 
 func _ready() -> void:
     initial_position = mechanism.position
@@ -46,6 +47,19 @@ func _ready() -> void:
         move_child(p, get_children().find($ChutePrize))
         stock_sprites.append(p)
     sparkle.texture = load("res://art/living/sparkle.png") as Texture2D
+    # The approved V3.1 gantry is a child of the ORIGINAL cabinet's art
+    # transform, so its 1024x1536 coordinates scale identically with the frame.
+    # All M02-M04 machines and authoritative transactions are unchanged.
+    if machine_id=="M01":
+        artwork.texture=load("res://art/m01_v31/M01Cabinet.png") as Texture2D
+        artwork.position=Vector2(0,27)
+        artwork.scale=Vector2.ONE*(242.0/1024.0)
+        mechanism.visible=false
+        interior.visible=false
+        glass.visible=false
+        marquee.visible=false
+        m01_v31_rig=load("res://scenes/r5/M01V31GantryRig.tscn").instantiate() as Node2D
+        artwork.add_child(m01_v31_rig)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -209,6 +223,10 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
     if state=="CHANGEOVER":
         glass.position.y += 4.0*sin(float(tick)*.22)
         marquee.modulate.a = .25+.28*(1.0+sin(float(tick)*.32))*.5
+    if machine_id=="M01" and m01_v31_rig!=null:
+        # Read-only adapter driven by the existing authoritative machine state
+        # and authored attempts. No prize or money logic is duplicated.
+        m01_v31_rig.call("apply_machine_presentation",state,progress,tick)
     if sparkle.visible:
         sparkle.scale = Vector2.ONE*(.65+.22*sin(float(tick)*.22))
         sparkle.rotation = .10*sin(float(tick)*.19)
