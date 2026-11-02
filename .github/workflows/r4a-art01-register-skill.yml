@@ -1,0 +1,40 @@
+name: Claw & Co | Register Owner Visual Production Skill
+on:
+  push:
+    branches: ['r4/actor01-art01-identity-recovery']
+    paths: ['docs/skills/clawco-visual-production/SKILL.md.deflate.b64']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  materialize-owner-skill:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify owner kit content and materialize exact SKILL.md
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, zlib
+          path=Path('docs/skills/clawco-visual-production')
+          encoded=(path/'SKILL.md.deflate.b64').read_text().strip()
+          raw=zlib.decompress(base64.b64decode(encoded,validate=True))
+          expected='617af25d54e27bdf2db5ca94d45c4c8e8415a1c661614073cbdc6c882f7a0936'
+          actual=hashlib.sha256(raw).hexdigest()
+          assert actual==expected,(actual,expected)
+          assert len(raw)==12908
+          (path/'SKILL.md').write_bytes(raw)
+          print('OWNER_VISUAL_SKILL_SHA256='+actual)
+          print('OWNER_VISUAL_SKILL_BYTES='+str(len(raw)))
+          PY
+      - name: Commit exact skill source to ART-01 branch
+        run: |
+          git config user.name "claw-co-asset-registration"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/skills/clawco-visual-production/SKILL.md
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(r4-art01): register exact owner visual production SKILL.md"
+            git push origin HEAD:r4/actor01-art01-identity-recovery
+          fi
