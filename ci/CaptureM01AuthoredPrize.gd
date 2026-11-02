@@ -17,7 +17,7 @@ func run()->void:
     backdrop.centered=false
     backdrop.texture=load("res://art/r5/front_aisle_architecture.png")
     root.add_child(backdrop)
-    machine=load("res://scenes/machines/M01_Machine.tscn").instantiate()
+    machine=(load("res://scenes/machines/M01_Machine.tscn") as PackedScene).instantiate()
     machine.position=Vector2(375,-210)
     machine.scale=Vector2.ONE*1.65
     root.add_child(machine)
@@ -25,19 +25,19 @@ func run()->void:
     var stock:Dictionary={"TEST_PRIZE":{"item_id":"plush_panda","owner":"cassette:C01","reservation":"S01"}}
     var snap:Dictionary={"tick":15,"machines":{"machines":{"M01":{"state":"PLAYING","session":"S01","attempt":0,"due":100,"cassette":"C01","output":""}}},"inventory":stock}
     var win:Dictionary={"S01":{"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":100,"result":"win"}]}}
-    machine.apply_snapshot(snap,win)
+    machine.call("apply_snapshot",snap,win)
     await _shot("01_game_machine_early_attempt")
     snap["tick"]=85
-    machine.apply_snapshot(snap,win)
+    machine.call("apply_snapshot",snap,win)
     await _shot("02_game_machine_reserved_prize_lift")
     var miss:Dictionary={"S01":{"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":100,"result":"miss"}]}}
-    machine.apply_snapshot(snap,miss)
+    machine.call("apply_snapshot",snap,miss)
     await _shot("03_game_machine_missed_attempt_stock_intact")
     snap["machines"]["machines"]["M01"]["state"]="OUTPUT_HELD"
     snap["machines"]["machines"]["M01"]["output"]="TEST_PRIZE"
     stock["TEST_PRIZE"]["owner"]="output:M01"
     stock["TEST_PRIZE"]["reservation"]=""
-    machine.apply_snapshot(snap,win)
+    machine.call("apply_snapshot",snap,win)
     await _shot("04_game_machine_authoritative_output")
     print("M01_SLICE_GODOT_CAPTURES=4")
     quit(0)
