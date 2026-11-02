@@ -64,6 +64,10 @@ func run_all()->void:
     var rails:Node2D=rig.get_node("CabinetFixedHardware")
     check(not (rig.get_node("CabinetFixedHardware/LeftFixedDepthGuide/RigidOriginalRailSection2") as Sprite2D).visible,
         "exposed left front rail decoration is concealed, geometry is unchanged")
+    var left_profile: Sprite2D=rig.get_node("CabinetFixedHardware/LeftFixedDepthGuide/RigidOriginalRailSection1")
+    check(left_profile.region_rect.size.x>0.0 and
+          left_profile.region_rect.size.x*left_profile.scale.x>2.0,
+          "static left guide remains intact after inboard tip occlusion")
     var bridge:Node2D=rig.get_node("MovingYBridge")
     var trolley:Node2D=rig.get_node("MovingXTrolley")
     var chain:Node2D=rig.get_node("FlexibleChain")

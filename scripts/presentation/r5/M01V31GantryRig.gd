@@ -81,6 +81,14 @@ func _ready() -> void:
     # rail path, geometry, all bearing anchors and animation unchanged.
     var left_front_rail_cap := fixed.get_node("LeftFixedDepthGuide/RigidOriginalRailSection2") as Sprite2D
     left_front_rail_cap.visible=false
+    # The original left depth-guide middle profile still projects a small
+    # triangular metal tip beyond the pillar at all Y positions. Crop only
+    # the final 20 cabinet-local pixels of that *rendered* section; retain
+    # both physically fixed roof anchors and the full guide Node2D geometry.
+    var guide_center := fixed.get_node("LeftFixedDepthGuide/RigidOriginalRailSection1") as Sprite2D
+    var original_core_width := guide_center.region_rect.size.x * guide_center.scale.x
+    var visible_core_width := maxf(2.0,original_core_width-20.0)
+    guide_center.region_rect.size.x *= visible_core_width/original_core_width
     moving_bridge=_node(self,"MovingYBridge")
     moving_bridge.z_index=1
     # Preserve actual source bridge endplates; only repeat/stetch the center profile.
