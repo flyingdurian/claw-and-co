@@ -25,13 +25,22 @@ func run()->void:
     machine.call("apply_snapshot",snapshot,{"S01":session_win})
     check(machine.get("m01_authoritative_carry").visible,
         "authored win carries exactly reserved prize during real M01 animation")
-    check((machine.get("m01_authoritative_carry") as Sprite2D).scale.x>1.25,
-        "reserved prize remains readable at real interactive cabinet scale")
+    var prize: Sprite2D=machine.get("m01_authoritative_carry") as Sprite2D
+    var claw: Node2D=(machine.get("m01_v31_rig") as Node2D).get("claw_root") as Node2D
+    check(prize.get_parent()==claw and prize.get_index()==1,
+        "prize is physically parented inside the three-prong claw behind articulated fingers")
+    check(prize.position==Vector2(0,640) and prize.z_index==0,
+        "prize center is inside lower claw grip, not floating near trolley")
     check(not machine.get("stock_sprites")[0].visible,"reserved physical stock is not drawn twice")
-    var pose: Dictionary=(machine.get("m01_v31_rig") as Node2D).get("last_pose")
-    check(machine.get("m01_authoritative_carry").position.distance_to(
-        (pose["wire_bottom"] as Vector2)+Vector2(0,73))<.001,
-        "prize follows real Z cable end without changing gantry motion")
+    var rig: Node2D=machine.get("m01_v31_rig") as Node2D
+    check(prize.texture!=null and
+          absf(prize.texture.get_width()*prize.scale.x*claw.scale.x-106.0)<.02,
+          "plush sized to 106 actual cabinet pixels within prongs")
+    var physical_position: Vector2=prize.global_position
+    rig.call("set_pose",.15,.85,.6,1)
+    check(prize.global_position.distance_to(physical_position)>30.0,
+        "carried plush is mechanically coupled to claw XY/Z motion")
+    machine.call("apply_snapshot",snapshot,{"S01":session_win})
     check(snapshot==unchanged,"presentation never mutates inventory, reservations or machine state")
     var session_miss: Dictionary={"requested_prize_instance_id":"TEST_PRIZE","attempts":[{"duration_ticks":100,"result":"miss"}]}
     machine.call("apply_snapshot",snapshot,{"S01":session_miss})

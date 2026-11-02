@@ -57,6 +57,9 @@ func run_all()->void:
           "right chamber gap infill generated from the existing illustrated wall")
     check(upper_roof.z_index==0 and roof_mask.z_index==0 and roof_front.z_index==10,
           "interior ceiling beneath chain; exterior cabinet cross-piece ahead")
+    check(roof_front.texture.get_image().get_pixel(500,340).a==0.0 and
+          roof_front.texture.get_image().get_pixel(680,355).a==0.0,
+          "bright interior fixture never copied onto external z10 trim layer")
     var left_cap: Sprite2D=rig.get_node("CabinetFixedHardware/leftFrontMount")
     check(not left_cap.visible and
           not (rig.get_node("CabinetFixedHardware/leftBackMount") as Sprite2D).visible,

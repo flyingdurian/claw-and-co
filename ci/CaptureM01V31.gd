@@ -46,7 +46,9 @@ func capture()->void:
     if not await shot("15_front_y_right_chain_vs_light"):quit(1);return
     scene.set_pose(.5,.35,0,0)
     if not await shot("16_rest_chain_vs_light"):quit(1);return
-    print("M01_V31_ACTUAL_GODOT_CAPTURES=16")
+    scene.set_pose(.72,.40,0,0)
+    if not await shot("17_chain_visible_over_interior_light_mid_pose"):quit(1);return
+    print("M01_V31_ACTUAL_GODOT_CAPTURES=17")
     quit(0)
 
 func shot(label:String)->bool:

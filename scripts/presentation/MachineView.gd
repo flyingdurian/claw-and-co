@@ -76,11 +76,16 @@ func _ready() -> void:
         m01_authoritative_carry=Sprite2D.new()
         m01_authoritative_carry.name="M01ReservedPrizeInClaw"
         m01_authoritative_carry.visible=false
-        m01_authoritative_carry.z_index=2
-        # Real prize atlas is ~145px wide; .34 made a near-invisible dot
-        # at the 242px cabinet scale. Display at tactile plush size instead.
-        m01_authoritative_carry.scale=Vector2.ONE*1.40
-        artwork.add_child(m01_authoritative_carry)
+        # Part of the articulated claw rather than a free-floating cabinet
+        # sprite: the root supplies the exact cable/drop-shaft connection.
+        # Draw the prize UNDER the left/right/rear finger rigs, not over them.
+        var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
+        claw_grip.add_child(m01_authoritative_carry)
+        claw_grip.move_child(m01_authoritative_carry,1)
+        m01_authoritative_carry.z_index=0
+        # Claw-local coordinates: the central motor hub is at y=0, and the
+        # gripper tips converge below y≈600. Place the prize between them.
+        m01_authoritative_carry.position=Vector2(0,640)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -123,10 +128,14 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     if item_id.is_empty(): return
     _set_prize(m01_authoritative_carry,item_id)
     if m01_authoritative_carry.texture==null: return
+    var claw_grip: Node2D=m01_v31_rig.get("claw_root") as Node2D
+    # The approved rig's root is scaled. Convert the illustrated plush
+    # to 106 cabinet pixels (instead of the prior 203px floating sprite).
+    # This is a visual-scale transform only; never alter the grip geometry.
+    var source_width: float=float(m01_authoritative_carry.texture.get_width())
+    var grip_scale: float=maxf(0.001,claw_grip.scale.x)
+    m01_authoritative_carry.scale=Vector2.ONE*(106.0/maxf(1.0,source_width)/grip_scale)
     m01_authoritative_carry.visible=true
-    var pose: Dictionary=m01_v31_rig.get("last_pose")
-    var endpoint: Vector2=pose.get("wire_bottom",Vector2.ZERO)
-    m01_authoritative_carry.position=endpoint+Vector2(0,73)
     # The same exact instance cannot appear simultaneously on the floor.
     for i in stock.size():
         if str(stock[i].get("instance",""))==requested and i<stock_sprites.size():
