@@ -32,6 +32,8 @@ var stock_sprites: Array = []
 var loaded_items: Array = []
 var last_machine_state: String = ""
 var m01_v31_rig: Node2D = null
+var m01_chamber_backdrop: Sprite2D = null
+var m01_authoritative_carry: Sprite2D = null
 
 func _ready() -> void:
     initial_position = mechanism.position
@@ -60,6 +62,23 @@ func _ready() -> void:
         marquee.visible=false
         m01_v31_rig=load("res://scenes/r5/M01V31GantryRig.tscn").instantiate() as Node2D
         artwork.add_child(m01_v31_rig)
+        # Original registered chamber art must be behind the cabinet facade.
+        # M01 is not a flat machine-body texture with an empty window.
+        m01_chamber_backdrop=Sprite2D.new()
+        m01_chamber_backdrop.name="M01OriginalPrizeChamber"
+        m01_chamber_backdrop.texture=load("res://art/m01_v31/m01_chamber_backdrop.png") as Texture2D
+        m01_chamber_backdrop.centered=false
+        m01_chamber_backdrop.show_behind_parent=true
+        artwork.add_child(m01_chamber_backdrop)
+        # Presentation-only item carried on the approved real animated claw.
+        # This sprite never creates/removes inventory: the authoritative
+        # MachineManager reservation and authored attempt decide visibility.
+        m01_authoritative_carry=Sprite2D.new()
+        m01_authoritative_carry.name="M01ReservedPrizeInClaw"
+        m01_authoritative_carry.visible=false
+        m01_authoritative_carry.z_index=2
+        m01_authoritative_carry.scale=Vector2.ONE*.34
+        artwork.add_child(m01_authoritative_carry)
 
 func _stock_items(snapshot: Dictionary) -> Array:
     var contents: Array = []
@@ -81,6 +100,35 @@ func _set_prize(sprite: Sprite2D, item_id: String) -> void:
     if str(sprite.get_meta("item_id","")) != item_id:
         sprite.texture = load(path) as Texture2D
         sprite.set_meta("item_id",item_id)
+
+# Read-only physical prize presentation for the accepted M01 gantry.
+# A sprite is carried only while the EXACT reserved instance belongs to the
+# currently authored winning session. Miss, no reservation and output-held
+# states never create a speculative catch or mutate inventory.
+func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
+        progress: float, outcome: String, stock: Array) -> void:
+    if m01_authoritative_carry==null or m01_v31_rig==null: return
+    m01_authoritative_carry.visible=false
+    if state!="PLAYING" or outcome!="win" or progress<.58 or progress>=.94: return
+    var requested: String=str(session.get("requested_prize_instance_id",""))
+    if requested.is_empty() or sid.is_empty(): return
+    var inventory: Dictionary=snapshot.get("inventory",{})
+    var record: Dictionary=inventory.get(requested,{})
+    var expected_owner: String="cassette:"+str(machine.get("cassette",""))
+    if str(record.get("owner",""))!=expected_owner or
+            str(record.get("reservation",""))!=sid: return
+    var item_id: String=str(record.get("item_id",""))
+    if item_id.is_empty(): return
+    _set_prize(m01_authoritative_carry,item_id)
+    if m01_authoritative_carry.texture==null: return
+    m01_authoritative_carry.visible=true
+    var pose: Dictionary=m01_v31_rig.get("last_pose")
+    var endpoint: Vector2=pose.get("wire_bottom",Vector2.ZERO)
+    m01_authoritative_carry.position=endpoint+Vector2(0,73)
+    # The same exact instance cannot appear simultaneously on the floor.
+    for i in stock.size():
+        if str(stock[i].get("instance",""))==requested and i<stock_sprites.size():
+            (stock_sprites[i] as Sprite2D).visible=false
 
 func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> void:
     tick = int(snapshot.get("tick",0))
@@ -227,6 +275,7 @@ func apply_snapshot(snapshot: Dictionary, stage_sessions: Dictionary = {}) -> vo
         # Read-only adapter driven by the existing authoritative machine state
         # and authored attempts. No prize or money logic is duplicated.
         m01_v31_rig.call("apply_machine_presentation",state,progress,tick)
+        _apply_m01_authored_carry(snapshot,sid,state,progress,outcome,stock)
     if sparkle.visible:
         sparkle.scale = Vector2.ONE*(.65+.22*sin(float(tick)*.22))
         sparkle.rotation = .10*sin(float(tick)*.19)
