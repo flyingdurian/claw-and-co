@@ -23,7 +23,7 @@ var last_pose: Dictionary = {}
 var last_tick: int = 0
 # Only presentation is clipped; fixed mounts and X/Y/Z geometry are unchanged.
 var left_edge_clip_materials: Array[ShaderMaterial] = []
-const CABINET_LEFT_RAIL_INSET := 289.0
+const CABINET_LEFT_RAIL_INSET := 273.0
 
 func _process(_delta: float) -> void:
     if not ready_assets: return
