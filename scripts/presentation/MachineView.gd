@@ -115,8 +115,8 @@ func _apply_m01_authored_carry(snapshot: Dictionary, sid: String, state: String,
     var inventory: Dictionary=snapshot.get("inventory",{})
     var record: Dictionary=inventory.get(requested,{})
     var expected_owner: String="cassette:"+str(machine.get("cassette",""))
-    if str(record.get("owner",""))!=expected_owner or
-            str(record.get("reservation",""))!=sid: return
+    if str(record.get("owner",""))!=expected_owner or str(record.get("reservation",""))!=sid:
+        return
     var item_id: String=str(record.get("item_id",""))
     if item_id.is_empty(): return
     _set_prize(m01_authoritative_carry,item_id)
