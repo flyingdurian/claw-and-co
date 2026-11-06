@@ -22,6 +22,7 @@ The new entry scene is `scenes/neon_shift/NeonShift.tscn`. The original scene re
 - Real mouse/keyboard/drag input: 21/21, including returned-card ownership, direct guest selection, staff-key drag and 1600×900 input mapping.
 - Registered PNG hashes and bounded atlas regions audited; approved Actor 01 identity SHA is unchanged.
 - Eight actual Godot viewport screenshots, plus a scripted complete playthrough rendered by Godot Movie Maker.
+- Linux release executable: charge, load, sale, machine admission and invariant check pass; revenue is exactly $5; graceful audio shutdown exits without resource errors.
 
 Each shift's successful test route serves all eight visitors, completes 13 service steps, earns 1,430 points / three stars, and books exactly 2,700 minor currency units ($27). The outcome is deterministic for a given command schedule; different schedules may produce different digests.
 
@@ -38,7 +39,7 @@ LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a ci/bin/godot --path . --audio-driver Dummy \
   --script res://ci/RecordNeonShift.gd --write-movie neon_shift.avi --fixed-fps 30 --disable-vsync
 ```
 
-Windows is exported for x86-64; execution on Windows still needs owner testing. The Linux executable is separately smoke-tested. CI retains source audits, regression logs, actual input checks and eight rendered views.
+Windows is exported for x86-64; execution on Windows still needs owner testing. The Linux executable is separately tested with `-- --neon-smoke`, which runs the initial real transaction sequence and closes cleanly without writing progression. CI retains source audits, regression logs, actual input checks and eight rendered views.
 
 ## Deliberate limits
 

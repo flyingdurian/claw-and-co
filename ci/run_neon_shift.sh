@@ -14,3 +14,7 @@ for script in TestNeonInput CaptureNeonShift; do
   cat "ci/output/neon_shift/$script.log"
   ! grep -E 'SCRIPT ERROR:|^ERROR:|FAILED=[1-9]' "ci/output/neon_shift/$script.log"
 done
+timeout 30s xvfb-run -a -s '-screen 0 1280x720x24' "$GODOT" --path . --audio-driver Dummy -- --neon-smoke > ci/output/neon_shift/startup.log 2>&1
+cat ci/output/neon_shift/startup.log
+grep 'EXPORTED_SMOKE_PASS' ci/output/neon_shift/startup.log
+! grep -E 'SCRIPT ERROR:|^ERROR:' ci/output/neon_shift/startup.log

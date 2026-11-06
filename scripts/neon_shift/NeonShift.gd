@@ -46,9 +46,12 @@ var summary_data: Dictionary = {}
 var capture_mode := false
 var effects: Array[Dictionary] = []
 var faces: Dictionary = {}
+var closing := false
 const DESIGNS := ["mika","ren","yuki","yuki","ren","mika","ren","mika"]
 
 func _ready() -> void:
+    get_tree().auto_accept_quit=false
+    get_tree().root.close_requested.connect(_request_quit)
     process_mode=Node.PROCESS_MODE_ALWAYS
     mouse_filter=Control.MOUSE_FILTER_STOP
     background=load("res://art/r5/front_aisle_architecture.png") as Texture2D
@@ -91,6 +94,9 @@ func _ready() -> void:
     snapshot=session.sim.game_snapshot()
     _update_world()
     queue_redraw();hud.queue_redraw()
+    if OS.get_cmdline_user_args().has("--neon-smoke"):
+        capture_mode=true
+        _export_smoke_check.call_deferred()
 
 func start_shift(index: int = 0) -> void:
     session.begin(index)
@@ -249,6 +255,8 @@ func _return_slot() -> void:
     selected_slot=""
 
 func activate(id: String) -> void:
+    if closing: return
+    if id=="quit": _request_quit();return
     if id=="mute": muted=not muted;_apply_audio();_save();return
     if id=="help": help_open=not help_open;return
     if help_open: return
@@ -654,6 +662,7 @@ func _title(c: NeonCanvas) -> void:
     c.txt(Vector2(837,617),"Mika · first in line, every time",11,Color("6e4964"))
     _button(c,Rect2(1064,32,95,34),"SOUND" if not muted else "MUTED","mute",MINT,true,false)
     _button(c,Rect2(1170,32,78,34),"HELP","help",MINT,true,false)
+    _button(c,Rect2(966,32,87,34),"EXIT","quit",CREAM,true,false)
     if help_open: _help(c)
 func _pause(c: NeonCanvas) -> void:
     c.draw_rect(Rect2(0,0,1280,720),Color(.05,.03,.09,.78));clickables.clear()
@@ -692,6 +701,28 @@ func _results(c: NeonCanvas) -> void:
 func _exit_tree() -> void:
     if music!=null: music.stop();music.stream=null
     if sfx!=null: sfx.stop();sfx.stream=null
+
+func _request_quit(exit_code: int = 0) -> void:
+    if closing: return
+    closing=true
+    set_physics_process(false);set_process(false)
+    if music!=null: music.stop();music.stream=null
+    if sfx!=null: sfx.stop();sfx.stream=null
+    # Give the mixer a short drain interval before the engine releases resources.
+    await get_tree().create_timer(.3).timeout
+    get_tree().quit(exit_code)
+
+func _export_smoke_check() -> void:
+    # Explicit developer-only CLI switch, useful with release templates that
+    # disallow external scripts. It never writes progression or changes a save.
+    await get_tree().create_timer(.15).timeout
+    start_shift(0);activate("bench");activate("charge")
+    await get_tree().create_timer(3.3).timeout
+    activate("load_card");activate("floor");selected_visit="V01"
+    activate("primary");activate("primary")
+    var passed:=session.sim.revenue_minor==500 and str(session.sim.machines.machines.M01.state)=="PLAYING" and session.sim.verify_invariants()
+    print("EXPORTED_SMOKE_", "PASS" if passed else "FAIL", " revenue=",session.sim.revenue_minor," tick=",session.sim.clock.tick)
+    _request_quit(0 if passed else 1)
 
 func _all_guests_served() -> bool:
     for visit in session.sim.customers.visits.values():
