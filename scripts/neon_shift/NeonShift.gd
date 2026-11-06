@@ -345,7 +345,9 @@ func render_hud(c: NeonCanvas) -> void:
     if mode=="title": _title(c);return
     if mode=="results": _results(c);return
     _header(c)
-    if area=="floor": _floor_labels(c)
+    if area=="floor":
+        _floor_labels(c)
+        _floor_guests(c)
     else: _bench(c)
     _sidebar(c)
     _cart(c)
@@ -457,6 +459,27 @@ func _sidebar(c: NeonCanvas) -> void:
         c.txt(Vector2(981,426),"Prepare a card before the first arrival.",12,MUTED)
         _button(c,Rect2(979,448,280,43),"OPEN PREP BENCH","bench",MINT)
     c.txt(Vector2(982,555),"Stars: 250 / 650 / 950 points",10,GOLD)
+
+func _floor_guests(c: NeonCanvas) -> void:
+    # Real illustrated bodies are selectable as well as queue cards. Keep staff
+    # actions above body targets where a cabinet button overlaps its guest.
+    var priority: Array[Dictionary]=[]
+    for item in clickables.duplicate():
+        if str(item.id) in ["reset","restock"]:
+            priority.append(item);clickables.erase(item)
+    for id in session.available_visits():
+        if not visitors.has(id): continue
+        var actor: Node2D=visitors[id]
+        if not actor.visible or actor.sprite.texture==null: continue
+        var r: Rect2=actor.sprite.get_global_transform()*Rect2(Vector2.ZERO,actor.sprite.texture.get_size())
+        r=r.intersection(Rect2(24,198,912,340))
+        if r.size.x<12 or r.size.y<12: continue
+        clickables.append({"rect":r,"id":"visit:"+id})
+        if hovered=="visit:"+id:
+            var label_rect:=Rect2(clampf(r.get_center().x-70,25,789),maxf(199,r.position.y-25),140,22)
+            c.box(label_rect,Color("241a32"),8,PINK)
+            c.centered(label_rect,SESSION.NAMES[id]+" · SELECT GUEST",9,CREAM,true)
+    clickables.append_array(priority)
 
 func _bench(c: NeonCanvas) -> void:
     c.txt(Vector2(30,116),"THE PREP BENCH",24,CREAM,true)

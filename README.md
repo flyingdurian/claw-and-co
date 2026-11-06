@@ -4,6 +4,8 @@ A first-person arcade service game built in **Godot 4.7.2**. Run a neon prize fl
 
 This branch introduces a complete playable presentation around the existing authoritative Stage 1 simulation. It uses the original cabinet and gantry, the approved Actor 01 identity, recovered walking artwork, and additional illustrated equipment and guest poses.
 
+![The Neon Shift prize floor](docs/neon_shift/screenshots/floor.png)
+
 ## Play
 
 Open `project.godot` in Godot **4.7.2** and press **F6** on `scenes/neon_shift/NeonShift.tscn`, or **F5** to launch the main game. Packaged Windows and Linux releases need no editor; keep the executable and its `.pck` together.

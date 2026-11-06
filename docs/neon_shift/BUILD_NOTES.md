@@ -19,7 +19,7 @@ The new entry scene is `scenes/neon_shift/NeonShift.tscn`. The original scene re
 - Original six Godot suites: PASS.
 - Frozen-source static preflight: 26/26.
 - Neon Shift gameplay: 340/340, covering all three shifts, inventory invariants, exact revenue, final refill delivery, trade ownership, negative preparation, closed-shift commands, zero-action result, UI actions and retry.
-- Real mouse/keyboard/drag input: 20/20, including returned-card ownership and 1600×900 input mapping.
+- Real mouse/keyboard/drag input: 21/21, including returned-card ownership, direct guest selection, staff-key drag and 1600×900 input mapping.
 - Registered PNG hashes and bounded atlas regions audited; approved Actor 01 identity SHA is unchanged.
 - Eight actual Godot viewport screenshots, plus a scripted complete playthrough rendered by Godot Movie Maker.
 
