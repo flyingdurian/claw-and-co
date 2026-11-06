@@ -1,0 +1,37 @@
+name: Claw & Co. | Neon Shift playable build
+on:
+  push:
+    branches: ['reimagine/neon-shift']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: neon-shift-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  playable-shift:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install software rendering and image audit dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb libgl1 libgl1-mesa-dri libglx-mesa0 libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxinerama1 libasound2t64 python3-pil
+      - name: Download verified Godot 4.7.2
+        run: python3 ci/fetch_godot.py
+      - name: Verify frozen simulation and run original regressions
+        run: |
+          python3 ci/validate_pipeline.py
+          bash ci/run_suites.sh
+      - name: Test three shifts, real input, source identity and rendered screens
+        run: bash ci/run_neon_shift.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: neon-shift-evidence
+          path: |
+            ci/output/neon_shift/
+            ci/output/logs/
+          retention-days: 14

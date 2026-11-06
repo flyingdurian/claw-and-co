@@ -9,3 +9,8 @@ logs/*.log
 *.tmp
 Thumbs.db
 .DS_Store
+
+# Generated engine caches and packaged release builds
+*.import
+*.gd.uid
+exports/

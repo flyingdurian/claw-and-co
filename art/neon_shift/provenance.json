@@ -1,0 +1,27 @@
+[
+  {
+    "source": "actor01_walk_contact_candidate(corrected)(1).png",
+    "path": "art/neon_shift/walk/pose_00.png",
+    "sha256": "ed88320a413c078cc455ae9c3b4a08ac4a915ff23ea26d21d4089da6592398fa"
+  },
+  {
+    "source": "Chibi bunny girl mid-stride-1.png",
+    "path": "art/neon_shift/walk/pose_01.png",
+    "sha256": "928bc14a7dcde3d8d9f7fb1b381e4abf1f24b5d0bb6331541557e65d8ae52b16"
+  },
+  {
+    "source": "actor01_walk_passing_candidate(5).png",
+    "path": "art/neon_shift/walk/pose_02.png",
+    "sha256": "cf54e61fd0a9f541744014f85d612a00dc97928523cc97124333c35e2d9c98e6"
+  },
+  {
+    "source": "Bunny hoodie midstep walk pose-2.png",
+    "path": "art/neon_shift/walk/pose_03.png",
+    "sha256": "4dfbe1cb2c0dfa634dcaf809cf1bd133f3f423ad3e66ad164fc6a6887b5b11e7"
+  },
+  {
+    "source": "actor01_walk_opposite_contact_candidate(3).png",
+    "path": "art/neon_shift/walk/pose_04.png",
+    "sha256": "01ee509a5f6af202cc3c06216208899a8beeffe7a4f52779898777325f4f6079"
+  }
+]
